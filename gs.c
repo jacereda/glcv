@@ -296,6 +296,7 @@ static void got(int type, intptr_t p1, intptr_t p2) {
 		break;
 	case GS_EVENT_UP:
 		release(evWhich(&e));
+		break;
 	};
 	event(&e);
 }
