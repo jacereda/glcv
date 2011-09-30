@@ -180,11 +180,7 @@ typedef enum {
 	GS_KEY_DUMMY=((uintptr_t)~0)
 } gskey;
 
-typedef struct _ev {
-	uintptr_t type;
-	uintptr_t p[2];
-} ev;
-
+typedef struct _ev ev;
 
 #if defined(__GNUC__) && !defined(_WIN32_)
 #define EXPORTED \
@@ -193,7 +189,6 @@ typedef struct _ev {
 #define EXPORTED extern __declspec(dllexport)
 #endif
 
-EXPORTED const ev * gsNextEvent();
 EXPORTED unsigned gsWidth();
 EXPORTED unsigned gsHeight();
 EXPORTED int gsMouseX();
