@@ -12,9 +12,8 @@ test: test.o gs.o
 
 glestest: glestest.o gs.o
 
-gs.o: osios.m
+gs.o: ios.m
 	$(CC) -c $(CPPFLAGS) $(CFLAGS) $< -o $@
-
 
 clean:
 	rm -f *.o *.a
