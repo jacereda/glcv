@@ -31,7 +31,7 @@
 */
 #include "gs.c"
 #include "gsgl.h"
-#include <OpenGLES/ES1/glext.h>
+#include <OpenGLES/ES2/glext.h>
 #include <assert.h>
 
 #import <Foundation/Foundation.h>
@@ -194,7 +194,7 @@ shouldChangeCharactersInRange: (NSRange)range
 - (void)update {
 	tick();
 	draw();
-	[ctx presentRenderbuffer: GL_RENDERBUFFER_OES];
+	[ctx presentRenderbuffer: GL_RENDERBUFFER];
 }
 
 - (void) clearCurrent {
@@ -202,7 +202,7 @@ shouldChangeCharactersInRange: (NSRange)range
 }
 
 - (void) makeCurrent {
-	[ctx renderbufferStorage: GL_RENDERBUFFER_OES 
+	[ctx renderbufferStorage: GL_RENDERBUFFER 
 		    fromDrawable: (CAEAGLLayer *) [view layer]];
 	[EAGLContext setCurrentContext: ctx];
 }
@@ -211,13 +211,13 @@ shouldChangeCharactersInRange: (NSRange)range
         ctx = [[EAGLContext alloc] initWithAPI: kEAGLRenderingAPIOpenGLES2];
 	[EAGLContext setCurrentContext: ctx];
 	GLuint cb, fb;
-	glGenFramebuffersOES(1, &fb);
-	glGenRenderbuffersOES(1, &cb);
-	glBindFramebufferOES(GL_FRAMEBUFFER_OES, fb);
-	glBindRenderbufferOES(GL_RENDERBUFFER_OES , cb);
-	glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, 
-				     GL_COLOR_ATTACHMENT0_OES, 
-				     GL_RENDERBUFFER_OES, 
+	glGenFramebuffers(1, &fb);
+	glGenRenderbuffers(1, &cb);
+	glBindFramebuffer(GL_FRAMEBUFFER, fb);
+	glBindRenderbuffer(GL_RENDERBUFFER , cb);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, 
+				     GL_COLOR_ATTACHMENT0, 
+				     GL_RENDERBUFFER, 
 				     cb);
 
 	[self clearCurrent];
@@ -240,6 +240,7 @@ shouldChangeCharactersInRange: (NSRange)range
 
 	[self initContext];
 	[self makeCurrent];
+	got(GS_EVENT_RESIZE, r.size.width, r.size.height);
 }
 
 - (void) applicationDidFinishLaunching: (UIApplication*) application 
