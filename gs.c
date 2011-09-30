@@ -41,13 +41,8 @@ static unsigned s_w = 0;
 static unsigned s_h = 0;
 static int s_mx = 0;
 static int s_my = 0;
-static unsigned s_head = 0;
-static unsigned s_tail = 0;
-static ev s_ev[MAX_EVENTS] = {0};
 static unsigned char s_pressed[MAX_PRESSED/8] = {0};
 static unsigned char s_ppressed[MAX_PRESSED/8] = {0};
-
-static const char * s_title = "unknown";
 
 static __inline void bitset(unsigned char * b, unsigned bit) {
         b[bit>>3] |= 1 << (bit & 7);
@@ -282,37 +277,25 @@ const char * evKeyName(const ev * e) {
 	return buf;
 }
 
-const ev * gsNextEvent() {
-        const ev * e = 0;
-        if (s_head != s_tail) {
-                e = s_ev + s_tail;
-                s_tail++;
-                s_tail %= MAX_EVENTS;
-        }
-        if (e) switch (evType(e)) {   
-                case GS_EVENT_RESIZE:
-                        s_w = evWidth(e);
-                        s_h = evHeight(e);
-                        break;
-                case GS_EVENT_MOTION:
-                        s_mx = evX(e);
-                        s_my = evY(e);
-                        break;
-                case GS_EVENT_DOWN:
-                        press(evWhich(e));
-                        break;
-                case GS_EVENT_UP:
-                        release(evWhich(e));
-                        break;
-                default: break;
-                }
-        return e;
-}
-
 static void got(int type, intptr_t p1, intptr_t p2) {
 	ev e;
         e.type = type;
         e.p[0] = p1;
         e.p[1] = p2;
+        switch (evType(&e)) {   
+	case GS_EVENT_RESIZE:
+		s_w = evWidth(&e);
+		s_h = evHeight(&e);
+		break;
+	case GS_EVENT_MOTION:
+		s_mx = evX(&e);
+		s_my = evY(&e);
+		break;
+	case GS_EVENT_DOWN:
+		press(evWhich(&e));
+		break;
+	case GS_EVENT_UP:
+		release(evWhich(&e));
+	};
 	event(&e);
 }
