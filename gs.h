@@ -208,6 +208,7 @@ EXPORTED const char * evKeyName(const ev *);
 
 // Provided by the program
 int init(int argc, char ** argv);
+int glinit();
 int term();
 int tick();
 void draw();

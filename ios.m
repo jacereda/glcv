@@ -192,11 +192,6 @@ shouldChangeCharactersInRange: (NSRange)range
 }
 
 - (void)update {
-	static int first = 1;
-	if (first) {
-		glinit();
-		first = 0;
-	}
 	tick();
 	draw();
 	[ctx presentRenderbuffer: GL_RENDERBUFFER];
@@ -235,6 +230,7 @@ shouldChangeCharactersInRange: (NSRange)range
 
 	[self initContext];
 	got(GS_EVENT_RESIZE, r.size.width, r.size.height);
+	glinit();
 }
 
 - (void) applicationDidFinishLaunching: (UIApplication*) application 
