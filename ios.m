@@ -197,30 +197,20 @@ shouldChangeCharactersInRange: (NSRange)range
 	[ctx presentRenderbuffer: GL_RENDERBUFFER];
 }
 
-- (void) clearCurrent {
-	[EAGLContext setCurrentContext: nil];	
-}
-
-- (void) makeCurrent {
-	[ctx renderbufferStorage: GL_RENDERBUFFER 
-		    fromDrawable: (CAEAGLLayer *) [view layer]];
-	[EAGLContext setCurrentContext: ctx];
-}
-
 -(void) initContext {
+	GLuint cb, fb;
         ctx = [[EAGLContext alloc] initWithAPI: kEAGLRenderingAPIOpenGLES2];
 	[EAGLContext setCurrentContext: ctx];
-	GLuint cb, fb;
 	glGenFramebuffers(1, &fb);
 	glGenRenderbuffers(1, &cb);
 	glBindFramebuffer(GL_FRAMEBUFFER, fb);
 	glBindRenderbuffer(GL_RENDERBUFFER , cb);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, 
-				     GL_COLOR_ATTACHMENT0, 
-				     GL_RENDERBUFFER, 
-				     cb);
-
-	[self clearCurrent];
+				  GL_COLOR_ATTACHMENT0, 
+				  GL_RENDERBUFFER, 
+				  cb);
+	[ctx renderbufferStorage: GL_RENDERBUFFER 
+		    fromDrawable: (CAEAGLLayer *) [view layer]];
 }
 
 - (void) initWindow {
@@ -239,7 +229,6 @@ shouldChangeCharactersInRange: (NSRange)range
 	[win addSubview: tf];
 
 	[self initContext];
-	[self makeCurrent];
 	got(GS_EVENT_RESIZE, r.size.width, r.size.height);
 }
 

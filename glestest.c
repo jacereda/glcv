@@ -26,15 +26,14 @@ int init(int argc, char ** argv) {
 		"{                                          \n"
 		" gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);  \n"
 		"}                                          \n";
-	GLuint vs, fs, prg;
-	vs = loadShader(GL_VERTEX_SHADER, vss);
-	fs = loadShader(GL_FRAGMENT_SHADER, fss);
-	prg = glCreateProgram();
+	GLuint vs = loadShader(GL_VERTEX_SHADER, vss);
+	GLuint fs = loadShader(GL_FRAGMENT_SHADER, fss);
+	GLuint prg = glCreateProgram();
 	glAttachShader(prg, vs);
 	glAttachShader(prg, fs);
 	glLinkProgram(prg);
 	g_prg = prg;
-	glBindAttribLocation(g_prg, 0, "vPosition");
+	glBindAttribLocation(g_prg, 0, "pos");
 	g_time = glGetUniformLocation(g_prg, "t");
 	return 1;
 }
