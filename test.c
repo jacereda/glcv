@@ -6,6 +6,9 @@ int init(int argc, char ** argv) {
 	return 1;
 }
 
+void glinit() {
+}
+
 int term() {
 	return 1;
 }

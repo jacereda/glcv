@@ -192,6 +192,11 @@ shouldChangeCharactersInRange: (NSRange)range
 }
 
 - (void)update {
+	static int first = 1;
+	if (first) {
+		glinit();
+		first = 0;
+	}
 	tick();
 	draw();
 	[ctx presentRenderbuffer: GL_RENDERBUFFER];

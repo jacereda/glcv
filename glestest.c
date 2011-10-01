@@ -1,5 +1,6 @@
 #include "gs.h"
 #include "gsgl.h"
+#include <assert.h>
 
 static int s_running = 1;
 static GLuint g_prg;
@@ -13,6 +14,10 @@ static GLuint loadShader(GLenum type, const char * src) {
 }
 
 int init(int argc, char ** argv) {
+	return 1;
+	}
+
+void glinit() {
 	const char vss[] =
 		"attribute vec4 pos;   \n"
 		"uniform float t;            \n"
