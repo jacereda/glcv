@@ -2,7 +2,6 @@
 #include "gsgl.h"
 #include <assert.h>
 
-static int s_running = 1;
 static GLuint s_prg;
 static GLint s_time;
 

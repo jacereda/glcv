@@ -71,13 +71,9 @@ function ins() {
     log "installing $*"
     name=$1
     shift
-    dst="\"$HOME/Library/Application Support/iPhone Simulator/4.0.2/Applications/$name\""
-    cmd0="install -d "$dst""
-    log $cmd0
-    $cmd0
-    cmd="cp -R $1 $dst/"
-    log $cmd
-    $cmd
+    dst="$HOME/Library/Application Support/iPhone Simulator/4.0.2/Applications/$name"
+    install -d "$dst"
+    cp -R $1 "$dst"
     echo "$dst/$1"
 }
 
@@ -85,9 +81,13 @@ rm -fR `builddir`
 install -d `builddir`
 gsobjs="`obj gs src/gs.c` `obj ios src/ios.m`"
 libgs=`lib gs $gsobjs`
+
 testobj=`obj test test/test.c`
 testexe=`exe test $testobj $libgs`
 testpkg=`pkg test $testexe`
 itestpkg=`ins test $testpkg`
-echo "installed $itestpkg"
 
+glestestobj=`obj glestest test/glestest.c`
+glestestexe=`exe glestest $glestestobj $libgs`
+glestestpkg=`pkg glestest $glestestexe`
+iglestestpkg=`ins glestest $glestestpkg`
