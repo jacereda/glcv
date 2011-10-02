@@ -66,9 +66,14 @@ static bool invoke(NPObject* obj, NPIdentifier methodid,
 	method func;
         func = resolve(methodid);
         debug("func %p", func);
-	if (func && nargs == 1 && NPVARIANT_IS_STRING(args[0]))
-                func(NPVARIANT_TO_STRING(args[0]).UTF8Characters);
-	else {
+	if (func && nargs == 1 && NPVARIANT_IS_STRING(args[0])) {
+                NPString s = NPVARIANT_TO_STRING(args[0]);
+                char buf[1024];
+                debug("len: %d", s.UTF8Length);
+                memcpy(buf, s.UTF8Characters, s.UTF8Length);
+                buf[s.UTF8Length] = 0;
+                func(buf);
+        } else {
 		debug("no such method");
 		s_browser->setexception(obj, "no such method");
 	}

@@ -3,9 +3,7 @@
 #include <QuartzCore/QuartzCore.h>
 #include <Carbon/Carbon.h> // For keycodes
 
-@interface Layer : CAOpenGLLayer {
-}
-
+@interface Layer : CAOpenGLLayer
 - (void)drawInCGLContext:(CGLContextObj)ct
 	     pixelFormat:(CGLPixelFormatObj)pf
 	    forLayerTime:(CFTimeInterval)lt
