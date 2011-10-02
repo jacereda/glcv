@@ -5,7 +5,7 @@ function log() {
 }
 
 function builddir() {
-    echo "bldnpapi"
+    echo "b"
 }
 
 function pkgdir() {

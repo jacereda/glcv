@@ -1,0 +1,93 @@
+#!/bin/bash
+
+function log() {
+    echo $* 1>&2
+}
+
+function builddir() {
+    echo "b"
+}
+
+function pkgdir() {
+    echo `builddir`/$1.app
+}
+
+function condir() {
+    echo `pkgdir $1`
+}
+
+function resdir() {
+    echo `condir $1`
+}
+
+function bindir() {
+    echo `condir $1`
+}
+
+function obj() {
+    log "compiling $*"
+    dst=`builddir`/$1.o
+    shift
+    cmd="/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/gcc -m32 -D__IPHONE_OS_VERSION_MIN_REQUIRED=30200 -arch i386 -m32 -isysroot /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator3.2.sdk -mmacosx-version-min=10.5 -fobjc-abi-version=2 -fobjc-legacy-dispatch -Wall -c -I src -o $dst $1"
+    log $cmd
+    $cmd
+    echo $dst
+}
+
+function lib() {
+    log "archiving $*"
+    dst=$1
+    shift
+    cmd="/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/ar rcs `builddir`/lib$dst.a $*"
+    log $cmd
+    $cmd
+    echo "-l$dst"
+}
+
+function exe() {
+    log "linking $*"
+    dst=`builddir`/$1
+    shift
+    obj=$1
+    shift
+    cmd="/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/gcc -m32 -isysroot /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator3.2.sdk -mmacosx-version-min=10.5 -framework OpenGLES -framework UIKit -framework QuartzCore -framework Foundation -o $dst $obj -L `builddir` $*"
+    log $cmd
+    $cmd
+    echo $dst
+}
+
+function pkg() {
+    log "packaging $*"
+    install -d `resdir $1`
+    install -d `bindir $1`
+    sed s/NAME/$1/g templates/ios/template.plist > `pkgdir $1`/Info.plist
+    cmd="cp $2 `bindir $1`"
+    log $cmd
+    $cmd
+    echo `pkgdir $1`
+}
+
+function ins() {
+    log "installing $*"
+    name=$1
+    shift
+    dst="\"$HOME/Library/Application Support/iPhone Simulator/4.0.2/Applications/$name\""
+    cmd0="install -d "$dst""
+    log $cmd0
+    $cmd0
+    cmd="cp -R $1 $dst/"
+    log $cmd
+    $cmd
+    echo "$dst/$1"
+}
+
+rm -fR `builddir`
+install -d `builddir`
+gsobjs="`obj gs src/gs.c` `obj ios src/ios.m`"
+libgs=`lib gs $gsobjs`
+testobj=`obj test test/test.c`
+testexe=`exe test $testobj $libgs`
+testpkg=`pkg test $testexe`
+itestpkg=`ins test $testpkg`
+echo "installed $itestpkg"
+

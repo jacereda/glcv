@@ -29,10 +29,11 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#include "gs.c"
+#include "gs.h"
 #include "gsgl.h"
 #include <OpenGLES/ES2/glext.h>
 #include <assert.h>
+#include <dlfcn.h>
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
@@ -268,7 +269,7 @@ int gsHideKeyboard() {
 int main(int argc, char ** argv) {
 	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 	int ret = 42;
-	if (gsInject(GS_EVENT_INIT, argc, argv)) {
+	if (gsInject(GS_EVENT_INIT, argc, (intptr_t)argv)) {
 		UIApplicationMain(argc, argv, nil, @"Delegate");
 		ret = gsInject(GS_EVENT_TERM, 0, 0);
 	}
@@ -276,3 +277,25 @@ int main(int argc, char ** argv) {
         return ret;
 }
 
+static const char * osmodpath() {
+        static Dl_info info;
+        dladdr(gsResPath, &info);
+        return info.dli_fname;
+}
+
+const char * gsResPath() {
+        char buf[256];
+        static char ret[256];
+        snprintf(buf, sizeof(buf), "%s/../../Resources", osmodpath());
+        return realpath(buf, ret);
+}
+
+
+void gsReportV(const char *fmt, va_list ap) {
+	FILE *out = fopen("/tmp/gs.log", "a");
+	if(out) {
+		vfprintf(out, fmt, ap);
+		fputs("\n", out);
+		fclose(out);
+	}
+}
