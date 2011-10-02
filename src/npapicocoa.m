@@ -8,6 +8,11 @@
 	     pixelFormat:(CGLPixelFormatObj)pf
 	    forLayerTime:(CFTimeInterval)lt
 	     displayTime:(const CVTimeStamp *)dt;
+- (BOOL)canDrawInCGLContext:(CGLContextObj)ct
+                pixelFormat:(CGLPixelFormatObj)pf
+               forLayerTime:(CFTimeInterval)lt
+                displayTime:(const CVTimeStamp *)dt;
+
 @end
 
 static Layer * s_l = 0;
@@ -17,18 +22,17 @@ static void osinit(NPNetscapeFuncs * browser, NPP i) {
 			  (void *)NPEventModelCocoa);
 	browser->setvalue(i, NPNVpluginDrawingModel, 
 			  (void *)NPDrawingModelCoreAnimation);
-	s_l = [[Layer layer] retain];	
-	s_l.asynchronous = NO;
-}
-
-static void osglinit() {
-	s_l.asynchronous = YES;
-	[s_l setNeedsDisplay];
 }
 
 static void osterm() {
 	[s_l release];
         s_l = 0;
+}
+
+static void osglinit() {
+        s_l.backgroundColor = CGColorGetConstantColor(kCGColorBlack);
+        s_l.opaque = YES;
+        s_l.asynchronous = YES;
 }
 
 static unsigned mapkeycode(unsigned k) {
@@ -153,7 +157,6 @@ static unsigned mapkeycode(unsigned k) {
 
 static NPError osevent(void * ve) {
 	NPCocoaEvent * e = (NPCocoaEvent *)ve;
-	debug("event");
 	switch (e->type) {
 	case NPCocoaEventDrawRect: 
 		debug("NPCocoaEventDrawRect"); 
@@ -161,17 +164,17 @@ static NPError osevent(void * ve) {
 	case NPCocoaEventMouseDown: 
 		debug("NPCocoaEventMouseDown"); 
 		gsInject(GSE_DOWN, GSK_MOUSELEFT 
-		    + e->data.mouse.buttonNumber, 0);
+                         + e->data.mouse.buttonNumber, 0);
 		break;
 	case NPCocoaEventMouseUp: 
 		debug("NPCocoaEventMouseUp"); 
 		gsInject(GSE_UP, GSK_MOUSELEFT 
-		    + e->data.mouse.buttonNumber, 0);
+                         + e->data.mouse.buttonNumber, 0);
 		break;
 	case NPCocoaEventMouseMoved: 
 		debug("NPCocoaEventMouseMoved"); 
 		gsInject(GSE_MOTION, 
-		    e->data.mouse.pluginX, e->data.mouse.pluginY);
+                         e->data.mouse.pluginX, e->data.mouse.pluginY);
 		break;
 	case NPCocoaEventMouseEntered: 
 		debug("NPCocoaEventMouseEntered"); 
@@ -205,7 +208,9 @@ static NPError osevent(void * ve) {
 	case NPCocoaEventTextInput: 
 		debug("NPCocoaEventTextInput"); 
 		break;
-	default: assert(0);
+	default: 
+                debug("Unknown event");
+                assert(0);
 	}
 	return NPERR_NO_ERROR;
 }
@@ -229,16 +234,22 @@ static void * osresolve(const char * name) {
 
 static NPError osgetval(NPP i, NPPVariable var, void * v) {
 	NPError ret = NPERR_NO_ERROR;
-	debug("os getvalue"); 
+	debug("os getvalue %d", var); 
 	switch(var) {
 	case NPNVpluginDrawingModel:
 		debug("getval drawingmodel");
 		*(int*)v = NPDrawingModelOpenGL;
 		break;
 	case NPPVpluginCoreAnimationLayer:
-		s_l.backgroundColor = CGColorGetConstantColor(kCGColorBlack);
+		debug("getval calayer");
+                s_l = [[Layer layer] retain];	
                 s_l.autoresizingMask = kCALayerWidthSizable | kCALayerHeightSizable;
 		*(CALayer**)v = s_l;
+                // I can't get Chrome to start displaying properly, 
+                // this hack seems to work
+                [s_l performSelector: @selector(setNeedsDisplay) 
+                          withObject:nil 
+                          afterDelay: 1];
 		break;
 	default: 
 		debug("os getval default"); 
@@ -257,6 +268,14 @@ static NPError osgetval(NPP i, NPPVariable var, void * v) {
         gsInject(GSE_UPDATE, 0, 0);
 	[super drawInCGLContext: ct pixelFormat: pf
                    forLayerTime: lt displayTime: dt];
+}
+
+- (BOOL)canDrawInCGLContext:(CGLContextObj)ct
+                pixelFormat:(CGLPixelFormatObj)pf
+               forLayerTime:(CFTimeInterval)lt
+                displayTime:(const CVTimeStamp *)dt
+{
+        return YES;
 }
 
 @end
