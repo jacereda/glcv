@@ -34,7 +34,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#define MAX_EVENTS 256
 #define MAX_PRESSED 256
 
 struct _ev {
@@ -140,32 +139,40 @@ const char * evName(const ev * e) {
 	return buf;
 }
 
-int evWidth(const ev * e) {
+intptr_t evArg0(const ev * e) {
 	return e->p[0];
+}
+
+intptr_t evArg1(const ev * e) {
+	return e->p[1];
+}
+
+int evWidth(const ev * e) {
+	return evArg0(e);
 }
 
 int evHeight(const ev * e) {
-	return e->p[1];
+	return evArg1(e);
 }
 
 gskey evWhich(const ev * e) {
-	return e->p[0];
+	return evArg0(e);
 }
 
 int evX(const ev * e) {
-	return e->p[0];
+	return evArg0(e);
 }
 
 int evY(const ev * e) {
-	return e->p[1];
+	return evArg1(e);
 }
 
 int evArgC(const ev * e) {
-	return e->p[0];
+	return evArg0(e);
 }
 
 char ** evArgV(const ev * e) {
-	return (char**) e->p[1];
+	return (char**) evArg1(e);
 }
 
 const char * evKeyName(const ev * e) {

@@ -14,7 +14,7 @@ EXPORTED void hello(const char * s) {
 
 intptr_t event(const ev * e) {
 	intptr_t ret = 1;
-	gsReport("got event %s", evName(e));
+	gsReport("got event %s, %p %p", evName(e), evArg0(e), evArg1(e));
 	switch (evType(e)) {
 	case GS_EVENT_INIT: gsReport("resources: %s", gsResPath()); break;
 	case GS_EVENT_DRAW: draw(); break;
