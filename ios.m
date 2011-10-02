@@ -56,11 +56,11 @@
 - (void) update;
 @end
 
-static Delegate * g_delegate = 0;
+static Delegate * s_delegate = 0;
 
 Delegate * getDelegate() {
-	assert(g_delegate);
-	return g_delegate;
+	assert(s_delegate);
+	return s_delegate;
 }
 
 static void fakekeyuni(unsigned key, unsigned unicode) {
@@ -235,7 +235,7 @@ shouldChangeCharactersInRange: (NSRange)range
 
 - (void) applicationDidFinishLaunching: (UIApplication*) application 
 {
-	g_delegate = self;
+	s_delegate = self;
         dpylink = [CADisplayLink displayLinkWithTarget: self
                                  selector: @selector(update)];
         [dpylink setFrameInterval: 1];

@@ -3,8 +3,8 @@
 #include <assert.h>
 
 static int s_running = 1;
-static GLuint g_prg;
-static GLint g_time;
+static GLuint s_prg;
+static GLint s_time;
 
 static GLuint loadShader(GLenum type, const char * src) {
 	GLuint sh = glCreateShader(type);
@@ -37,9 +37,9 @@ void glinit() {
 	glAttachShader(prg, vs);
 	glAttachShader(prg, fs);
 	glLinkProgram(prg);
-	g_prg = prg;
-	glBindAttribLocation(g_prg, 0, "pos");
-	g_time = glGetUniformLocation(g_prg, "t");
+	s_prg = prg;
+	glBindAttribLocation(s_prg, 0, "pos");
+	s_time = glGetUniformLocation(s_prg, "t");
 }
 
 int term() {
@@ -63,8 +63,8 @@ void draw(void) {
 	t += 1/60.0;
 //	glClearColor(0.7, 0.7, 0.7, 1.0);
 //	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glUseProgram(g_prg);
-	glUniform1f(g_time, t);
+	glUseProgram(s_prg);
+	glUniform1f(s_time, t);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, ver);
 	glEnableVertexAttribArray(0);
 	glDrawArrays(GL_TRIANGLES, 0, 3);
