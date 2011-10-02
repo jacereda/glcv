@@ -47,10 +47,7 @@ static void draw(void) {
 	glViewport(0, 0, gsWidth(), gsHeight());
         glClearColor((i++ & 0xff) / 255.0f, 0.f, 1.f, 1.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 	t += 1/60.0;
-//	glClearColor(0.7, 0.7, 0.7, 1.0);
-//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glUseProgram(s_prg);
 	glUniform1f(s_time, t);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, ver);
