@@ -28,7 +28,7 @@ function obj() {
     log "compiling $*"
     dst=`builddir`/$1.o
     shift
-    cc -m32 -fvisibility=hidden -fPIC -Wall -O2 -c -o $dst $*
+    cc -m32 -fvisibility=hidden -fPIC -Wall -O2 -c -I src -o $dst $*
     echo $dst
 }
 
@@ -70,9 +70,9 @@ function ins() {
 
 rm -fR `builddir`
 install -d `builddir`
-gsobjs="`obj gs gs.c` `obj npapicocoa npapicocoa.m`"
+gsobjs="`obj gs src/gs.c` `obj npapicocoa src/npapicocoa.m`"
 libgs=`lib gs $gsobjs`
-testobj=`obj test test.c`
+testobj=`obj test test/test.c`
 testplg=`plg testplugin $testobj $libgs`
 testpkg=`pkg testplugin $testplg`
 itestpkg=`ins $testpkg`
