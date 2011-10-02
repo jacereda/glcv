@@ -54,16 +54,18 @@ function pkg() {
     log "packaging $*"
     install -d `resdir $1`
     install -d `bindir $1`
-    sed s/NAME/$1/g webtemplate.r > `builddir`/$1.r
+    sed s/NAME/$1/g templates/npapi/webtemplate.r > `builddir`/$1.r
     /Developer/Tools/Rez -o `resdir $1`/$1.rsrc -useDF `builddir`/$1.r
-    sed s/NAME/$1/g webtemplate.plist > `condir $1`/Info.plist
+    sed s/NAME/$1/g templates/npapi/webtemplate.plist > `condir $1`/Info.plist
     cp $2 `bindir $1`
     echo `pkgdir $1`
 }
 
 function ins() {
     log "installing $*"
-    cp -R $1 "$HOME/Library/Internet Plug-Ins/"
+    dst="$HOME/Library/Internet Plug-Ins"
+    cp -R $1 "$dst/"
+    echo "$dst/$1"
 }
 
 rm -fR `builddir`
@@ -73,4 +75,6 @@ libgs=`lib gs $gsobjs`
 testobj=`obj test test.c`
 testplg=`plg testplugin $testobj $libgs`
 testpkg=`pkg testplugin $testplg`
-ins $testpkg
+itestpkg=`ins $testpkg`
+echo "installed $itestpkg"
+
