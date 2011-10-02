@@ -40,7 +40,6 @@ void glinit() {
 	g_prg = prg;
 	glBindAttribLocation(g_prg, 0, "pos");
 	g_time = glGetUniformLocation(g_prg, "t");
-	return 1;
 }
 
 int term() {

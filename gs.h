@@ -182,33 +182,26 @@ typedef enum {
 
 typedef struct _ev ev;
 
-#if defined(__GNUC__) && !defined(_WIN32_)
-#define EXPORTED \
-	extern __attribute__((visibility("default"))) __attribute__((used))
-#else
-#define EXPORTED extern __declspec(dllexport)
-#endif
+unsigned gsWidth();
+unsigned gsHeight();
+int gsMouseX();
+int gsMouseY();
+int gsPressed(gskey key);
+int gsReleased(gskey key);
+int gsShowKeyboard();
+int gsHideKeyboard();
 
-EXPORTED unsigned gsWidth();
-EXPORTED unsigned gsHeight();
-EXPORTED int gsMouseX();
-EXPORTED int gsMouseY();
-EXPORTED int gsPressed(gskey key);
-EXPORTED int gsReleased(gskey key);
-EXPORTED int gsShowKeyboard();
-EXPORTED int gsHideKeyboard();
-
-EXPORTED int evType(const ev *);
-EXPORTED int evWidth(const ev *);
-EXPORTED int evHeight(const ev *);
-EXPORTED gskey evWhich(const ev *);
-EXPORTED int evX(const ev *);
-EXPORTED int evY(const ev *);
-EXPORTED const char * evKeyName(const ev *);
+int evType(const ev *);
+int evWidth(const ev *);
+int evHeight(const ev *);
+gskey evWhich(const ev *);
+int evX(const ev *);
+int evY(const ev *);
+const char * evKeyName(const ev *);
 
 // Provided by the program
 int init(int argc, char ** argv);
-int glinit();
+void glinit();
 int term();
 int tick();
 void draw();
