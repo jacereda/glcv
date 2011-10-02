@@ -64,9 +64,9 @@ Delegate * getDelegate() {
 }
 
 static void fakekeyuni(unsigned key, unsigned unicode) {
-	got(GS_EVENT_DOWN, key, 0);
-	got(GS_EVENT_UNICODE, unicode, 0);
-	got(GS_EVENT_UP, key, 0);
+	gsInject(GS_EVENT_DOWN, key, 0);
+	gsInject(GS_EVENT_UNICODE, unicode, 0);
+	gsInject(GS_EVENT_UP, key, 0);
 }
 
 static unsigned mapkey(unsigned k) {
@@ -120,10 +120,10 @@ static void fakekey(unsigned unicode) {
 	int upper = isupper(unicode);
 	int luni = toupper(unicode);
 	if (upper)
-		got(GS_EVENT_DOWN, GS_KEY_SHIFT, 0);
+		gsInject(GS_EVENT_DOWN, GS_KEY_SHIFT, 0);
 	fakekeyuni(mapkey(luni), unicode);
 	if (upper)
-		got(GS_EVENT_UP, GS_KEY_SHIFT, 0);
+		gsInject(GS_EVENT_UP, GS_KEY_SHIFT, 0);
 }
 
 @implementation GLView
@@ -135,16 +135,16 @@ static void fakekey(unsigned unicode) {
 {
         UITouch* touch = [touches anyObject];
         CGPoint loc = [touch locationInView: self];
-        got(GS_EVENT_MOTION, loc.x, loc.y);
-        got(GS_EVENT_DOWN, GS_KEY_MOUSELEFT, 0);
+        gsInject(GS_EVENT_MOTION, loc.x, loc.y);
+        gsInject(GS_EVENT_DOWN, GS_KEY_MOUSELEFT, 0);
 }
 
 - (void) touchesEnded: (NSSet*) touches withEvent: (UIEvent*) e
 {
         UITouch* touch = [touches anyObject];
         CGPoint loc = [touch locationInView: self];
-        got(GS_EVENT_MOTION, loc.x, loc.y);
-        got(GS_EVENT_UP, GS_KEY_MOUSELEFT, 0);
+        gsInject(GS_EVENT_MOTION, loc.x, loc.y);
+        gsInject(GS_EVENT_UP, GS_KEY_MOUSELEFT, 0);
 }
 
 
@@ -152,7 +152,7 @@ static void fakekey(unsigned unicode) {
 {
         UITouch* touch = [touches anyObject];
         CGPoint loc = [touch previousLocationInView: self];
-        got(GS_EVENT_MOTION, loc.x, loc.y);
+        gsInject(GS_EVENT_MOTION, loc.x, loc.y);
 }
 
 @end
@@ -160,7 +160,7 @@ static void fakekey(unsigned unicode) {
 @implementation Delegate
 
 - (void) applicationWillTerminate: (UIApplication*) a {
-	got(GS_EVENT_CLOSE, 0, 0);
+	gsInject(GS_EVENT_CLOSE, 0, 0);
 	[self update];
 }
 
@@ -192,8 +192,8 @@ shouldChangeCharactersInRange: (NSRange)range
 }
 
 - (void)update {
-        got(GS_EVENT_TICK, 0, 0);
-	got(GS_EVENT_DRAW, 0, 0);
+        gsInject(GS_EVENT_TICK, 0, 0);
+	gsInject(GS_EVENT_DRAW, 0, 0);
 	[ctx presentRenderbuffer: GL_RENDERBUFFER];
 }
 
@@ -229,8 +229,8 @@ shouldChangeCharactersInRange: (NSRange)range
 	[win addSubview: tf];
 
 	[self initContext];
-	got(GS_EVENT_RESIZE, r.size.width, r.size.height);
-	got(GS_EVENT_GLINIT, 0, 0);
+	gsInject(GS_EVENT_RESIZE, r.size.width, r.size.height);
+	gsInject(GS_EVENT_GLINIT, 0, 0);
 }
 
 - (void) applicationDidFinishLaunching: (UIApplication*) application 
@@ -268,9 +268,9 @@ int gsHideKeyboard() {
 int main(int argc, char ** argv) {
 	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 	int ret = 42;
-	if (got(GS_EVENT_INIT, argc, argv)) {
+	if (gsInject(GS_EVENT_INIT, argc, argv)) {
 		UIApplicationMain(argc, argv, nil, @"Delegate");
-		ret = got(GS_EVENT_TERM, 0, 0);
+		ret = gsInject(GS_EVENT_TERM, 0, 0);
 	}
 	[pool release];
         return ret;

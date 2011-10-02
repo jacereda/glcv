@@ -10,7 +10,7 @@ static void draw() {
 
 intptr_t event(const ev * e) {
 	intptr_t ret = 1;
-	report("got event %s", evName(e));
+	gsReport("got event %s", evName(e));
 	switch (evType(e)) {
 	case GS_EVENT_DRAW: draw(); break;
 	default: break;

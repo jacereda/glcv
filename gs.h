@@ -29,6 +29,8 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+#include <stdarg.h>
 #if defined(_MSC_VER)
 #include <assert.h>
 #else
@@ -57,6 +59,10 @@ int gsPressed(gskey key);
 int gsReleased(gskey key);
 int gsShowKeyboard();
 int gsHideKeyboard();
+
+intptr_t gsInject(gseventtype, intptr_t, intptr_t);
+void gsReportV(const char * fmt, va_list ap);
+void gsReport(const char * fmt, ...);
 
 int evType(const ev *);
 const char * evName(const ev *);

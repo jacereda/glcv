@@ -1,6 +1,6 @@
 #include <assert.h>
 #include <string.h>
-#include "gs.c"
+#include "gs.h"
 #include "gsgl.h"
 
 #if defined __APPLE__
@@ -35,24 +35,20 @@ static NPError osevent(void * ve);
 static void * osresolve(const char * name);
 static NPError osgetval(NPP i, NPPVariable var, void * v);
 
-
-void report(const char *fmt, ...) {
+void gsReportV(const char *fmt, va_list ap) {
 #if defined(_WIN32)
 	FILE *out = fopen("gs.log", "a");
 #else
 	FILE *out = fopen("/tmp/gs.log", "a");
 #endif
-	va_list ap;
-	va_start(ap, fmt);
 	if(out) {
 		vfprintf(out, fmt, ap);
 		fputs("\n", out);
 		fclose(out);
 	}
-	va_end(ap);
 }
 
-#define debug report
+#define debug gsReport
 
 static method resolve(NPIdentifier methodid) {
 	char * mname = s_browser->utf8fromidentifier(methodid);
@@ -122,7 +118,7 @@ static NPError nnew(NPMIMEType type, NPP i,
 		    char* argv[], NPSavedData* saved) {
         int ok;
         debug("nnew");
-        ok = got(GS_EVENT_INIT, argc, (intptr_t)argv);
+        ok = gsInject(GS_EVENT_INIT, argc, (intptr_t)argv);
         if (ok) {
                 unsigned j;
                 snprintf(s_plgname, sizeof s_plgname - 1, "%s", argv[0]);
@@ -138,16 +134,16 @@ static NPError nnew(NPMIMEType type, NPP i,
 static NPError setwindow(NPP i, NPWindow* w) {
         debug("setwindow");
         osglinit();
-	got(GS_EVENT_RESIZE, w->width, w->height);
-        got(GS_EVENT_GLINIT, 0, 0);
+	gsInject(GS_EVENT_RESIZE, w->width, w->height);
+        gsInject(GS_EVENT_GLINIT, 0, 0);
 	return NPERR_NO_ERROR;
 }
 
 
 static NPError destroy(NPP i, NPSavedData **save) {
 	debug("destroy");
-	got(GS_EVENT_CLOSE, 0, 0);
-        got(GS_EVENT_TERM, 0, 0);
+	gsInject(GS_EVENT_CLOSE, 0, 0);
+        gsInject(GS_EVENT_TERM, 0, 0);
         osterm();
 	if(s_so)
 		s_browser->releaseobject(s_so);
@@ -244,7 +240,7 @@ EXPORTED char * NP_GetMIMEDescription(void) {
                  "application/%s::xx@foo.bar", 
                  0 == strncmp(buf, "lib", 3)? tmp+3 : 
                  tmp);
-        report("getmimedesc %s", buf);
+        gsReport("getmimedesc %s", buf);
         return buf;
 }
 

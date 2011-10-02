@@ -31,7 +31,6 @@
 */
 #include "gs.h"
 #include <assert.h>
-#include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -188,7 +187,7 @@ const char * evKeyName(const ev * e) {
 	return buf;
 }
 
-static intptr_t got(int type, intptr_t p1, intptr_t p2) {
+intptr_t gsInject(gseventtype type, intptr_t p1, intptr_t p2) {
 	ev e;
         e.type = type;
         e.p[0] = p1;
@@ -210,4 +209,11 @@ static intptr_t got(int type, intptr_t p1, intptr_t p2) {
 		break;
 	};
 	return event(&e);
+}
+
+void gsReport(const char * fmt, ...) {
+	va_list ap;
+	va_start(ap, fmt);
+	gsReportV(fmt, ap);
+	va_end(ap);
 }

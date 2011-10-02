@@ -27,7 +27,14 @@ function compile() {
 
 function link() {
     echo "linking $1"
-    cc -fvisibility=hidden -fPIC -bundle -flat_namespace -framework OpenGL -framework AppKit -framework WebKit -framework QuartzCore -o `builddir`/$1 `builddir`/$2 `builddir`/$3
+    dst=`builddir`/$1
+    shift
+    objs=""
+    for i in $*
+    do
+	objs="$objs `builddir`/$i"
+    done
+    cc -fvisibility=hidden -fPIC -bundle -flat_namespace -framework OpenGL -framework AppKit -framework WebKit -framework QuartzCore -o $dst $objs
 }
 
 function package() {
@@ -46,8 +53,9 @@ function pkginst() {
 }
 
 install -d `builddir`
+compile gs.o gs.c
 compile npapicocoa.o npapicocoa.m
 compile test.o test.c
-link testplugin test.o npapicocoa.o
+link testplugin test.o gs.o npapicocoa.o
 package testplugin
 pkginst testplugin
