@@ -89,13 +89,9 @@ lang="en" xml:lang="en">
 <div id="text-table-of-contents">
 <ul>
 <li><a href="#sec-1">1 Purpose </a></li>
-<li><a href="#sec-2">2 Building </a>
-<ul>
-<li><a href="#sec-2_1">2.1 IOS </a></li>
-<li><a href="#sec-2_2">2.2 NPAPI </a></li>
-</ul>
-</li>
-<li><a href="#sec-3">3 License </a></li>
+<li><a href="#sec-2">2 Building </a></li>
+<li><a href="#sec-3">3 API </a></li>
+<li><a href="#sec-4">4 License </a></li>
 </ul>
 </div>
 </div>
@@ -116,31 +112,24 @@ input. Sort of a simple GLUT/SDL.
 <div class="outline-text-2" id="text-2">
 
 <p>As of now, the build scripts only work on Mac OS X.
-</p>
-</div>
+</p><ul>
+<li id="sec-2_1">Targets <br/>
+<ul>
+<li id="sec-2_1_1">IOS <br/>
+The following command should build the library and the examples and install them in the IOS simulator directory.
 
-<div id="outline-container-2_1" class="outline-3">
-<h3 id="sec-2_1"><span class="section-number-3">2.1</span> IOS </h3>
-<div class="outline-text-3" id="text-2_1">
-
-<p>The following command should build the library and the examples and install them in the IOS simulator directory.
-</p>
 
 
 <pre class="src src-sh">./mk-ios
 </pre>
 
 
-</div>
+</li>
+</ul>
+<ul>
+<li id="sec-2_1_2">NPAPI <br/>
+The following command should build the library and the examples and install them in the user's plugins directory.
 
-</div>
-
-<div id="outline-container-2_2" class="outline-3">
-<h3 id="sec-2_2"><span class="section-number-3">2.2</span> NPAPI </h3>
-<div class="outline-text-3" id="text-2_2">
-
-<p>The following command should build the library and the examples and install them in the user's plugins directory.
-</p>
 
 
 <pre class="src src-sh">./mk-npapi
@@ -149,14 +138,255 @@ input. Sort of a simple GLUT/SDL.
 
 <p>
 After building, try opening <a href="testplugin.html">testplugin.html</a>
-</p></div>
+</p></li>
+</ul>
+</li>
+</ul>
 </div>
 
 </div>
 
 <div id="outline-container-3" class="outline-2">
-<h2 id="sec-3"><span class="section-number-2">3</span> License </h2>
+<h2 id="sec-3"><span class="section-number-2">3</span> API </h2>
 <div class="outline-text-2" id="text-3">
+
+<ul>
+<li id="sec-3_1">Functions <br/>
+<ul>
+<li id="sec-3_1_1">Application hook <br/>
+<ul>
+<li id="sec-3_1_1_1">intptr_t event(const ev * e); <br/>
+This is the event handling routine implemented by your application.
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li id="sec-3_1_2">Screen properties <br/>
+<ul>
+<li id="sec-3_1_2_1">unsigned gsWidth(); <br/>
+Current screen width
+</li>
+</ul>
+<ul>
+<li id="sec-3_1_2_2">unsigned gsHeight(); <br/>
+Current screen height
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li id="sec-3_1_3">Mouse location <br/>
+<ul>
+<li id="sec-3_1_3_1">int gsMouseX(); <br/>
+Current X mouse position
+</li>
+</ul>
+<ul>
+<li id="sec-3_1_3_2">int gsMouseY(); <br/>
+Current Y mouse position
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li id="sec-3_1_4">Keyboard <br/>
+<ul>
+<li id="sec-3_1_4_1">int gsPressed(gskey key); <br/>
+True if key is currently pressed
+</li>
+</ul>
+<ul>
+<li id="sec-3_1_4_2">int gsReleased(gskey key); <br/>
+True if key has just been released
+</li>
+</ul>
+<ul>
+<li id="sec-3_1_4_3">int gsShowKeyboard(); <br/>
+On platforms that support it, show the on-screen keyboard
+</li>
+</ul>
+<ul>
+<li id="sec-3_1_4_4">int gsHideKeyboard(); <br/>
+On platforms that support it, hide the on-screen keyboard
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li id="sec-3_1_5">Resources <br/>
+<ul>
+<li id="sec-3_1_5_1">const char * gsResPath(); <br/>
+Resources path
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li id="sec-3_1_6">Logging <br/>
+<ul>
+<li id="sec-3_1_6_1">void gsReportV(const char * fmt, va_list ap); <br/>
+Report a message (depending on the platform, it might go to a file)
+</li>
+</ul>
+<ul>
+<li id="sec-3_1_6_2">void gsReport(const char * fmt, &hellip;); <br/>
+Report a message (depending on the platform, it might go to a file)
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li id="sec-3_1_7">Events <br/>
+<ul>
+<li id="sec-3_1_7_1">int evType(const ev *); <br/>
+Event type.
+</li>
+</ul>
+<ul>
+<li id="sec-3_1_7_2">const char * evName(const ev *); <br/>
+Event name.
+</li>
+</ul>
+<ul>
+<li id="sec-3_1_7_3">int evWidth(const ev *); <br/>
+Width for GSE_RESIZE events.
+</li>
+</ul>
+<ul>
+<li id="sec-3_1_7_4">int evHeight(const ev *); <br/>
+Width for GSE_RESIZE events.
+</li>
+</ul>
+<ul>
+<li id="sec-3_1_7_5">gskey evWhich(const ev *); <br/>
+Keycode associated to GSE_DOWN/GSE_UP events.
+</li>
+</ul>
+<ul>
+<li id="sec-3_1_7_6">const char * evKeyName(const ev *); <br/>
+Key name for GSE_DOWN/GSE_UP events.
+</li>
+</ul>
+<ul>
+<li id="sec-3_1_7_7">int evX(const ev *); <br/>
+Mouse X position for GSE_DOWN/GSE_UP events.
+</li>
+</ul>
+<ul>
+<li id="sec-3_1_7_8">int evY(const ev *); <br/>
+Mouse Y position for GSE_DOWN/GSE_UP events.
+</li>
+</ul>
+<ul>
+<li id="sec-3_1_7_9">int evArgC(const ev *); <br/>
+Argument count for GSE_INIT events.
+</li>
+</ul>
+<ul>
+<li id="sec-3_1_7_10">char ** evArgV(const ev *); <br/>
+Argument array for GSE_INIT events.
+</li>
+</ul>
+<ul>
+<li id="sec-3_1_7_11">intptr_t evArg0(const ev *); <br/>
+First event argument, mostly internal.
+</li>
+</ul>
+<ul>
+<li id="sec-3_1_7_12">intptr_t evArg1(const ev *); <br/>
+
+<p>
+Second event argument, mostly internal.
+</p></li>
+</ul>
+<ul>
+<li id="sec-3_1_7_13">intptr_t gsInject(gseventtype, intptr_t, intptr_t); <br/>
+Inject an event, mostly internal.
+
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li id="sec-3_2">Events <br/>
+<ul>
+<li id="sec-3_2_1">GSE_NONE <br/>
+Null event, must be ignored.
+</li>
+</ul>
+<ul>
+<li id="sec-3_2_2">GSE_INIT <br/>
+Called upon initialization, no GL operations should be performed at this stage.
+</li>
+</ul>
+<ul>
+<li id="sec-3_2_3">GSE_TERM <br/>
+Called befor terminating the application.
+</li>
+</ul>
+<ul>
+<li id="sec-3_2_4">GSE_GLINIT <br/>
+The OpenGL context has been established. Might be called several times.
+</li>
+</ul>
+<ul>
+<li id="sec-3_2_5">GL_EVENT_GLTERM <br/>
+The OpenGL context is going to be destroyed. Might be called several times.
+</li>
+</ul>
+<ul>
+<li id="sec-3_2_6">GSE_TICK <br/>
+XXX
+</li>
+</ul>
+<ul>
+<li id="sec-3_2_7">GSE_DRAW <br/>
+XXX
+</li>
+</ul>
+<ul>
+<li id="sec-3_2_8">GSE_RESIZE <br/>
+Called when the screen is resized. Might be called several times.
+</li>
+</ul>
+<ul>
+<li id="sec-3_2_9">GSE_DOWN <br/>
+A key/button has been pressed.
+</li>
+</ul>
+<ul>
+<li id="sec-3_2_10">GSE_UP <br/>
+A key/button has been released.
+</li>
+</ul>
+<ul>
+<li id="sec-3_2_11">GSE_UNICODE <br/>
+Called when the user enters text.
+</li>
+</ul>
+<ul>
+<li id="sec-3_2_12">GSE_MOTION <br/>
+The mouse moved.
+</li>
+</ul>
+<ul>
+<li id="sec-3_2_13">GSE_CLOSE <br/>
+The application is about to close.
+
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-4" class="outline-2">
+<h2 id="sec-4"><span class="section-number-2">4</span> License </h2>
+<div class="outline-text-2" id="text-4">
 
 <p>Copyright (c) 2011, Jorge Acereda Maciá
 All rights reserved.

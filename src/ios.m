@@ -65,54 +65,54 @@ Delegate * getDelegate() {
 }
 
 static void fakekeyuni(unsigned key, unsigned unicode) {
-	gsInject(GS_EVENT_DOWN, key, 0);
-	gsInject(GS_EVENT_UNICODE, unicode, 0);
-	gsInject(GS_EVENT_UP, key, 0);
+	gsInject(GSE_DOWN, key, 0);
+	gsInject(GSE_UNICODE, unicode, 0);
+	gsInject(GSE_UP, key, 0);
 }
 
 static unsigned mapkey(unsigned k) {
 	unsigned ret;
 	switch (k) {
-	case 'A': ret = GS_KEY_A; break;
-	case 'B': ret = GS_KEY_B; break;
-	case 'C': ret = GS_KEY_C; break;
-	case 'D': ret = GS_KEY_D; break;
-	case 'E': ret = GS_KEY_E; break;
-	case 'F': ret = GS_KEY_F; break;
-	case 'G': ret = GS_KEY_G; break;
-	case 'H': ret = GS_KEY_H; break;
-	case 'I': ret = GS_KEY_I; break;
-	case 'J': ret = GS_KEY_J; break;
-	case 'K': ret = GS_KEY_K; break;
-	case 'L': ret = GS_KEY_L; break;
-	case 'M': ret = GS_KEY_M; break;
-	case 'N': ret = GS_KEY_N; break;
-	case 'O': ret = GS_KEY_O; break;
-	case 'P': ret = GS_KEY_P; break;
-	case 'Q': ret = GS_KEY_Q; break;
-	case 'R': ret = GS_KEY_R; break;
-	case 'S': ret = GS_KEY_S; break;
-	case 'T': ret = GS_KEY_T; break;
-	case 'U': ret = GS_KEY_U; break;
-	case 'V': ret = GS_KEY_V; break;
-	case 'W': ret = GS_KEY_W; break;
-	case 'X': ret = GS_KEY_X; break;
-	case 'Y': ret = GS_KEY_Y; break;
-	case 'Z': ret = GS_KEY_Z; break;
-	case '0': ret = GS_KEY_0; break;
-	case '1': ret = GS_KEY_1; break;
-	case '2': ret = GS_KEY_2; break;
-	case '3': ret = GS_KEY_3; break;
-	case '4': ret = GS_KEY_4; break;
-	case '5': ret = GS_KEY_5; break;
-	case '6': ret = GS_KEY_6; break;
-	case '7': ret = GS_KEY_7; break;
-	case '8': ret = GS_KEY_8; break;
-	case '9': ret = GS_KEY_9; break;
-	case '=': ret = GS_KEY_EQUAL; break;
-	case '\b': ret = GS_KEY_DELETE; break;
-	case '\n': ret = GS_KEY_RETURN; break;
-	default: ret = GS_KEY_NONE;
+	case 'A': ret = GSK_A; break;
+	case 'B': ret = GSK_B; break;
+	case 'C': ret = GSK_C; break;
+	case 'D': ret = GSK_D; break;
+	case 'E': ret = GSK_E; break;
+	case 'F': ret = GSK_F; break;
+	case 'G': ret = GSK_G; break;
+	case 'H': ret = GSK_H; break;
+	case 'I': ret = GSK_I; break;
+	case 'J': ret = GSK_J; break;
+	case 'K': ret = GSK_K; break;
+	case 'L': ret = GSK_L; break;
+	case 'M': ret = GSK_M; break;
+	case 'N': ret = GSK_N; break;
+	case 'O': ret = GSK_O; break;
+	case 'P': ret = GSK_P; break;
+	case 'Q': ret = GSK_Q; break;
+	case 'R': ret = GSK_R; break;
+	case 'S': ret = GSK_S; break;
+	case 'T': ret = GSK_T; break;
+	case 'U': ret = GSK_U; break;
+	case 'V': ret = GSK_V; break;
+	case 'W': ret = GSK_W; break;
+	case 'X': ret = GSK_X; break;
+	case 'Y': ret = GSK_Y; break;
+	case 'Z': ret = GSK_Z; break;
+	case '0': ret = GSK_0; break;
+	case '1': ret = GSK_1; break;
+	case '2': ret = GSK_2; break;
+	case '3': ret = GSK_3; break;
+	case '4': ret = GSK_4; break;
+	case '5': ret = GSK_5; break;
+	case '6': ret = GSK_6; break;
+	case '7': ret = GSK_7; break;
+	case '8': ret = GSK_8; break;
+	case '9': ret = GSK_9; break;
+	case '=': ret = GSK_EQUAL; break;
+	case '\b': ret = GSK_DELETE; break;
+	case '\n': ret = GSK_RETURN; break;
+	default: ret = GSK_NONE;
 	}
 	return ret;
 }
@@ -121,10 +121,10 @@ static void fakekey(unsigned unicode) {
 	int upper = isupper(unicode);
 	int luni = toupper(unicode);
 	if (upper)
-		gsInject(GS_EVENT_DOWN, GS_KEY_SHIFT, 0);
+		gsInject(GSE_DOWN, GSK_SHIFT, 0);
 	fakekeyuni(mapkey(luni), unicode);
 	if (upper)
-		gsInject(GS_EVENT_UP, GS_KEY_SHIFT, 0);
+		gsInject(GSE_UP, GSK_SHIFT, 0);
 }
 
 @implementation GLView
@@ -136,16 +136,16 @@ static void fakekey(unsigned unicode) {
 {
         UITouch* touch = [touches anyObject];
         CGPoint loc = [touch locationInView: self];
-        gsInject(GS_EVENT_MOTION, loc.x, loc.y);
-        gsInject(GS_EVENT_DOWN, GS_KEY_MOUSELEFT, 0);
+        gsInject(GSE_MOTION, loc.x, loc.y);
+        gsInject(GSE_DOWN, GSK_MOUSELEFT, 0);
 }
 
 - (void) touchesEnded: (NSSet*) touches withEvent: (UIEvent*) e
 {
         UITouch* touch = [touches anyObject];
         CGPoint loc = [touch locationInView: self];
-        gsInject(GS_EVENT_MOTION, loc.x, loc.y);
-        gsInject(GS_EVENT_UP, GS_KEY_MOUSELEFT, 0);
+        gsInject(GSE_MOTION, loc.x, loc.y);
+        gsInject(GSE_UP, GSK_MOUSELEFT, 0);
 }
 
 
@@ -153,7 +153,7 @@ static void fakekey(unsigned unicode) {
 {
         UITouch* touch = [touches anyObject];
         CGPoint loc = [touch previousLocationInView: self];
-        gsInject(GS_EVENT_MOTION, loc.x, loc.y);
+        gsInject(GSE_MOTION, loc.x, loc.y);
 }
 
 @end
@@ -161,7 +161,7 @@ static void fakekey(unsigned unicode) {
 @implementation Delegate
 
 - (void) applicationWillTerminate: (UIApplication*) a {
-	gsInject(GS_EVENT_CLOSE, 0, 0);
+	gsInject(GSE_CLOSE, 0, 0);
 	[self update];
 }
 
@@ -193,8 +193,7 @@ shouldChangeCharactersInRange: (NSRange)range
 }
 
 - (void)update {
-        gsInject(GS_EVENT_TICK, 0, 0);
-	gsInject(GS_EVENT_DRAW, 0, 0);
+        gsInject(GSE_UPDATE, 0, 0);
 	[ctx presentRenderbuffer: GL_RENDERBUFFER];
 }
 
@@ -230,8 +229,8 @@ shouldChangeCharactersInRange: (NSRange)range
 	[win addSubview: tf];
 
 	[self initContext];
-	gsInject(GS_EVENT_RESIZE, r.size.width, r.size.height);
-	gsInject(GS_EVENT_GLINIT, 0, 0);
+	gsInject(GSE_RESIZE, r.size.width, r.size.height);
+	gsInject(GSE_GLINIT, 0, 0);
 }
 
 - (void) applicationDidFinishLaunching: (UIApplication*) application 
@@ -269,9 +268,9 @@ int gsHideKeyboard() {
 int main(int argc, char ** argv) {
 	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 	int ret = 42;
-	if (gsInject(GS_EVENT_INIT, argc, (intptr_t)argv)) {
+	if (gsInject(GSE_INIT, argc, (intptr_t)argv)) {
 		UIApplicationMain(argc, argv, nil, @"Delegate");
-		ret = gsInject(GS_EVENT_TERM, 0, 0);
+		ret = gsInject(GSE_TERM, 0, 0);
 	}
 	[pool release];
         return ret;

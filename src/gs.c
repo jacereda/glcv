@@ -92,9 +92,9 @@ int gsMouseY() {
 }
 
 static unsigned char * bitarrayFor(unsigned char * p, gskey * k) {
-        int good = *k >= GS_KEY_NONE && *k < GS_KEY_MAX;
+        int good = *k >= GSK_NONE && *k < GSK_MAX;
         assert(good);
-        *k -= GS_KEY_NONE;
+        *k -= GSK_NONE;
         return good? p : 0;
 }
 
@@ -130,12 +130,12 @@ const char * evName(const ev * e) {
 	const char * n;
 	static char buf[32];
 	switch (evType(e)) {
-	default: // Falls to GS_EVENT_NONE
-#define E(x) case GS_EVENT_##x: n = #x; break;
+	default: // Falls to GSE_NONE
+#define E(x) case GSE_##x: n = #x; break;
 #include "gsev.h"
 #undef E
 	}
-	mysnprintf(buf, sizeof(buf), "GS_EVENT_%s", n);
+	mysnprintf(buf, sizeof(buf), "GSE_%s", n);
 	return buf;
 }
 
@@ -180,13 +180,13 @@ const char * evKeyName(const ev * e) {
 	static char buf[32];
         gskey k = evWhich(e);
 	switch (k) {
-#define K(x) case GS_KEY_##x: n = #x; break;
+#define K(x) case GSK_##x: n = #x; break;
 #include "gskey.h"
 #undef K
 	default: n = 0; break;
         }
         if (n)
-                mysnprintf(buf, sizeof(buf), "GS_KEY_%s", n);
+                mysnprintf(buf, sizeof(buf), "GSK_%s", n);
         else if (k >= 32 && k < 127)
                 mysnprintf(buf, sizeof(buf), "%c", (unsigned)k);                
         else
@@ -200,18 +200,18 @@ intptr_t gsInject(gseventtype type, intptr_t p1, intptr_t p2) {
         e.p[0] = p1;
         e.p[1] = p2;
         switch (evType(&e)) {   
-	case GS_EVENT_RESIZE:
+	case GSE_RESIZE:
 		s_w = evWidth(&e);
 		s_h = evHeight(&e);
 		break;
-	case GS_EVENT_MOTION:
+	case GSE_MOTION:
 		s_mx = evX(&e);
 		s_my = evY(&e);
 		break;
-	case GS_EVENT_DOWN:
+	case GSE_DOWN:
 		press(evWhich(&e));
 		break;
-	case GS_EVENT_UP:
+	case GSE_UP:
 		release(evWhich(&e));
 		break;
 	};

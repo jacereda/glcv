@@ -58,8 +58,8 @@ static void draw(void) {
 intptr_t event(const ev * e) {
 	intptr_t ret = 1;
 	switch (evType(e)) {
-	case GS_EVENT_GLINIT: glinit(); break;
-	case GS_EVENT_DRAW: draw(); break;
+	case GSE_GLINIT: glinit(); break;
+	case GSE_UPDATE: draw(); break;
 	default: break;
 	}
 	return ret;

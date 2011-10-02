@@ -38,13 +38,13 @@
 #endif
 
 typedef enum {
-#define E(x) GS_EVENT_##x,
+#define E(x) GSE_##x,
 #include "gsev.h"
 #undef E
 } gseventtype;
 
 typedef enum {
-#define K(x) GS_KEY_##x,
+#define K(x) GSK_##x,
 #include "gskey.h"
 #undef K
 } gskey;

@@ -5,7 +5,7 @@
 #+DESCRIPTION: 
 #+KEYWORDS: 
 #+LANGUAGE:  en
-#+OPTIONS:   H:3 num:t toc:t \n:nil @:t ::t |:t ^:t -:t f:t *:t <:t
+#+OPTIONS:   H:1 num:t toc:t \n:nil @:t ::t |:t ^:{} -:t f:t *:t <:t
 #+OPTIONS:   TeX:t LaTeX:t skip:nil d:nil todo:t pri:nil tags:not-in-toc
 #+INFOJS_OPT: view:nil toc:nil ltoc:t mouse:underline buttons:0 path:http://orgmode.org/org-info.js
 #+EXPORT_SELECT_TAGS: export
@@ -17,12 +17,12 @@
 * Export 							   :noexport:
 #+begin_src emacs-lisp :results silent
 (save-excursion 
-  (org-export-as-utf8)
+  (org-export-as-utf8 1)
   (rename-file "README.txt" "README" t))
 (save-excursion 
-  (org-export-as-html 3))
+  (org-export-as-html 1))
 #+end_src
-file:README.txt
+file:README
 file:README.html
 
 * Purpose
@@ -31,17 +31,105 @@ layer abstracting the details of configuring the screen and handling
 input. Sort of a simple GLUT/SDL.
 * Building
 As of now, the build scripts only work on Mac OS X.
-** IOS
+** Targets
+*** IOS
 The following command should build the library and the examples and install them in the IOS simulator directory.
 #+begin_src sh
 ./mk-ios
 #+end_src
-** NPAPI
+*** NPAPI
 The following command should build the library and the examples and install them in the user's plugins directory.
 #+begin_src sh
 ./mk-npapi
 #+end_src
 After building, try opening file:testplugin.html
+* API
+** Functions
+*** Application hook
+**** intptr_t event(const ev * e);
+This is the event handling routine implemented by your application.
+*** Screen properties
+**** unsigned gsWidth();
+Current screen width
+**** unsigned gsHeight();
+Current screen height
+*** Mouse location
+**** int gsMouseX();
+Current X mouse position
+**** int gsMouseY();
+Current Y mouse position
+*** Keyboard
+**** int gsPressed(gskey key);
+True if key is currently pressed
+**** int gsReleased(gskey key);
+True if key has just been released
+**** int gsShowKeyboard();
+On platforms that support it, show the on-screen keyboard
+**** int gsHideKeyboard();
+On platforms that support it, hide the on-screen keyboard
+*** Resources
+**** const char * gsResPath();
+Resources path
+*** Logging
+**** void gsReportV(const char * fmt, va_list ap);
+Report a message (depending on the platform, it might go to a file)
+**** void gsReport(const char * fmt, ...);
+Report a message (depending on the platform, it might go to a file)
+*** Events
+**** int evType(const ev *);
+Event type.
+**** const char * evName(const ev *);
+Event name.
+**** int evWidth(const ev *);
+Width for GSE_RESIZE events.
+**** int evHeight(const ev *);
+Width for GSE_RESIZE events.
+**** gskey evWhich(const ev *);
+Keycode associated to GSE_DOWN/GSE_UP events.
+**** const char * evKeyName(const ev *);
+Key name for GSE_DOWN/GSE_UP events.
+**** int evX(const ev *);
+Mouse X position for GSE_DOWN/GSE_UP events.
+**** int evY(const ev *);
+Mouse Y position for GSE_DOWN/GSE_UP events.
+**** int evArgC(const ev *);
+Argument count for GSE_INIT events.
+**** char ** evArgV(const ev *);
+Argument array for GSE_INIT events.
+**** intptr_t evArg0(const ev *);
+First event argument, mostly internal.
+**** intptr_t evArg1(const ev *);
+
+Second event argument, mostly internal.
+**** intptr_t gsInject(gseventtype, intptr_t, intptr_t);
+Inject an event, mostly internal.
+
+** Events
+*** GSE_NONE
+Null event, must be ignored.
+*** GSE_INIT
+Called upon initialization, no GL operations should be performed at this stage.
+*** GSE_TERM
+Called befor terminating the application.
+*** GSE_GLINIT
+The OpenGL context has been established. Might be called several times.
+*** GL_EVENT_GLTERM
+The OpenGL context is going to be destroyed. Might be called several times.
+*** GSE_UPDATE
+This is your update routine, should be called at ~60Hz.
+*** GSE_RESIZE
+Called when the screen is resized. Might be called several times.
+*** GSE_DOWN
+A key/button has been pressed.
+*** GSE_UP
+A key/button has been released.
+*** GSE_UNICODE
+Called when the user enters text.
+*** GSE_MOTION
+The mouse moved.
+*** GSE_CLOSE
+The application is about to close.
+
 * License
   Copyright (c) 2011, Jorge Acereda Maciá
   All rights reserved.
