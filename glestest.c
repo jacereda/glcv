@@ -13,11 +13,7 @@ static GLuint loadShader(GLenum type, const char * src) {
 	return sh;
 }
 
-int init(int argc, char ** argv) {
-	return 1;
-	}
-
-void glinit() {
+static void glinit() {
 	const char vss[] =
 		"attribute vec4 pos;   \n"
 		"uniform float t;            \n"
@@ -42,15 +38,7 @@ void glinit() {
 	s_time = glGetUniformLocation(s_prg, "t");
 }
 
-int term() {
-	return 1;
-}
-
-int tick() {
-	return s_running;
-}
-
-void draw(void) {
+static void draw(void) {
 	GLfloat ver[] = {0.0f, 0.5f, 0.0f,
 			 -0.5f, -0.5f, 0.0f,
 			 0.5f, -0.5f, 0.0f};
@@ -71,13 +59,14 @@ void draw(void) {
 	glFlush();
 }
 
-void event(const ev * e) {
+intptr_t event(const ev * e) {
+	intptr_t ret = 1;
 	switch (evType(e)) {
-	case GS_EVENT_CLOSE:
-		s_running = 0;
-		break;
+	case GS_EVENT_GLINIT: glinit(); break;
+	case GS_EVENT_DRAW: draw(); break;
 	default: break;
 	}
+	return ret;
 }
 
 /* 

@@ -38,8 +38,12 @@
 typedef enum {
 	GS_EVENT_UNKNOWN,
 	GS_EVENT_NONE,
+	GS_EVENT_INIT,
+	GS_EVENT_TERM,
+	GS_EVENT_GLINIT,
+	GS_EVENT_TICK,
+	GS_EVENT_DRAW,
 	GS_EVENT_RESIZE,
-	GS_EVENT_POSITION,
 	GS_EVENT_DOWN,
 	GS_EVENT_UP,
 	GS_EVENT_UNICODE,
@@ -197,12 +201,9 @@ int evHeight(const ev *);
 gskey evWhich(const ev *);
 int evX(const ev *);
 int evY(const ev *);
+int evArgC(const ev *);
+char ** evArgV(const ev *);
 const char * evKeyName(const ev *);
 
 // Provided by the program
-int init(int argc, char ** argv);
-void glinit();
-int term();
-int tick();
-void draw();
-void event(const ev * e);
+intptr_t event(const ev * e);

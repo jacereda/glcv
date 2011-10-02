@@ -139,6 +139,14 @@ int evY(const ev * e) {
 	return e->p[1];
 }
 
+int evArgC(const ev * e) {
+	return e->p[0];
+}
+
+char ** evArgV(const ev * e) {
+	return (char**) e->p[1];
+}
+
 const char * evKeyName(const ev * e) {
 	const char * n = 0;
 	static char buf[32] = {0};
@@ -282,7 +290,7 @@ const char * evKeyName(const ev * e) {
 	return buf;
 }
 
-static void got(int type, intptr_t p1, intptr_t p2) {
+static intptr_t got(int type, intptr_t p1, intptr_t p2) {
 	ev e;
         e.type = type;
         e.p[0] = p1;
@@ -303,5 +311,5 @@ static void got(int type, intptr_t p1, intptr_t p2) {
 		release(evWhich(&e));
 		break;
 	};
-	event(&e);
+	return event(&e);
 }

@@ -122,7 +122,7 @@ static NPError nnew(NPMIMEType type, NPP i,
 		    char* argv[], NPSavedData* saved) {
         int ok;
         debug("nnew");
-        ok = init(argc, argv);
+        ok = got(GS_EVENT_INIT, argc, (intptr_t)argv);
         if (ok) {
                 unsigned j;
                 snprintf(s_plgname, sizeof s_plgname - 1, "%s", argv[0]);
@@ -139,7 +139,7 @@ static NPError setwindow(NPP i, NPWindow* w) {
         debug("setwindow");
         osglinit();
 	got(GS_EVENT_RESIZE, w->width, w->height);
-        glinit();
+        got(GS_EVENT_GLINIT, 0, 0);
 	return NPERR_NO_ERROR;
 }
 
@@ -147,7 +147,7 @@ static NPError setwindow(NPP i, NPWindow* w) {
 static NPError destroy(NPP i, NPSavedData **save) {
 	debug("destroy");
 	got(GS_EVENT_CLOSE, 0, 0);
-        term();
+        got(GS_EVENT_TERM, 0, 0);
         osterm();
 	if(s_so)
 		s_browser->releaseobject(s_so);

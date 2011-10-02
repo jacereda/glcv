@@ -192,8 +192,8 @@ shouldChangeCharactersInRange: (NSRange)range
 }
 
 - (void)update {
-	tick();
-	draw();
+        got(GS_EVENT_TICK, 0, 0);
+	got(GS_EVENT_DRAW, 0, 0);
 	[ctx presentRenderbuffer: GL_RENDERBUFFER];
 }
 
@@ -230,7 +230,7 @@ shouldChangeCharactersInRange: (NSRange)range
 
 	[self initContext];
 	got(GS_EVENT_RESIZE, r.size.width, r.size.height);
-	glinit();
+	got(GS_EVENT_GLINIT, 0, 0);
 }
 
 - (void) applicationDidFinishLaunching: (UIApplication*) application 
@@ -268,9 +268,9 @@ int gsHideKeyboard() {
 int main(int argc, char ** argv) {
 	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 	int ret = 42;
-	if (init(argc, argv)) {
+	if (got(GS_EVENT_INIT, argc, argv)) {
 		UIApplicationMain(argc, argv, nil, @"Delegate");
-		ret = term();
+		ret = got(GS_EVENT_TERM, 0, 0);
 	}
 	[pool release];
         return ret;

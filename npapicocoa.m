@@ -254,8 +254,8 @@ static NPError osgetval(NPP i, NPPVariable var, void * v) {
 	    forLayerTime:(CFTimeInterval)lt
 	     displayTime:(const CVTimeStamp *)dt
 {
-        tick();
-	draw();
+        got(GS_EVENT_TICK, 0, 0);
+	got(GS_EVENT_DRAW, 0, 0);
 	[super drawInCGLContext: ct pixelFormat: pf
                    forLayerTime: lt displayTime: dt];
 }
