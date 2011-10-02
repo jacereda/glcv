@@ -19,7 +19,7 @@
 #endif
 #define OSCALL 
 
-typedef void (*method)(void);
+typedef void (*method)(const char *);
 
 static NPNetscapeFuncs * s_browser = 0;
 static NPObject * s_so = 0;
@@ -57,15 +57,17 @@ static method resolve(NPIdentifier methodid) {
 	return ret;
 }
 
-static bool hasmethod(NPObject* obj, NPIdentifier method) {
-	return resolve(method) != 0;
+static bool hasmethod(NPObject* obj, NPIdentifier methodid) {
+	return resolve(methodid) != 0;
 }
 
 static bool invoke(NPObject* obj, NPIdentifier methodid, 
 		   const NPVariant *args, uint32_t nargs, NPVariant *res) {
-	method func = resolve(methodid);
-	if (func)
-		func();
+	method func;
+        func = resolve(methodid);
+        debug("func %p", func);
+	if (func && nargs == 1 && NPVARIANT_IS_STRING(args[0]))
+                func(NPVARIANT_TO_STRING(args[0]).UTF8Characters);
 	else {
 		debug("no such method");
 		s_browser->setexception(obj, "no such method");

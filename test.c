@@ -8,6 +8,10 @@ static void draw() {
         glFlush();
 }
 
+EXPORTED void hello(const char * s) {
+	gsReport("invoked hello '%s'", s);
+}
+
 intptr_t event(const ev * e) {
 	intptr_t ret = 1;
 	gsReport("got event %s", evName(e));

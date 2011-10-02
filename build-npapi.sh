@@ -28,7 +28,7 @@ function obj() {
     log "compiling $*"
     dst=`builddir`/$1.o
     shift
-    cc -fvisibility=hidden -fPIC -Wall -O2 -c -o $dst $*
+    cc -m32 -fvisibility=hidden -fPIC -Wall -O2 -c -o $dst $*
     echo $dst
 }
 
@@ -46,7 +46,7 @@ function plg() {
     shift
     obj=$1
     shift
-    cc -fvisibility=hidden -fPIC -bundle -flat_namespace -framework OpenGL -framework AppKit -framework WebKit -framework QuartzCore -o $dst $obj -L `builddir` $*
+    cc -m32 -fvisibility=hidden -fPIC -bundle -flat_namespace -framework OpenGL -framework AppKit -framework WebKit -framework QuartzCore -o $dst $obj -L `builddir` $*
     echo $dst
 }
 
