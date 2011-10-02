@@ -59,6 +59,7 @@ int gsPressed(gskey key);
 int gsReleased(gskey key);
 int gsShowKeyboard();
 int gsHideKeyboard();
+const char * gsResPath();
 
 intptr_t gsInject(gseventtype, intptr_t, intptr_t);
 void gsReportV(const char * fmt, va_list ap);

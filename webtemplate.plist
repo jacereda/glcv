@@ -23,8 +23,10 @@
 	<key>CFPlugInDynamicRegisterFunction</key>
 	<string></string>
 	<key>CFPlugInDynamicRegistration</key>
-	<string>YES</string>
+	<string>NO</string>
 
+	<key>WebPluginName</key>
+	<string>NAME</string>
 	<key>WebPluginDescription</key>
 	<string>NAME</string>
 	<key>WebPluginMIMETypes</key>
@@ -35,6 +37,5 @@
 			<string>NAME</string>
 		</dict>
 	</dict>
-
 </dict>
 </plist>

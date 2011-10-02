@@ -218,9 +218,11 @@ static const char * osmodpath() {
         return info.dli_fname;
 }
 
-static const char * osrespath() {
-	return [[[NSBundle bundleForClass: [s_l class]] 
-			resourcePath] UTF8String];
+const char * gsResPath() {
+        char buf[256];
+        static char ret[256];
+        snprintf(buf, sizeof(buf), "%s/../../Resources", osmodpath());
+        return realpath(buf, ret);
 }
 
 static void * osresolve(const char * name) {

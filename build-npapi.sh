@@ -1,11 +1,15 @@
 #!/bin/bash
 
+function log() {
+    echo $* 1>&2
+}
+
 function builddir() {
     echo "bldnpapi"
 }
 
 function pkgdir() {
-    echo `builddir`/$1.webplugin
+    echo `builddir`/$1.plugin
 }
 
 function condir() {
@@ -20,42 +24,53 @@ function bindir() {
     echo `condir $1`/MacOS
 }
 
-function compile() {
-    echo "compiling $1"
-    cc -fvisibility=hidden -fPIC -Wall -O2 -c -o `builddir`/$*
+function obj() {
+    log "compiling $*"
+    dst=`builddir`/$1.o
+    shift
+    cc -fvisibility=hidden -fPIC -Wall -O2 -c -o $dst $*
+    echo $dst
 }
 
-function link() {
-    echo "linking $1"
+function lib() {
+    log "archiving $*"
+    dst=$1
+    shift
+    ar rcs `builddir`/lib$dst.a $*
+    echo "-l$dst"
+}
+
+function plg() {
+    log "linking $*"
     dst=`builddir`/$1
     shift
-    objs=""
-    for i in $*
-    do
-	objs="$objs `builddir`/$i"
-    done
-    cc -fvisibility=hidden -fPIC -bundle -flat_namespace -framework OpenGL -framework AppKit -framework WebKit -framework QuartzCore -o $dst $objs
+    obj=$1
+    shift
+    cc -fvisibility=hidden -fPIC -bundle -flat_namespace -framework OpenGL -framework AppKit -framework WebKit -framework QuartzCore -o $dst $obj -L `builddir` $*
+    echo $dst
 }
 
-function package() {
-    echo "packaging $1"
+function pkg() {
+    log "packaging $*"
     install -d `resdir $1`
     install -d `bindir $1`
     sed s/NAME/$1/g webtemplate.r > `builddir`/$1.r
     /Developer/Tools/Rez -o `resdir $1`/$1.rsrc -useDF `builddir`/$1.r
     sed s/NAME/$1/g webtemplate.plist > `condir $1`/Info.plist
-    cp `builddir`/$1 `bindir $1`
+    cp $2 `bindir $1`
+    echo `pkgdir $1`
 }
 
-function pkginst() {
-    echo "installing $1"
-    cp -R `pkgdir $1` "$HOME/Library/Internet Plug-Ins/"
+function ins() {
+    log "installing $*"
+    cp -R $1 "$HOME/Library/Internet Plug-Ins/"
 }
 
+rm -fR `builddir`
 install -d `builddir`
-compile gs.o gs.c
-compile npapicocoa.o npapicocoa.m
-compile test.o test.c
-link testplugin test.o gs.o npapicocoa.o
-package testplugin
-pkginst testplugin
+gsobjs="`obj gs gs.c` `obj npapicocoa npapicocoa.m`"
+libgs=`lib gs $gsobjs`
+testobj=`obj test test.c`
+testplg=`plg testplugin $testobj $libgs`
+testpkg=`pkg testplugin $testplg`
+ins $testpkg

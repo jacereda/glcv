@@ -30,7 +30,6 @@ static void osinit(NPNetscapeFuncs * browser, NPP i);
 static void osglinit();
 static void osterm();
 static const char * osmodpath();
-static const char * osrespath();
 static NPError osevent(void * ve);
 static void * osresolve(const char * name);
 static NPError osgetval(NPP i, NPPVariable var, void * v);
@@ -235,11 +234,13 @@ EXPORTED char * NP_GetMIMEDescription(void) {
         if (!last)
                 last = strrchr(modpath, '\\');
         snprintf(tmp, sizeof tmp - 1, "%s", last+1);
+        tmp[sizeof(tmp)-1] = '.';
         *strrchr(tmp, '.') = 0;
-        snprintf(buf, sizeof buf - 1, 
+        snprintf(buf, sizeof(buf), 
                  "application/%s::xx@foo.bar", 
                  0 == strncmp(buf, "lib", 3)? tmp+3 : 
                  tmp);
+        buf[sizeof(buf) - 1] = 0;
         gsReport("getmimedesc %s", buf);
         return buf;
 }
