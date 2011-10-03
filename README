@@ -120,6 +120,8 @@ As of now, the build scripts only work on Mac OS X.
     The mouse moved.
   + GSE_CLOSE 
     The application is about to close.
+  + GSE_INVOKE 
+    Invoke method. The argument is available as evMethod().
     
 
 4 License 
