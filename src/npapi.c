@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <string.h>
+#include <stdio.h>
 #include "gs.h"
 #include "gsgl.h"
 
@@ -9,6 +10,13 @@
 #include <WebKit/npapi.h>
 #include <WebKit/npfunctions.h>
 #undef evType
+#define OSCALL 
+#else
+#if defined _WIN32
+typedef int bool;
+#endif
+#include "npapi/npapi.h"
+#include "npapi/npfunctions.h"
 #endif
 
 #if defined(__GNUC__) && !defined(_WIN32_)
@@ -17,7 +25,6 @@
 #else
 #define EXPORTED extern __declspec(dllexport)
 #endif
-#define OSCALL 
 
 typedef void (*method)(const char *);
 
@@ -28,15 +35,14 @@ static char s_plgname[256];
 
 static void osinit(NPNetscapeFuncs * browser, NPP i);
 static void osterm();
-static void osglinit();
+static void osglinit(NPWindow *);
 static const char * osmodpath();
 static NPError osevent(void * ve);
-static void * osresolve(const char * name);
 static NPError osgetval(NPP i, NPPVariable var, void * v);
 
 void gsReportV(const char *fmt, va_list ap) {
 #if defined(_WIN32)
-	FILE *out = fopen("gs.log", "a");
+	FILE *out = fopen("\\gs.log", "a");
 #else
 	FILE *out = fopen("/tmp/gs.log", "a");
 #endif
@@ -49,35 +55,28 @@ void gsReportV(const char *fmt, va_list ap) {
 
 #define debug gsReport
 
-static method resolve(NPIdentifier methodid) {
-	char * mname = s_browser->utf8fromidentifier(methodid);
-	method ret = osresolve(mname);
-	debug("resolve %s %p", mname, ret);
-	// leak mname?
-	return ret;
-}
-
 static bool hasmethod(NPObject* obj, NPIdentifier methodid) {
-	return resolve(methodid) != 0;
+	return 1;
 }
 
 static bool invoke(NPObject* obj, NPIdentifier methodid, 
 		   const NPVariant *args, uint32_t nargs, NPVariant *res) {
-	method func;
-        func = resolve(methodid);
-        debug("func %p", func);
-	if (func && nargs == 1 && NPVARIANT_IS_STRING(args[0])) {
+        debug("invoke");
+        int ret;
+	if (nargs == 1 && NPVARIANT_IS_STRING(args[0])) {
                 NPString s = NPVARIANT_TO_STRING(args[0]);
                 char buf[1024];
                 debug("len: %d", s.UTF8Length);
                 memcpy(buf, s.UTF8Characters, s.UTF8Length);
                 buf[s.UTF8Length] = 0;
-                func(buf);
+                gsInject(GSE_INVOKE, (intptr_t)buf, 0);
+                ret = 1;
         } else {
 		debug("no such method");
 		s_browser->setexception(obj, "no such method");
+                ret = 0;
 	}
-	return func != 0;
+	return ret;
 }
 
 static bool invokedefault(NPObject *obj, 
@@ -138,15 +137,15 @@ static NPError nnew(NPMIMEType type, NPP i,
 }
 
 static NPError setwindow(NPP i, NPWindow* w) {
-        NPRect rect;
+//        NPRect rect;
         debug("setwindow");
-        rect.left = 0;
-        rect.top = 0;
-        rect.right = w->width;
-        rect.bottom = w->height;
-        s_browser->invalidaterect(i, &rect);
-        s_browser->forceredraw(i);
-        osglinit();
+//        rect.left = 0;
+//        rect.top = 0;
+//        rect.right = w->width;
+//        rect.bottom = w->height;
+//        s_browser->invalidaterect(i, &rect);
+//        s_browser->forceredraw(i);
+        osglinit(w);
 	gsInject(GSE_RESIZE, w->width, w->height);
         gsInject(GSE_GLINIT, 0, 0);
 	return NPERR_NO_ERROR;

@@ -175,6 +175,10 @@ char ** evArgV(const ev * e) {
 	return (char**) evArg1(e);
 }
 
+const char * evMethod(const ev * e) {
+	return (char*)evArg0(e);
+}
+
 const char * evKeyName(const ev * e) {
 	const char * n = 0;
 	static char buf[32];

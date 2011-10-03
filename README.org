@@ -129,6 +129,8 @@ Called when the user enters text.
 The mouse moved.
 *** GSE_CLOSE
 The application is about to close.
+*** GSE_INVOKE
+Invoke method. The argument is available as evMethod().
 
 * License
   Copyright (c) 2011, Jorge Acereda Maciá

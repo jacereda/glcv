@@ -76,6 +76,7 @@ int evX(const ev *);
 int evY(const ev *);
 int evArgC(const ev *);
 char ** evArgV(const ev *);
+const char * evMethod(const ev *);
 const char * evKeyName(const ev *);
 
 // Provided by the program

@@ -228,10 +228,6 @@ const char * gsResPath() {
         return realpath(buf, ret);
 }
 
-static void * osresolve(const char * name) {
-	return dlsym(RTLD_SELF, name);
-}
-
 static NPError osgetval(NPP i, NPPVariable var, void * v) {
 	NPError ret = NPERR_NO_ERROR;
 	debug("os getvalue %d", var); 
