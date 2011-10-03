@@ -10,8 +10,8 @@ static void draw() {
         glFlush();
 }
 
-static void hello(const char * s) {
-	gsReport("invoked hello '%s'", s);
+static void invoke(const char * s) {
+	gsReport("invoked method '%s'", s);
 }
 
 intptr_t event(const ev * e) {
@@ -20,7 +20,7 @@ intptr_t event(const ev * e) {
 	switch (evType(e)) {
 	case GSE_INIT: gsReport("resources: %s", gsResPath()); break;
 	case GSE_UPDATE: draw(); break;
-	case GSE_INVOKE: hello(evMethod(e)); break;
+	case GSE_INVOKE: invoke(evMethod(e)); break;
 	default: break;
 	}
 	return ret;
