@@ -31,7 +31,7 @@
 */
 
 #include <stdarg.h>
-#if defined(_MSC_VER)
+#if defined _MSC_VER
 #include <assert.h>
 #else
 #include <inttypes.h>
