@@ -33,12 +33,20 @@ input. Sort of a simple GLUT/SDL.
 As of now, the build scripts only work on Mac OS X.
 ** Targets
 *** IOS
-The following command should build the library and the examples and install them in the IOS simulator directory.
+The following command should build the library and the examples and
+install them in the IOS simulator directory.
 #+begin_src sh
 ./mk-ios
 #+end_src
+*** Android
+The following command should build the library and the examples and
+install them in the Android emulator. The emulator must be running.
+#+begin_src sh
+./mk-android
+#+end_src
 *** NPAPI
-The following command should build the library and the examples and install them in the user's plugins directory.
+The following command should build the library and the examples and
+install them in the user's plugins directory.
 #+begin_src sh
 ./mk-npapi
 #+end_src
