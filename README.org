@@ -139,6 +139,8 @@ The mouse moved.
 The application is about to close.
 *** GSE_INVOKE
 Invoke method. The argument is available as evMethod().
+*** GSE_NAME
+Used to query the application name.
 
 * License
   Copyright (c) 2011, Jorge Acereda Maciá

@@ -165,12 +165,12 @@ static int32_t input(struct android_app * app, AInputEvent * e) {
 static void handle(struct android_app* app, int32_t cmd) {
 	switch (cmd) {
         case APP_CMD_INIT_WINDOW:
-		app->userData = 1;
+		app->userData = (void*)1;
 		break;
         case APP_CMD_TERM_WINDOW:
 		dbg("got term window");
 		gsInject(GSE_CLOSE, 0, 0);
-		app->userData = 1;
+		app->userData = (void*)1;
 		break;
 	}
 }
@@ -245,23 +245,6 @@ void android_main(struct android_app* app) {
 	if (!eglTerminate(dpy))
 		err("terminating");
 }
-
-static const char * osmodpath() {
-        static Dl_info info;
-        dladdr(gsResPath, &info);
-        return info.dli_fname;
-}
-
-const char * gsResPath() {
-        char buf[256];
-        static char ret[256];
-//	return "."; // XXX
-//        snprintf(buf, sizeof(buf), "%s/../../res", osmodpath());
-//        return realpath(buf, ret);
-//	return realpath("../res", ret);
-	return osmodpath();
-}
-
 
 /* 
    Local variables: **

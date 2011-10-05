@@ -36,7 +36,6 @@ static char s_plgname[256];
 static void osinit(NPNetscapeFuncs * browser, NPP i);
 static void osterm();
 static void osglinit(NPWindow *);
-static const char * osmodpath();
 static NPError osevent(void * ve);
 static NPError osgetval(NPP i, NPPVariable var, void * v);
 
@@ -238,23 +237,15 @@ EXPORTED NPError OSCALL NP_Shutdown() {
 
 EXPORTED char * NP_GetMIMEDescription(void) {
         static char buf[256];
-        char tmp[256];
-        const char * modpath;
-        const char * last;
+        const char * name;
         debug("getmime");
-        modpath = osmodpath();
-        last = strrchr(modpath, '/');
-        if (!last)
-                last = strrchr(modpath, '\\');
-        snprintf(tmp, sizeof tmp - 1, "%s", last+1);
-        tmp[sizeof(tmp)-1] = '.';
-        *strrchr(tmp, '.') = 0;
+        name = (const char *)gsInject(GSE_NAME, 0, 0);
+        if (!name)
+                name = "unknown";
         snprintf(buf, sizeof(buf), 
-                 "application/%s::xx@foo.bar", 
-                 0 == strncmp(buf, "lib", 3)? tmp+3 : 
-                 tmp);
+                 "application/%s::xx@foo.bar", name);
         buf[sizeof(buf) - 1] = 0;
-        gsReport("getmimedesc %s", buf);
+        debug("getmimedesc %s", buf);
         return buf;
 }
 

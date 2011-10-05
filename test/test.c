@@ -18,10 +18,10 @@ intptr_t event(const ev * e) {
 	intptr_t ret = 1;
 	gsReport("got event %s, %p %p", evName(e), evArg0(e), evArg1(e));
 	switch (evType(e)) {
-	case GSE_INIT: gsReport("resources: %s", gsResPath()); break;
+	case GSE_NAME: ret = (intptr_t)"test"; break;
 	case GSE_UPDATE: draw(); break;
 	case GSE_INVOKE: invoke(evMethod(e)); break;
-	default: break;
+	default: ret = 0; break;
 	}
 	return ret;
 }

@@ -390,30 +390,6 @@ static void osterm() {
 	
 }
 
-extern IMAGE_DOS_HEADER __ImageBase;
-
-const char * gsResPath() {
-	static char buf[256];
-	GetModuleFileName((HINSTANCE)&__ImageBase, buf, sizeof(buf));
-	*(strrchr(buf, '\\') + 1) = 0;
-	return buf;
-}
-
-
-static void * self() {
-	HMODULE ret;
-	GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, 
-			  (LPCSTR)self,  &ret);
-	gsReport("self: %p", ret);
-	return ret;
-}
-
-static const char * osmodpath() {
-	static char buf[256];
-	GetModuleFileName(self(), buf, sizeof(buf));
-	return buf;
-}
-
 static NPError osgetval(NPP i, NPPVariable var, void * v) {
 	NPError ret;
 	debug("os getvalue"); 

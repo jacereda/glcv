@@ -276,20 +276,6 @@ int main(int argc, char ** argv) {
         return ret;
 }
 
-static const char * osmodpath() {
-        static Dl_info info;
-        dladdr(gsResPath, &info);
-        return info.dli_fname;
-}
-
-const char * gsResPath() {
-        char buf[256];
-        static char ret[256];
-        snprintf(buf, sizeof(buf), "%s/../../Resources", osmodpath());
-        return realpath(buf, ret);
-}
-
-
 void gsReportV(const char *fmt, va_list ap) {
 	FILE *out = fopen("/tmp/gs.log", "a");
 	if(out) {
