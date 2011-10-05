@@ -82,9 +82,3 @@ const char * evKeyName(const ev *);
 // Provided by the program
 intptr_t event(const ev * e);
 
-#if defined(__GNUC__) && !defined(_WIN32_)
-#define EXPORTED \
-	extern __attribute__((visibility("default"))) __attribute__((used))
-#else
-#define EXPORTED extern __declspec(dllexport)
-#endif
