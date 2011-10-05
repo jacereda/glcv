@@ -29,7 +29,7 @@ static void osterm() {
         s_l = 0;
 }
 
-static void osglinit() {
+static void osglinit(NPWindow * w) {
         s_l.backgroundColor = CGColorGetConstantColor(kCGColorBlack);
         s_l.opaque = YES;
         s_l.asynchronous = YES;
