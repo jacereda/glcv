@@ -1,5 +1,4 @@
 #include "npapi.c"
-#include <dlfcn.h>
 #include <QuartzCore/QuartzCore.h>
 #include <Carbon/Carbon.h> // For keycodes
 
@@ -213,19 +212,6 @@ static NPError osevent(void * ve) {
                 assert(0);
 	}
 	return NPERR_NO_ERROR;
-}
-
-static const char * osmodpath() {
-        static Dl_info info;
-        dladdr(NP_GetEntryPoints, &info);
-        return info.dli_fname;
-}
-
-const char * gsResPath() {
-        char buf[256];
-        static char ret[256];
-        snprintf(buf, sizeof(buf), "%s/../../Resources", osmodpath());
-        return realpath(buf, ret);
 }
 
 static NPError osgetval(NPP i, NPPVariable var, void * v) {

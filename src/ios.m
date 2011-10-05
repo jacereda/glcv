@@ -33,7 +33,6 @@
 #include "gsgl.h"
 #include <OpenGLES/ES2/glext.h>
 #include <assert.h>
-#include <dlfcn.h>
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>

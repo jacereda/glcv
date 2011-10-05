@@ -1,5 +1,4 @@
 #include "gs.h"
-#include <dlfcn.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <android/log.h>
