@@ -136,14 +136,7 @@ static NPError nnew(NPMIMEType type, NPP i,
 }
 
 static NPError setwindow(NPP i, NPWindow* w) {
-//        NPRect rect;
         debug("setwindow");
-//        rect.left = 0;
-//        rect.top = 0;
-//        rect.right = w->width;
-//        rect.bottom = w->height;
-//        s_browser->invalidaterect(i, &rect);
-//        s_browser->forceredraw(i);
         osglinit(w);
 	gsInject(GSE_RESIZE, w->width, w->height);
         gsInject(GSE_GLINIT, 0, 0);
