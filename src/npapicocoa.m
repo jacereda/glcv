@@ -2,7 +2,13 @@
 #include <QuartzCore/QuartzCore.h>
 #include <Carbon/Carbon.h> // For keycodes
 
-@interface Layer : CAOpenGLLayer
+@interface Layer : CAOpenGLLayer {
+@public
+        int initialized;
+        int width;
+        int height;
+}
+
 - (void)drawInCGLContext:(CGLContextObj)ct
 	     pixelFormat:(CGLPixelFormatObj)pf
 	    forLayerTime:(CFTimeInterval)lt
@@ -11,7 +17,6 @@
                 pixelFormat:(CGLPixelFormatObj)pf
                forLayerTime:(CFTimeInterval)lt
                 displayTime:(const CVTimeStamp *)dt;
-
 @end
 
 static Layer * s_l = 0;
@@ -32,6 +37,9 @@ static void osglinit(NPWindow * w) {
         s_l.backgroundColor = CGColorGetConstantColor(kCGColorBlack);
         s_l.opaque = YES;
         s_l.asynchronous = YES;
+        s_l->initialized = 0;
+        s_l->width = w->width;
+	s_l->height = w->height;
 }
 
 static unsigned mapkeycode(unsigned k) {
@@ -247,6 +255,11 @@ static NPError osgetval(NPP i, NPPVariable var, void * v) {
 	    forLayerTime:(CFTimeInterval)lt
 	     displayTime:(const CVTimeStamp *)dt
 {
+        if (!initialized) {
+                gsInject(GSC_RESIZE, width, height);
+                gsInject(GSC_GLINIT, 0, 0);
+                initialized = 1;
+        }
         gsInject(GSC_UPDATE, 0, 0);
 	[super drawInCGLContext: ct pixelFormat: pf
                    forLayerTime: lt displayTime: dt];

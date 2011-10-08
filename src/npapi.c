@@ -138,8 +138,6 @@ static NPError nnew(NPMIMEType type, NPP i,
 static NPError setwindow(NPP i, NPWindow* w) {
         debug("setwindow");
         osglinit(w);
-	gsInject(GSC_RESIZE, w->width, w->height);
-        gsInject(GSC_GLINIT, 0, 0);
 	return NPERR_NO_ERROR;
 }
 

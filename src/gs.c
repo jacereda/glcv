@@ -162,6 +162,10 @@ gskey evWhich(const ev * e) {
 	return evArg0(e);
 }
 
+uint32_t evUnicode(const ev * e) {
+	return evArg0(e);
+}
+
 int evX(const ev * e) {
 	return evArg0(e);
 }

@@ -74,6 +74,7 @@ const char * evName(const ev *);
 int evWidth(const ev *);
 int evHeight(const ev *);
 gskey evWhich(const ev *);
+uint32_t evUnicode(const ev *);
 intptr_t evArg0(const ev *);
 intptr_t evArg1(const ev *);
 int evX(const ev *);

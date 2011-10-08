@@ -350,11 +350,11 @@ static LONG WINAPI handle(HWND win, UINT msg, WPARAM w, LPARAM l) {
         return r;
 }
 
-static void osglinit(NPWindow * npwin) {
+static void osglinit(NPWindow * w) {
 	HDC dc;
 	osterm();
 	BOOL (APIENTRY *wglSwapInterval)(int);
-	s_win = npwin->window;
+	s_win = w->window;
 	gsReport("win: %p", s_win);
 	s_oldproc = SubclassWindow(s_win, handle);
 	gsReport("old: %p", s_oldproc);
@@ -367,6 +367,8 @@ static void osglinit(NPWindow * npwin) {
 	wglSwapInterval = (void*)wglGetProcAddress("wglSwapIntervalEXT");
 	if (wglSwapInterval)
 		chk(wglSwapInterval(1));
+	gsInject(GSC_RESIZE, w->width, w->height);
+	gsInject(GSC_GLINIT, 0, 0);
 	chk(ReleaseDC(s_win, dc));
 	chk(SetTimer(s_win, 10, 10, 0));
 	chk(PostMessage(s_win, WM_PAINT, 0, 0));

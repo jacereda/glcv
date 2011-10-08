@@ -78,7 +78,7 @@ static gboolean update(gpointer data) {
         return 1;
 }
 
-static void osglinit(NPWindow * win) {
+static void osglinit(NPWindow * w) {
         NPSetWindowCallbackStruct * info = 
                 (NPSetWindowCallbackStruct*)win->ws_info;
         XVisualInfo * vinfo;
@@ -103,6 +103,8 @@ static void osglinit(NPWindow * win) {
         g_ctx = glXCreateContext(g_dpy, vinfo, 0, True);
         XFree(vinfo);
         glXMakeCurrent(g_dpy, g_w, g_ctx);
+	gsInject(GSC_RESIZE, w->width, w->height);
+	gsInject(GSC_GLINIT, 0, 0);
 }
 
 void osterm(ins * o) {
