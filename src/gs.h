@@ -82,7 +82,8 @@ int evY(const ev *);
 int evArgC(const ev *);
 char ** evArgV(const ev *);
 const char * evMethod(const ev *);
-const char * evKeyName(const ev *);
+
+const char * keyName(gskey k);
 
 // Provided by the program
 intptr_t event(const ev * e);

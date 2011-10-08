@@ -186,10 +186,9 @@ const char * evMethod(const ev * e) {
 	return (char*)evArg0(e);
 }
 
-const char * evKeyName(const ev * e) {
+const char * keyName(gskey k) {
 	const char * n = 0;
 	static char buf[32];
-        gskey k = evWhich(e);
 	switch (k) {
 #define K(x) case GSK_##x: n = #x; break;
 #include "gskeys.h"

@@ -14,11 +14,11 @@ static void glinit() {
 }
 
 static void down(gskey k) {
-	gsReport("down");
+	gsReport("down %s", keyName(k));
 }
 
 static void up(gskey k) {
-	gsReport("up");
+	gsReport("up %s", keyName(k));
 }
 
 static void unicode(uint32_t c) {
