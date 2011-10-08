@@ -8,10 +8,18 @@
 #define dbg gsReport
 #define err gsReport
 
-void gsReportV(const char * fmt, va_list ap) {
-	__android_log_vprint(ANDROID_LOG_ERROR, "gs", fmt, ap);
+static void report(const char * name, const char * s) {
+	__android_log_print(ANDROID_LOG_ERROR, name, s);
 }
 
+intptr_t osEvent(ev * e) {
+	intptr_t ret;
+	switch (evType(e)) {
+	case GSQ_LOGGER: ret = (intptr_t)report; break;
+	default: ret = 0;
+	}
+        return ret;
+}
 static struct android_app* g_app;
 
 static gskey mapkey(int kc) {

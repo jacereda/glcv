@@ -9,132 +9,245 @@ Table of Contents
 =================
 1 Purpose 
 2 Building 
+    2.1 Targets 
+        2.1.1 IOS 
+        2.1.2 Android 
+        2.1.3 NPAPI 
 3 API 
+    3.1 Functions 
+        3.1.1 Application hook 
+        3.1.2 Screen properties 
+        3.1.3 Keyboard 
+        3.1.4 Resources 
+        3.1.5 Logging 
+        3.1.6 Events 
+    3.2 Commands 
+        3.2.1 GSC_NONE 
+        3.2.2 GSC_INIT 
+        3.2.3 GSC_TERM 
+        3.2.4 GSC_GLINIT 
+        3.2.5 GSC_GLTERM 
+        3.2.6 GSC_UPDATE 
+        3.2.7 GSC_RESIZE 
+        3.2.8 GSC_DOWN 
+        3.2.9 GSC_UP 
+        3.2.10 GSC_UNICODE 
+        3.2.11 GSC_MOTION 
+        3.2.12 GSC_CLOSE 
+        3.2.13 GSC_INVOKE 
+    3.3 Queries 
+        3.3.1 GSQ_NAME 
+        3.3.2 GSQ_LOGGER 
 4 License 
 
 
 1 Purpose 
-----------
+~~~~~~~~~~
 GLGS is a small screen/event handling library that provides a thin
 layer abstracting the details of configuring the screen and handling
 input. Sort of a simple GLUT/SDL.
 
 2 Building 
------------
+~~~~~~~~~~~
 As of now, the build scripts only work on Mac OS X.
-* Targets 
-  + IOS 
-    The following command should build the library and the examples and
-    install them in the IOS simulator directory.
-    
-      ./mk-ios
-  + Android 
-    The following command should build the library and the examples and
-    install them in the Android emulator. The emulator must be running.
-    
-      ./mk-android
-  + NPAPI 
-    The following command should build the library and the examples and
-    install them in the user's plugins directory.
-    
-      ./mk-npapi
-    After building, try opening [file:testplugin.html]
+
+2.1 Targets 
+============
+
+2.1.1 IOS 
+----------
+The following command should build the library and the examples and
+install them in the IOS simulator directory.
+
+  ./mk-ios
+
+2.1.2 Android 
+--------------
+The following command should build the library and the examples and
+install them in the Android emulator. The emulator must be running.
+
+  ./mk-android
+
+2.1.3 NPAPI 
+------------
+The following command should build the library and the examples and
+install them in the user's plugins directory.
+
+  ./mk-npapi
+After building, try opening [file:testplugin.html]
 
 3 API 
-------
-* Functions 
-  + Application hook 
-    - intptr_t event(const ev * e); 
-      This is the event handling routine implemented by your application.
-  + Screen properties 
-    - unsigned gsWidth(); 
-      Current screen width
-    - unsigned gsHeight(); 
-      Current screen height
-  + Mouse location 
-    - int gsMouseX(); 
-      Current X mouse position
-    - int gsMouseY(); 
-      Current Y mouse position
-  + Keyboard 
-    - int gsPressed(gskey key); 
-      True if key is currently pressed
-    - int gsReleased(gskey key); 
-      True if key has just been released
-    - int gsShowKeyboard(); 
-      On platforms that support it, show the on-screen keyboard
-    - int gsHideKeyboard(); 
-      On platforms that support it, hide the on-screen keyboard
-  + Resources 
-    - const char * gsResPath(); 
-      Resources path
-  + Logging 
-    - void gsReportV(const char * fmt, va_list ap); 
-      Report a message (depending on the platform, it might go to a file)
-    - void gsReport(const char * fmt, ...); 
-      Report a message (depending on the platform, it might go to a file)
-  + Events 
-    - int evType(const ev *); 
-      Event type.
-    - const char * evName(const ev *); 
-      Event name.
-    - int evWidth(const ev *); 
-      Width for GSE_RESIZE events.
-    - int evHeight(const ev *); 
-      Width for GSE_RESIZE events.
-    - gskey evWhich(const ev *); 
-      Keycode associated to GSE_DOWN/GSE_UP events.
-    - const char * evKeyName(const ev *); 
-      Key name for GSE_DOWN/GSE_UP events.
-    - int evX(const ev *); 
-      Mouse X position for GSE_DOWN/GSE_UP events.
-    - int evY(const ev *); 
-      Mouse Y position for GSE_DOWN/GSE_UP events.
-    - int evArgC(const ev *); 
-      Argument count for GSE_INIT events.
-    - char ** evArgV(const ev *); 
-      Argument array for GSE_INIT events.
-    - intptr_t evArg0(const ev *); 
-      First event argument, mostly internal.
-    - intptr_t evArg1(const ev *); 
-      
-      Second event argument, mostly internal.
-    - intptr_t gsInject(gseventtype, intptr_t, intptr_t); 
-      Inject an event, mostly internal.
-      
-* Events 
-  + GSE_NONE 
-    Null event, must be ignored.
-  + GSE_INIT 
-    Called upon initialization, no GL operations should be performed at this stage.
-  + GSE_TERM 
-    Called befor terminating the application.
-  + GSE_GLINIT 
-    The OpenGL context has been established. Might be called several times.
-  + GL_EVENT_GLTERM 
-    The OpenGL context is going to be destroyed. Might be called several times.
-  + GSE_UPDATE 
-    This is your update routine, should be called at ~60Hz.
-  + GSE_RESIZE 
-    Called when the screen is resized. Might be called several times.
-  + GSE_DOWN 
-    A key/button has been pressed.
-  + GSE_UP 
-    A key/button has been released.
-  + GSE_UNICODE 
-    Called when the user enters text.
-  + GSE_MOTION 
-    The mouse moved.
-  + GSE_CLOSE 
-    The application is about to close.
-  + GSE_INVOKE 
-    Invoke method. The argument is available as evMethod().
-  + GSE_NAME 
-    Used to query the application name.
-    
+~~~~~~
+
+3.1 Functions 
+==============
+
+3.1.1 Application hook 
+-----------------------
+
+  intptr_t event(const ev * e);
+This is the event handling routine implemented by your application.
+
+3.1.2 Screen properties 
+------------------------
+
+  unsigned gsWidth();
+Current screen width
+
+
+  unsigned gsHeight();
+Current screen height
+
+  Mouse location
+
+  int gsMouseX();
+Current X mouse position
+
+  int gsMouseY();
+Current Y mouse position
+
+3.1.3 Keyboard 
+---------------
+
+  int gsPressed(gskey key);
+True if key is currently pressed
+
+  int gsReleased(gskey key);
+True if key has just been released
+
+  int gsShowKeyboard();
+On platforms that support it, show the on-screen keyboard
+
+  int gsHideKeyboard();
+On platforms that support it, hide the on-screen keyboard
+
+3.1.4 Resources 
+----------------
+
+  const char * gsResPath();
+Resources path
+
+3.1.5 Logging 
+--------------
+
+  void gsReportV(const char * fmt, va_list ap);
+Report a message (depending on the platform, it might go to a file)
+
+  void gsReport(const char * fmt, ...);
+Report a message (depending on the platform, it might go to a file)
+
+3.1.6 Events 
+-------------
+
+  int evType(const ev *);
+Event type.
+
+  const char * evName(const ev *);
+Event name.
+
+  int evWidth(const ev *);
+Width for GSC_RESIZE events.
+
+  int evHeight(const ev *);
+Width for GSC_RESIZE events.
+
+  gskey evWhich(const ev *);
+Keycode associated to GSC_DOWN/GSC_UP events.
+
+  const char * evKeyName(const ev *);
+Key name for GSC_DOWN/GSC_UP events.
+
+  int evX(const ev *);
+Mouse X position for GSC_DOWN/GSC_UP events.
+
+  int evY(const ev *);
+Mouse Y position for GSC_DOWN/GSC_UP events.
+
+  int evArgC(const ev *);
+Argument count for GSC_INIT events.
+
+  char ** evArgV(const ev *);
+Argument array for GSC_INIT events.
+
+  intptr_t evArg0(const ev *);
+First event argument, mostly internal.
+
+  intptr_t evArg1(const ev *);
+Second event argument, mostly internal.
+
+  intptr_t gsInject(gseventtype, intptr_t, intptr_t);
+Inject an event, mostly internal.
+
+3.2 Commands 
+=============
+
+3.2.1 GSC_NONE 
+---------------
+Null event, must be ignored.
+
+3.2.2 GSC_INIT 
+---------------
+Called upon initialization, no GL operations should be performed at this stage.
+
+3.2.3 GSC_TERM 
+---------------
+Called befor terminating the application.
+
+3.2.4 GSC_GLINIT 
+-----------------
+The OpenGL context has been established. Might be called several times.
+
+3.2.5 GSC_GLTERM 
+-----------------
+The OpenGL context is going to be destroyed. Might be called several times.
+
+3.2.6 GSC_UPDATE 
+-----------------
+This is your update routine, should be called at ~60Hz.
+
+3.2.7 GSC_RESIZE 
+-----------------
+Called when the screen is resized. Might be called several times.
+
+3.2.8 GSC_DOWN 
+---------------
+A key/button has been pressed.
+
+3.2.9 GSC_UP 
+-------------
+A key/button has been released.
+
+3.2.10 GSC_UNICODE 
+-------------------
+Called when the user enters text.
+
+3.2.11 GSC_MOTION 
+------------------
+The mouse moved.
+
+3.2.12 GSC_CLOSE 
+-----------------
+The application is about to close.
+
+3.2.13 GSC_INVOKE 
+------------------
+Invoke method. The argument is available as evMethod().
+
+3.3 Queries 
+============
+
+3.3.1 GSQ_NAME 
+---------------
+Used to query the application name.
+
+3.3.2 GSQ_LOGGER 
+-----------------
+Function to be used for logging. The returned function prototype should be:
+
+  void report(const char * appname, const char * string);
 
 4 License 
-----------
+~~~~~~~~~~
   Copyright (c) 2011, Jorge Acereda Maciá
   All rights reserved.
 

@@ -1,1 +1,3 @@
 Q(NAME)
+Q(LOGGER)
+

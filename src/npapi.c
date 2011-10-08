@@ -39,17 +39,8 @@ static void osglinit(NPWindow *);
 static NPError osevent(void * ve);
 static NPError osgetval(NPP i, NPPVariable var, void * v);
 
-void gsReportV(const char *fmt, va_list ap) {
-#if defined(_WIN32)
-	FILE *out = fopen("\\gs.log", "a");
-#else
-	FILE *out = fopen("/tmp/gs.log", "a");
-#endif
-	if(out) {
-		vfprintf(out, fmt, ap);
-		fputs("\n", out);
-		fclose(out);
-	}
+intptr_t osEvent(ev * e) {
+        return 0;
 }
 
 #define debug gsReport

@@ -205,7 +205,9 @@ const char * keyName(gskey k) {
 }
 
 intptr_t gsInject(gseventtype type, intptr_t p1, intptr_t p2) {
+	extern intptr_t osEvent(ev *);
 	ev e;
+	intptr_t ret;
         e.type = type;
         e.p[0] = p1;
         e.p[1] = p2;
@@ -225,7 +227,10 @@ intptr_t gsInject(gseventtype type, intptr_t p1, intptr_t p2) {
 		release(evWhich(&e));
 		break;
 	};
-	return event(&e);
+	ret = event(&e);
+	if (!ret)
+		ret = osEvent(&e);
+	return ret;
 }
 
 void gsReport(const char * fmt, ...) {
@@ -233,4 +238,45 @@ void gsReport(const char * fmt, ...) {
 	va_start(ap, fmt);
 	gsReportV(fmt, ap);
 	va_end(ap);
+}
+
+
+typedef void (*logger_t)(const char *, const char *);
+
+static void defaultlog(const char * name, const char * s) {
+	char path[256];	
+	FILE *out;
+	snprintf(path, sizeof(path), 
+#if defined _WIN32
+		 "\\%s.log"
+#else
+		 "/tmp/%s.log"
+#endif
+		 , name);
+	out = fopen(path, "a");
+	if(out) {
+		fprintf(out, "%s", s);
+		fclose(out);
+	}
+}
+
+void gsReportV(const char *fmt, va_list ap) {
+	static logger_t logger = 0;
+	static const char * name;
+	if (!logger) {
+		logger = (logger_t)1;
+		logger = (logger_t)gsInject(GSQ_LOGGER, 0, 0);
+		if (!logger)
+			logger = defaultlog;
+		name = (const char *)gsInject(GSQ_NAME, 0, 0);
+		if (!name)
+			name = "unknown";
+	}
+	if (logger != (logger_t)1) {
+		char b[1024];
+		size_t s = 0;
+		s += vsnprintf(b + s, sizeof(b) - s, fmt, ap);
+		s += snprintf(b + s, sizeof(b) - s, "\n");
+		logger(name, b);
+	}
 }

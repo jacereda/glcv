@@ -58,6 +58,10 @@
 
 static Delegate * s_delegate = 0;
 
+intptr_t osEvent(ev * e) {
+        return 0;
+}
+
 Delegate * getDelegate() {
 	assert(s_delegate);
 	return s_delegate;
@@ -275,11 +279,3 @@ int main(int argc, char ** argv) {
         return ret;
 }
 
-void gsReportV(const char *fmt, va_list ap) {
-	FILE *out = fopen("/tmp/gs.log", "a");
-	if(out) {
-		vfprintf(out, fmt, ap);
-		fputs("\n", out);
-		fclose(out);
-	}
-}

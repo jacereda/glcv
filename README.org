@@ -5,7 +5,7 @@
 #+DESCRIPTION: 
 #+KEYWORDS: 
 #+LANGUAGE:  en
-#+OPTIONS:   H:1 num:t toc:t \n:nil @:t ::t |:t ^:{} -:t f:t *:t <:t
+#+OPTIONS:   H:3 num:t toc:t \n:nil @:t ::t |:t ^:{} -:t f:t *:t <:t
 #+OPTIONS:   TeX:t LaTeX:t skip:nil d:nil todo:t pri:nil tags:not-in-toc
 #+INFOJS_OPT: view:nil toc:nil ltoc:t mouse:underline buttons:0 path:http://orgmode.org/org-info.js
 #+EXPORT_SELECT_TAGS: export
@@ -17,10 +17,10 @@
 * Export 							   :noexport:
 #+begin_src emacs-lisp :results silent
 (save-excursion 
-  (org-export-as-utf8 1)
+  (org-export-as-utf8 3)
   (rename-file "README.txt" "README" t))
 (save-excursion 
-  (org-export-as-html 1))
+  (org-export-as-html 3))
 #+end_src
 file:README
 file:README.html
@@ -54,62 +54,114 @@ After building, try opening file:testplugin.html
 * API
 ** Functions
 *** Application hook
-**** intptr_t event(const ev * e);
+#+begin_src c
+intptr_t event(const ev * e);
+#+end_src
 This is the event handling routine implemented by your application.
 *** Screen properties
-**** unsigned gsWidth();
+#+begin_src c
+unsigned gsWidth();
+#+end_src
 Current screen width
-**** unsigned gsHeight();
+
+#+begin_src c
+unsigned gsHeight();
+#+end_src
 Current screen height
-*** Mouse location
-**** int gsMouseX();
+#+begin_src c
+Mouse location
+#+end_src
+#+begin_src c
+int gsMouseX();
+#+end_src
 Current X mouse position
-**** int gsMouseY();
+#+begin_src c
+int gsMouseY();
+#+end_src
 Current Y mouse position
 *** Keyboard
-**** int gsPressed(gskey key);
+#+begin_src c
+int gsPressed(gskey key);
+#+end_src
 True if key is currently pressed
-**** int gsReleased(gskey key);
+#+begin_src c
+int gsReleased(gskey key);
+#+end_src
 True if key has just been released
-**** int gsShowKeyboard();
+#+begin_src c
+int gsShowKeyboard();
+#+end_src
 On platforms that support it, show the on-screen keyboard
-**** int gsHideKeyboard();
+#+begin_src c
+int gsHideKeyboard();
+#+end_src
 On platforms that support it, hide the on-screen keyboard
 *** Resources
-**** const char * gsResPath();
+#+begin_src c
+const char * gsResPath();
+#+end_src
 Resources path
 *** Logging
-**** void gsReportV(const char * fmt, va_list ap);
+#+begin_src c
+void gsReportV(const char * fmt, va_list ap);
+#+end_src
 Report a message (depending on the platform, it might go to a file)
-**** void gsReport(const char * fmt, ...);
+#+begin_src c
+void gsReport(const char * fmt, ...);
+#+end_src
 Report a message (depending on the platform, it might go to a file)
 *** Events
-**** int evType(const ev *);
+#+begin_src c
+int evType(const ev *);
+#+end_src
 Event type.
-**** const char * evName(const ev *);
+#+begin_src c
+const char * evName(const ev *);
+#+end_src
 Event name.
-**** int evWidth(const ev *);
+#+begin_src c
+int evWidth(const ev *);
+#+end_src
 Width for GSC_RESIZE events.
-**** int evHeight(const ev *);
+#+begin_src c
+int evHeight(const ev *);
+#+end_src
 Width for GSC_RESIZE events.
-**** gskey evWhich(const ev *);
+#+begin_src c
+gskey evWhich(const ev *);
+#+end_src
 Keycode associated to GSC_DOWN/GSC_UP events.
-**** const char * evKeyName(const ev *);
+#+begin_src c
+const char * evKeyName(const ev *);
+#+end_src
 Key name for GSC_DOWN/GSC_UP events.
-**** int evX(const ev *);
+#+begin_src c
+int evX(const ev *);
+#+end_src
 Mouse X position for GSC_DOWN/GSC_UP events.
-**** int evY(const ev *);
+#+begin_src c
+int evY(const ev *);
+#+end_src
 Mouse Y position for GSC_DOWN/GSC_UP events.
-**** int evArgC(const ev *);
+#+begin_src c
+int evArgC(const ev *);
+#+end_src
 Argument count for GSC_INIT events.
-**** char ** evArgV(const ev *);
+#+begin_src c
+char ** evArgV(const ev *);
+#+end_src
 Argument array for GSC_INIT events.
-**** intptr_t evArg0(const ev *);
+#+begin_src c
+intptr_t evArg0(const ev *);
+#+end_src
 First event argument, mostly internal.
-**** intptr_t evArg1(const ev *);
-
+#+begin_src c
+intptr_t evArg1(const ev *);
+#+end_src
 Second event argument, mostly internal.
-**** intptr_t gsInject(gseventtype, intptr_t, intptr_t);
+#+begin_src c
+intptr_t gsInject(gseventtype, intptr_t, intptr_t);
+#+end_src
 Inject an event, mostly internal.
 
 ** Commands
@@ -121,7 +173,7 @@ Called upon initialization, no GL operations should be performed at this stage.
 Called befor terminating the application.
 *** GSC_GLINIT
 The OpenGL context has been established. Might be called several times.
-*** GL_EVENT_GLTERM
+*** GSC_GLTERM
 The OpenGL context is going to be destroyed. Might be called several times.
 *** GSC_UPDATE
 This is your update routine, should be called at ~60Hz.
@@ -142,6 +194,11 @@ Invoke method. The argument is available as evMethod().
 ** Queries
 *** GSQ_NAME
 Used to query the application name.
+*** GSQ_LOGGER
+Function to be used for logging. The returned function prototype should be:
+#+begin_src c
+void report(const char * appname, const char * string);
+#+end_src
 
 * License
   Copyright (c) 2011, Jorge Acereda Maciá
@@ -174,3 +231,5 @@ Used to query the application name.
   THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+* ToDo 								   :noexport:
+
