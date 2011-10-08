@@ -22,7 +22,7 @@ static void up(gskey k) {
 }
 
 static void unicode(uint32_t c) {
-	gsReport("unicode %d", c);
+	gsReport("unicode %c", c);
 }
 
 static void motion(int x, int y) {

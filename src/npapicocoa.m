@@ -162,6 +162,14 @@ static unsigned mapkeycode(unsigned k) {
 	return ret;
 }
 
+static void textinput(NPNSString * nt) {
+        NSString * t = (NSString *)nt;
+        int tl = [t length];
+        int i;
+        for (i = 0; i < tl; i++)
+                gsInject(GSC_UNICODE, [t characterAtIndex: i], 0);
+}
+
 static NPError osevent(void * ve) {
 	NPCocoaEvent * e = (NPCocoaEvent *)ve;
 	switch (e->type) {
@@ -195,6 +203,7 @@ static NPError osevent(void * ve) {
 	case NPCocoaEventKeyDown: 
 		debug("NPCocoaEventKeyDown"); 
 		gsInject(GSC_DOWN, mapkeycode(e->data.key.keyCode), 0);
+                textinput(e->data.key.characters);
 		break;
 	case NPCocoaEventKeyUp: 
 		debug("NPCocoaEventKeyUp"); 
@@ -214,6 +223,7 @@ static NPError osevent(void * ve) {
 		break;
 	case NPCocoaEventTextInput: 
 		debug("NPCocoaEventTextInput"); 
+                textinput(e->data.text.text);
 		break;
 	default: 
                 debug("Unknown event");
