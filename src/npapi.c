@@ -68,7 +68,7 @@ static bool invoke(NPObject* obj, NPIdentifier methodid,
                 debug("len: %d", s.UTF8Length);
                 memcpy(buf, s.UTF8Characters, s.UTF8Length);
                 buf[s.UTF8Length] = 0;
-                gsInject(GSE_INVOKE, (intptr_t)buf, 0);
+                gsInject(GSC_INVOKE, (intptr_t)buf, 0);
                 ret = 1;
         } else {
 		debug("no such method");
@@ -122,7 +122,7 @@ static NPError nnew(NPMIMEType type, NPP i,
 		    char* argv[], NPSavedData* saved) {
         int ok;
         debug("nnew");
-        ok = gsInject(GSE_INIT, argc, (intptr_t)argv);
+        ok = gsInject(GSC_INIT, argc, (intptr_t)argv);
         if (ok) {
                 unsigned j;
                 snprintf(s_plgname, sizeof s_plgname - 1, "%s", argv[0]);
@@ -138,16 +138,16 @@ static NPError nnew(NPMIMEType type, NPP i,
 static NPError setwindow(NPP i, NPWindow* w) {
         debug("setwindow");
         osglinit(w);
-	gsInject(GSE_RESIZE, w->width, w->height);
-        gsInject(GSE_GLINIT, 0, 0);
+	gsInject(GSC_RESIZE, w->width, w->height);
+        gsInject(GSC_GLINIT, 0, 0);
 	return NPERR_NO_ERROR;
 }
 
 
 static NPError destroy(NPP i, NPSavedData **save) {
 	debug("destroy");
-	gsInject(GSE_CLOSE, 0, 0);
-        gsInject(GSE_TERM, 0, 0);
+	gsInject(GSC_CLOSE, 0, 0);
+        gsInject(GSC_TERM, 0, 0);
         osterm();
 	if(s_so)
 		s_browser->releaseobject(s_so);
@@ -232,7 +232,7 @@ EXPORTED char * NP_GetMIMEDescription(void) {
         static char buf[256];
         const char * name;
         debug("getmime");
-        name = (const char *)gsInject(GSE_NAME, 0, 0);
+        name = (const char *)gsInject(GSQ_NAME, 0, 0);
         if (!name)
                 name = "unknown";
         snprintf(buf, sizeof(buf), 

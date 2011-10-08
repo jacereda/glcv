@@ -64,9 +64,9 @@ Delegate * getDelegate() {
 }
 
 static void fakekeyuni(unsigned key, unsigned unicode) {
-	gsInject(GSE_DOWN, key, 0);
-	gsInject(GSE_UNICODE, unicode, 0);
-	gsInject(GSE_UP, key, 0);
+	gsInject(GSC_DOWN, key, 0);
+	gsInject(GSC_UNICODE, unicode, 0);
+	gsInject(GSC_UP, key, 0);
 }
 
 static unsigned mapkey(unsigned k) {
@@ -120,10 +120,10 @@ static void fakekey(unsigned unicode) {
 	int upper = isupper(unicode);
 	int luni = toupper(unicode);
 	if (upper)
-		gsInject(GSE_DOWN, GSK_SHIFT, 0);
+		gsInject(GSC_DOWN, GSK_SHIFT, 0);
 	fakekeyuni(mapkey(luni), unicode);
 	if (upper)
-		gsInject(GSE_UP, GSK_SHIFT, 0);
+		gsInject(GSC_UP, GSK_SHIFT, 0);
 }
 
 @implementation GLView
@@ -135,16 +135,16 @@ static void fakekey(unsigned unicode) {
 {
         UITouch* touch = [touches anyObject];
         CGPoint loc = [touch locationInView: self];
-        gsInject(GSE_MOTION, loc.x, loc.y);
-        gsInject(GSE_DOWN, GSK_MOUSELEFT, 0);
+        gsInject(GSC_MOTION, loc.x, loc.y);
+        gsInject(GSC_DOWN, GSK_MOUSELEFT, 0);
 }
 
 - (void) touchesEnded: (NSSet*) touches withEvent: (UIEvent*) e
 {
         UITouch* touch = [touches anyObject];
         CGPoint loc = [touch locationInView: self];
-        gsInject(GSE_MOTION, loc.x, loc.y);
-        gsInject(GSE_UP, GSK_MOUSELEFT, 0);
+        gsInject(GSC_MOTION, loc.x, loc.y);
+        gsInject(GSC_UP, GSK_MOUSELEFT, 0);
 }
 
 
@@ -152,7 +152,7 @@ static void fakekey(unsigned unicode) {
 {
         UITouch* touch = [touches anyObject];
         CGPoint loc = [touch previousLocationInView: self];
-        gsInject(GSE_MOTION, loc.x, loc.y);
+        gsInject(GSC_MOTION, loc.x, loc.y);
 }
 
 @end
@@ -160,7 +160,7 @@ static void fakekey(unsigned unicode) {
 @implementation Delegate
 
 - (void) applicationWillTerminate: (UIApplication*) a {
-	gsInject(GSE_CLOSE, 0, 0);
+	gsInject(GSC_CLOSE, 0, 0);
 	[self update];
 }
 
@@ -192,7 +192,7 @@ shouldChangeCharactersInRange: (NSRange)range
 }
 
 - (void)update {
-        gsInject(GSE_UPDATE, 0, 0);
+        gsInject(GSC_UPDATE, 0, 0);
 	[ctx presentRenderbuffer: GL_RENDERBUFFER];
 }
 
@@ -228,8 +228,8 @@ shouldChangeCharactersInRange: (NSRange)range
 	[win addSubview: tf];
 
 	[self initContext];
-	gsInject(GSE_RESIZE, r.size.width, r.size.height);
-	gsInject(GSE_GLINIT, 0, 0);
+	gsInject(GSC_RESIZE, r.size.width, r.size.height);
+	gsInject(GSC_GLINIT, 0, 0);
 }
 
 - (void) applicationDidFinishLaunching: (UIApplication*) application 
@@ -267,9 +267,9 @@ int gsHideKeyboard() {
 int main(int argc, char ** argv) {
 	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 	int ret = 42;
-	if (gsInject(GSE_INIT, argc, (intptr_t)argv)) {
+	if (gsInject(GSC_INIT, argc, (intptr_t)argv)) {
 		UIApplicationMain(argc, argv, nil, @"Delegate");
-		ret = gsInject(GSE_TERM, 0, 0);
+		ret = gsInject(GSC_TERM, 0, 0);
 	}
 	[pool release];
         return ret;

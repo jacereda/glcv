@@ -146,13 +146,13 @@ static int32_t input(struct android_app * app, AInputEvent * e) {
 			handled = kc != GSK_NONE;
 			if (handled) {
 				if (action == AKEY_EVENT_ACTION_DOWN)
-					gsInject(GSE_DOWN, gskc, 0);
+					gsInject(GSC_DOWN, gskc, 0);
 				if (action == AKEY_EVENT_ACTION_UP)
-					gsInject(GSE_UP, gskc, 0);
+					gsInject(GSC_UP, gskc, 0);
 			}
 			break;
 		case AINPUT_EVENT_TYPE_MOTION:
-			gsInject(GSE_MOTION, 
+			gsInject(GSC_MOTION, 
 				 AMotionEvent_getX(e, 0), AMotionEvent_getY(e, 0));
 			break;
 		default:
@@ -168,7 +168,7 @@ static void handle(struct android_app* app, int32_t cmd) {
 		break;
         case APP_CMD_TERM_WINDOW:
 		dbg("got term window");
-		gsInject(GSE_CLOSE, 0, 0);
+		gsInject(GSC_CLOSE, 0, 0);
 		app->userData = (void*)1;
 		break;
 	}
@@ -209,7 +209,7 @@ void android_main(struct android_app* app) {
 	while (!app->userData)
 		pollEvent(app);
 	g_app = app;
-	gsInject(GSE_INIT, 1, (intptr_t)argv);
+	gsInject(GSC_INIT, 1, (intptr_t)argv);
 	dpy = eglGetDisplay(EGL_DEFAULT_DISPLAY);
 	if (!eglInitialize(dpy, 0, 0))
 		err("initialize display");
@@ -223,17 +223,17 @@ void android_main(struct android_app* app) {
 	eglQuerySurface(dpy, surf, EGL_HEIGHT, &h);
 	if (!eglSwapInterval(dpy, 1))
 		err("setting swap interval");
-	gsInject(GSE_RESIZE, w, h);
-	gsInject(GSE_GLINIT, 0, 0);
+	gsInject(GSC_RESIZE, w, h);
+	gsInject(GSC_GLINIT, 0, 0);
 	app->userData = 0;
 	while (!app->userData && !app->destroyRequested) {
-		gsInject(GSE_UPDATE, 0, 0);
+		gsInject(GSC_UPDATE, 0, 0);
 		if (!eglSwapBuffers(dpy, surf))
 			err("swapbuffers failed");
 		pollEvent(app);
 	}
 	if (app->destroyRequested) 
-		gsInject(GSE_CLOSE, 0, 0);
+		gsInject(GSC_CLOSE, 0, 0);
 	dbg("terminated");
 	if (!eglMakeCurrent(dpy, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT))
 		err("clearing current");

@@ -162,17 +162,17 @@ static NPError osevent(void * ve) {
 		break;
 	case NPCocoaEventMouseDown: 
 		debug("NPCocoaEventMouseDown"); 
-		gsInject(GSE_DOWN, GSK_MOUSELEFT 
+		gsInject(GSC_DOWN, GSK_MOUSELEFT 
                          + e->data.mouse.buttonNumber, 0);
 		break;
 	case NPCocoaEventMouseUp: 
 		debug("NPCocoaEventMouseUp"); 
-		gsInject(GSE_UP, GSK_MOUSELEFT 
+		gsInject(GSC_UP, GSK_MOUSELEFT 
                          + e->data.mouse.buttonNumber, 0);
 		break;
 	case NPCocoaEventMouseMoved: 
 		debug("NPCocoaEventMouseMoved"); 
-		gsInject(GSE_MOTION, 
+		gsInject(GSC_MOTION, 
                          e->data.mouse.pluginX, e->data.mouse.pluginY);
 		break;
 	case NPCocoaEventMouseEntered: 
@@ -186,11 +186,11 @@ static NPError osevent(void * ve) {
 		break;
 	case NPCocoaEventKeyDown: 
 		debug("NPCocoaEventKeyDown"); 
-		gsInject(GSE_DOWN, mapkeycode(e->data.key.keyCode), 0);
+		gsInject(GSC_DOWN, mapkeycode(e->data.key.keyCode), 0);
 		break;
 	case NPCocoaEventKeyUp: 
 		debug("NPCocoaEventKeyUp"); 
-		gsInject(GSE_UP, mapkeycode(e->data.key.keyCode), 0);
+		gsInject(GSC_UP, mapkeycode(e->data.key.keyCode), 0);
 		break;
 	case NPCocoaEventFlagsChanged: 
 		debug("NPCocoaEventFlagsChanged"); 
@@ -247,7 +247,7 @@ static NPError osgetval(NPP i, NPPVariable var, void * v) {
 	    forLayerTime:(CFTimeInterval)lt
 	     displayTime:(const CVTimeStamp *)dt
 {
-        gsInject(GSE_UPDATE, 0, 0);
+        gsInject(GSC_UPDATE, 0, 0);
 	[super drawInCGLContext: ct pixelFormat: pf
                    forLayerTime: lt displayTime: dt];
 }

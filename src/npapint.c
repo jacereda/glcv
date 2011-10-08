@@ -201,7 +201,7 @@ static int onPAINT(HWND win) {
 		HDC dc = GetDC(win);
 		gsReport("Painting");
 //		chk(wglMakeCurrent(s_dc, s_rc));
-		gsInject(GSE_UPDATE, 0, 0);
+		gsInject(GSC_UPDATE, 0, 0);
 		chk(SwapBuffers(dc));
 		ReleaseDC(win, dc);
 //		chk(EndPaint(win, &ps));
@@ -215,39 +215,39 @@ static int onTIMER(HWND win, UINT i) {
 }
 
 static int onMOUSEMOVE(HWND win, int x, int y, UINT flags ) {
-        return wgot(win, GSE_MOTION, x, y);
+        return wgot(win, GSC_MOTION, x, y);
 }
 
 static int onSIZE(HWND win, UINT state, int w, int h) {
-        return wgot(win, GSE_RESIZE, w, h);
+        return wgot(win, GSC_RESIZE, w, h);
 }
 
 static int onCLOSE(HWND win) {
-        return wgot(win, GSE_CLOSE, 0, 0);
+        return wgot(win, GSC_CLOSE, 0, 0);
 }
 static int onSYSKEYDOWN(HWND win, UINT vk, BOOL down, int repeats, UINT flags) {
-        return wgot(win, GSE_DOWN, mapkeycode(vk), 0);
+        return wgot(win, GSC_DOWN, mapkeycode(vk), 0);
 }
 
 static int onSYSKEYUP(HWND win, UINT vk, BOOL down, int repeats, UINT flags) {
-        return wgot(win, GSE_UP, mapkeycode(vk), 0);
+        return wgot(win, GSC_UP, mapkeycode(vk), 0);
 }
 
 static int onKEYDOWN(HWND win, UINT vk, BOOL down, int repeats, UINT flags) {
-        return wgot(win, GSE_DOWN, mapkeycode(vk), 0);
+        return wgot(win, GSC_DOWN, mapkeycode(vk), 0);
 }
 
 static int onKEYUP(HWND win, UINT vk, BOOL down, int repeats, UINT flags) {
-        return wgot(win, GSE_UP, mapkeycode(vk), 0);
+        return wgot(win, GSC_UP, mapkeycode(vk), 0);
 }
 
 static int mouseDown(HWND win, int which) {
         SetCapture(win);
-        return wgot(win, GSE_DOWN, which, 0);        
+        return wgot(win, GSC_DOWN, which, 0);        
 }
 
 static int mouseUp(HWND win, int which) {
-        int ret = wgot(win, GSE_UP, which, 0);        
+        int ret = wgot(win, GSC_UP, which, 0);        
         ReleaseCapture();
         return ret;
 }
@@ -278,12 +278,12 @@ static int onRBUTTONUP(HWND win, int x, int y, UINT flags) {
 
 static int onMOUSEWHEEL(HWND win, int x, int y, int z, UINT keys) {
         int which = z >= 0? GSK_MOUSEWHEELUP : GSK_MOUSEWHEELDOWN;
-        return wgot(win, GSE_DOWN, which, 0)
-                && wgot(win, GSE_UP, which, 0);
+        return wgot(win, GSC_DOWN, which, 0)
+                && wgot(win, GSC_UP, which, 0);
 }
 
 static int onCHAR(HWND win, unsigned c, int repeats) {
-        return wgot(win, GSE_UNICODE, uc2aw(c), 0); 
+        return wgot(win, GSC_UNICODE, uc2aw(c), 0); 
 }
 
 static int onDESTROY(HWND win) {
@@ -335,7 +335,7 @@ static LONG WINAPI handle(HWND win, UINT msg, WPARAM w, LPARAM l) {
                         len = ImmGetCompositionString(imc, GCS_RESULTSTR, str, sizeof(str));
                         len >>= 1;
                         for (i = 0; i < len; i++)
-                                wgot(win, GSE_UNICODE, str[i], 0); 
+                                wgot(win, GSC_UNICODE, str[i], 0); 
                         ImmReleaseContext(win, imc);
                         chk(ReleaseDC(win, dc));
                 }

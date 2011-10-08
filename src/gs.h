@@ -38,14 +38,19 @@
 #endif
 
 typedef enum {
-#define E(x) GSE_##x,
-#include "gsev.h"
-#undef E
+	GSC_NONE,
+#define Q(x) GSQ_##x,
+#include "gsqueries.h"
+#undef Q
+#define C(x) GSC_##x,
+#include "gscommands.h"
+#undef C
+	GSC_MAX,
 } gseventtype;
 
 typedef enum {
 #define K(x) GSK_##x,
-#include "gskey.h"
+#include "gskeys.h"
 #undef K
 } gskey;
 

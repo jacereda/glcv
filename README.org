@@ -89,21 +89,21 @@ Event type.
 **** const char * evName(const ev *);
 Event name.
 **** int evWidth(const ev *);
-Width for GSE_RESIZE events.
+Width for GSC_RESIZE events.
 **** int evHeight(const ev *);
-Width for GSE_RESIZE events.
+Width for GSC_RESIZE events.
 **** gskey evWhich(const ev *);
-Keycode associated to GSE_DOWN/GSE_UP events.
+Keycode associated to GSC_DOWN/GSC_UP events.
 **** const char * evKeyName(const ev *);
-Key name for GSE_DOWN/GSE_UP events.
+Key name for GSC_DOWN/GSC_UP events.
 **** int evX(const ev *);
-Mouse X position for GSE_DOWN/GSE_UP events.
+Mouse X position for GSC_DOWN/GSC_UP events.
 **** int evY(const ev *);
-Mouse Y position for GSE_DOWN/GSE_UP events.
+Mouse Y position for GSC_DOWN/GSC_UP events.
 **** int evArgC(const ev *);
-Argument count for GSE_INIT events.
+Argument count for GSC_INIT events.
 **** char ** evArgV(const ev *);
-Argument array for GSE_INIT events.
+Argument array for GSC_INIT events.
 **** intptr_t evArg0(const ev *);
 First event argument, mostly internal.
 **** intptr_t evArg1(const ev *);
@@ -112,34 +112,35 @@ Second event argument, mostly internal.
 **** intptr_t gsInject(gseventtype, intptr_t, intptr_t);
 Inject an event, mostly internal.
 
-** Events
-*** GSE_NONE
+** Commands
+*** GSC_NONE
 Null event, must be ignored.
-*** GSE_INIT
+*** GSC_INIT
 Called upon initialization, no GL operations should be performed at this stage.
-*** GSE_TERM
+*** GSC_TERM
 Called befor terminating the application.
-*** GSE_GLINIT
+*** GSC_GLINIT
 The OpenGL context has been established. Might be called several times.
 *** GL_EVENT_GLTERM
 The OpenGL context is going to be destroyed. Might be called several times.
-*** GSE_UPDATE
+*** GSC_UPDATE
 This is your update routine, should be called at ~60Hz.
-*** GSE_RESIZE
+*** GSC_RESIZE
 Called when the screen is resized. Might be called several times.
-*** GSE_DOWN
+*** GSC_DOWN
 A key/button has been pressed.
-*** GSE_UP
+*** GSC_UP
 A key/button has been released.
-*** GSE_UNICODE
+*** GSC_UNICODE
 Called when the user enters text.
-*** GSE_MOTION
+*** GSC_MOTION
 The mouse moved.
-*** GSE_CLOSE
+*** GSC_CLOSE
 The application is about to close.
-*** GSE_INVOKE
+*** GSC_INVOKE
 Invoke method. The argument is available as evMethod().
-*** GSE_NAME
+** Queries
+*** GSQ_NAME
 Used to query the application name.
 
 * License

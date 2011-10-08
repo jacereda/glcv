@@ -130,12 +130,15 @@ const char * evName(const ev * e) {
 	const char * n;
 	static char buf[32];
 	switch (evType(e)) {
-	default: // Falls to GSE_NONE
-#define E(x) case GSE_##x: n = #x; break;
-#include "gsev.h"
-#undef E
+	default: // Falls to GSC_NONE
+#define Q(x) case GSQ_##x: n = #x; break;
+#include "gsqueries.h"
+#undef Q
+#define C(x) case GSC_##x: n = #x; break;
+#include "gscommands.h"
+#undef C
 	}
-	mysnprintf(buf, sizeof(buf), "GSE_%s", n);
+	mysnprintf(buf, sizeof(buf), "GSC_%s", n);
 	return buf;
 }
 
@@ -185,7 +188,7 @@ const char * evKeyName(const ev * e) {
         gskey k = evWhich(e);
 	switch (k) {
 #define K(x) case GSK_##x: n = #x; break;
-#include "gskey.h"
+#include "gskeys.h"
 #undef K
 	default: n = 0; break;
         }
@@ -204,18 +207,18 @@ intptr_t gsInject(gseventtype type, intptr_t p1, intptr_t p2) {
         e.p[0] = p1;
         e.p[1] = p2;
         switch (evType(&e)) {   
-	case GSE_RESIZE:
+	case GSC_RESIZE:
 		s_w = evWidth(&e);
 		s_h = evHeight(&e);
 		break;
-	case GSE_MOTION:
+	case GSC_MOTION:
 		s_mx = evX(&e);
 		s_my = evY(&e);
 		break;
-	case GSE_DOWN:
+	case GSC_DOWN:
 		press(evWhich(&e));
 		break;
-	case GSE_UP:
+	case GSC_UP:
 		release(evWhich(&e));
 		break;
 	};

@@ -43,28 +43,28 @@ static gboolean event(GtkWidget * wid, GdkEvent * ev, gpointer data) {
         switch (ev->type) {
         case GDK_KEY_PRESS: {
                 GdkEventKey * kev = (GdkEventKey*)ev;
-                gsInject(GSE_DOWN, mapkeycode(kev->hardware_keycode), 0);
+                gsInject(GSC_DOWN, mapkeycode(kev->hardware_keycode), 0);
                 break;
         }
         case GDK_KEY_RELEASE: {
                 GdkEventKey * kev = (GdkEventKey*)ev;
-                gsInject(GSE_UP, mapkeycode(kev->hardware_keycode), 0);
+                gsInject(GSC_UP, mapkeycode(kev->hardware_keycode), 0);
                 break;
         }
         case GDK_BUTTON_PRESS: {
                 GdkEventButton * bev = (GdkEventButton*)ev;
                 gtk_widget_grab_focus(g_plug);
-                got(w, GSE_DOWN, mapbutton(bev->button), 0);
+                got(w, GSC_DOWN, mapbutton(bev->button), 0);
                 break;
         }
         case GDK_BUTTON_RELEASE: {
                 GdkEventButton * bev = (GdkEventButton*)ev;
-                got(w, GSE_UP, mapbutton(bev->button), 0);
+                got(w, GSC_UP, mapbutton(bev->button), 0);
                 break;
         }
         case GDK_MOTION_NOTIFY: {
                 GdkEventMotion * mev = (GdkEventMotion*)ev;
-                got(w, GSE_MOTION, mev->x, mev->y);
+                got(w, GSC_MOTION, mev->x, mev->y);
                 break;
         }
         default: ret = FALSE; break;
@@ -73,7 +73,7 @@ static gboolean event(GtkWidget * wid, GdkEvent * ev, gpointer data) {
 }
 
 static gboolean update(gpointer data) {
-        gsInject(GSE_UPDATE);
+        gsInject(GSC_UPDATE);
         glXSwapBuffers(g_dpy, g_w);
         return 1;
 }
