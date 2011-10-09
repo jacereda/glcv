@@ -18,9 +18,8 @@ Table of Contents
         3.1.1 Application hook 
         3.1.2 Screen properties 
         3.1.3 Keyboard 
-        3.1.4 Resources 
-        3.1.5 Logging 
-        3.1.6 Events 
+        3.1.4 Logging 
+        3.1.5 Events 
     3.2 Commands 
         3.2.1 GSC_NONE 
         3.2.2 GSC_INIT 
@@ -38,216 +37,440 @@ Table of Contents
     3.3 Queries 
         3.3.1 GSQ_NAME 
         3.3.2 GSQ_LOGGER 
-4 License 
+4 Examples 
+    4.1 Simple example that just draws 
+    4.2 Complete example handling all queries/commands 
+5 License 
 
 
 1 Purpose 
-~~~~~~~~~~
+----------
 GLGS is a small screen/event handling library that provides a thin
 layer abstracting the details of configuring the screen and handling
 input. Sort of a simple GLUT/SDL.
 
 2 Building 
-~~~~~~~~~~~
+-----------
 As of now, the build scripts only work on Mac OS X.
 
 2.1 Targets 
 ============
 
 2.1.1 IOS 
-----------
+~~~~~~~~~~
 The following command should build the library and the examples and
 install them in the IOS simulator directory.
 
+
   ./mk-ios
 
+
+
 2.1.2 Android 
---------------
+~~~~~~~~~~~~~~
 The following command should build the library and the examples and
 install them in the Android emulator. The emulator must be running.
 
+
   ./mk-android
 
+
+
 2.1.3 NPAPI 
-------------
+~~~~~~~~~~~~
 The following command should build the library and the examples and
 install them in the user's plugins directory.
 
+
   ./mk-npapi
+
+
+
 After building, try opening [file:testplugin.html]
 
 3 API 
-~~~~~~
+------
 
 3.1 Functions 
 ==============
 
 3.1.1 Application hook 
------------------------
+~~~~~~~~~~~~~~~~~~~~~~~
+
 
   intptr_t event(const ev * e);
+
+
+
 This is the event handling routine implemented by your application.
 
 3.1.2 Screen properties 
-------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~
+
 
   unsigned gsWidth();
+
+
+
 Current screen width
 
 
   unsigned gsHeight();
+
+
+
 Current screen height
+
 
   Mouse location
 
+
+
+
+
   int gsMouseX();
+
+
+
 Current X mouse position
 
+
   int gsMouseY();
+
+
+
 Current Y mouse position
 
 3.1.3 Keyboard 
----------------
+~~~~~~~~~~~~~~~
+
 
   int gsPressed(gskey key);
+
+
+
 True if key is currently pressed
 
+
   int gsReleased(gskey key);
+
+
+
 True if key has just been released
 
+
   int gsShowKeyboard();
+
+
+
 On platforms that support it, show the on-screen keyboard
 
+
   int gsHideKeyboard();
+
+
+
 On platforms that support it, hide the on-screen keyboard
 
-3.1.4 Resources 
-----------------
+3.1.4 Logging 
+~~~~~~~~~~~~~~
 
-  const char * gsResPath();
-Resources path
-
-3.1.5 Logging 
---------------
 
   void gsReportV(const char * fmt, va_list ap);
-Report a message (depending on the platform, it might go to a file)
+
+
+
+Report a message (depending on the platform, it might go to a file).
+
 
   void gsReport(const char * fmt, ...);
-Report a message (depending on the platform, it might go to a file)
 
-3.1.6 Events 
--------------
+
+
+Report a message (depending on the platform, it might go to a file).
+
+3.1.5 Events 
+~~~~~~~~~~~~~
+
 
   int evType(const ev *);
+
+
+
 Event type.
 
+
   const char * evName(const ev *);
+
+
+
 Event name.
 
+
   int evWidth(const ev *);
+
+
+
 Width for GSC_RESIZE events.
+
 
   int evHeight(const ev *);
+
+
+
 Width for GSC_RESIZE events.
 
+
   gskey evWhich(const ev *);
+
+
+
 Keycode associated to GSC_DOWN/GSC_UP events.
 
-  const char * evKeyName(const ev *);
-Key name for GSC_DOWN/GSC_UP events.
 
   int evX(const ev *);
+
+
+
 Mouse X position for GSC_DOWN/GSC_UP events.
 
+
   int evY(const ev *);
+
+
+
 Mouse Y position for GSC_DOWN/GSC_UP events.
 
+
   int evArgC(const ev *);
+
+
+
 Argument count for GSC_INIT events.
 
+
   char ** evArgV(const ev *);
+
+
+
 Argument array for GSC_INIT events.
 
+
   intptr_t evArg0(const ev *);
+
+
+
 First event argument, mostly internal.
 
+
   intptr_t evArg1(const ev *);
+
+
+
 Second event argument, mostly internal.
 
+
   intptr_t gsInject(gseventtype, intptr_t, intptr_t);
+
+
+
 Inject an event, mostly internal.
+
+
+  const char * keyName(gskey);
+
+
+
+Key name for GSC_DOWN/GSC_UP events.
 
 3.2 Commands 
 =============
 
 3.2.1 GSC_NONE 
----------------
+~~~~~~~~~~~~~~~
 Null event, must be ignored.
 
 3.2.2 GSC_INIT 
----------------
+~~~~~~~~~~~~~~~
 Called upon initialization, no GL operations should be performed at this stage.
 
 3.2.3 GSC_TERM 
----------------
+~~~~~~~~~~~~~~~
 Called befor terminating the application.
 
 3.2.4 GSC_GLINIT 
------------------
+~~~~~~~~~~~~~~~~~
 The OpenGL context has been established. Might be called several times.
 
 3.2.5 GSC_GLTERM 
------------------
+~~~~~~~~~~~~~~~~~
 The OpenGL context is going to be destroyed. Might be called several times.
 
 3.2.6 GSC_UPDATE 
------------------
+~~~~~~~~~~~~~~~~~
 This is your update routine, should be called at ~60Hz.
 
 3.2.7 GSC_RESIZE 
------------------
+~~~~~~~~~~~~~~~~~
 Called when the screen is resized. Might be called several times.
 
 3.2.8 GSC_DOWN 
----------------
+~~~~~~~~~~~~~~~
 A key/button has been pressed.
 
 3.2.9 GSC_UP 
--------------
+~~~~~~~~~~~~~
 A key/button has been released.
 
 3.2.10 GSC_UNICODE 
--------------------
+~~~~~~~~~~~~~~~~~~~
 Called when the user enters text.
 
 3.2.11 GSC_MOTION 
-------------------
+~~~~~~~~~~~~~~~~~~
 The mouse moved.
 
 3.2.12 GSC_CLOSE 
------------------
+~~~~~~~~~~~~~~~~~
 The application is about to close.
 
 3.2.13 GSC_INVOKE 
-------------------
+~~~~~~~~~~~~~~~~~~
 Invoke method. The argument is available as evMethod().
 
 3.3 Queries 
 ============
 
 3.3.1 GSQ_NAME 
----------------
+~~~~~~~~~~~~~~~
 Used to query the application name.
 
 3.3.2 GSQ_LOGGER 
------------------
+~~~~~~~~~~~~~~~~~
 Function to be used for logging. The returned function prototype should be:
+
 
   void report(const char * appname, const char * string);
 
-4 License 
-~~~~~~~~~~
+
+
+
+4 Examples 
+-----------
+
+4.1 Simple example that just draws 
+===================================
+
+
+  #include "gs.h"
+  #include "gsgl.h"
+  
+  static void update() {
+          static int i = 128;
+          i++;
+          glClearColor(((2*i) & 0xff) / 255.0f, 0.f, 1.f, (i & 0xff) / 255.0f);
+          glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+          glFlush();
+  }
+  
+  intptr_t event(const ev * e) {
+          intptr_t ret = 1;
+          gseventtype t = evType(e);
+          switch (t) {
+          case GSQ_NAME: ret = (intptr_t)"simple"; break;
+          case GSC_UPDATE: update(); break;
+          default: ret = 0; break;
+          }
+          return ret;
+  }
+
+
+
+4.2 Complete example handling all queries/commands 
+===================================================
+
+
+  #include "gs.h"
+  #include "gsgl.h"
+  
+  static void init() {
+          gsReport("init");
+  }
+  
+  static void term() {
+          gsReport("term");
+  }
+  
+  static void glinit() {
+          gsReport("glinit");
+  }
+  
+  static void down(gskey k) {
+          gsReport("down %s", keyName(k));
+  }
+  
+  static void up(gskey k) {
+          gsReport("up %s", keyName(k));
+  }
+  
+  static void unicode(uint32_t c) {
+          gsReport("unicode %c", c);
+  }
+  
+  static void motion(int x, int y) {
+          gsReport("motion %d %d", x, y);
+  }
+  
+  static void close() {
+          gsReport("close");
+  }
+  
+  static void invoke(const char * s) {
+          gsReport("invoked method '%s'", s);
+  }
+  
+  static void resize(unsigned w, unsigned h) {
+          gsReport("resize %d %d", w, h);
+          glViewport(0, 0, w, h);
+  }
+  
+  static void update() {
+          static int i = 128;
+          i++;
+          glClearColor(((2*i) & 0xff) / 255.0f, 0.f, 1.f, (i & 0xff) / 255.0f);
+          glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+          glFlush();
+  }
+  
+  intptr_t event(const ev * e) {
+          intptr_t ret = 1;
+          gseventtype t = evType(e);
+          if (t != GSC_UPDATE)
+                  gsReport("got event %s, %p %p", 
+                           evName(e), evArg0(e), evArg1(e));
+          switch (t) {
+          case GSQ_NAME: ret = (intptr_t)"test"; break;
+          case GSC_INIT: init(); break;
+          case GSC_TERM: term(); break;
+          case GSC_GLINIT: glinit(); break;
+          case GSC_DOWN: down(evWhich(e)); break;
+          case GSC_UP: up(evWhich(e)); break;
+          case GSC_UNICODE: unicode(evUnicode(e)); break;
+          case GSC_MOTION: motion(evX(e), evY(e)); break;
+          case GSC_CLOSE: close(); break;
+          case GSC_INVOKE: invoke(evMethod(e)); break;
+          case GSC_RESIZE: resize(gsWidth(e), gsHeight(e)); break;
+          case GSC_UPDATE: update(); break;
+          default: ret = 0; break;
+          }
+          return ret;
+  }
+
+
+
+
+5 License 
+----------
   Copyright (c) 2011, Jorge Acereda Maciá
   All rights reserved.
 

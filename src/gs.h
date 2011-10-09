@@ -56,6 +56,10 @@ typedef enum {
 
 typedef struct _ev ev;
 
+// Provided by the program
+intptr_t event(const ev * e);
+
+
 unsigned gsWidth();
 unsigned gsHeight();
 int gsMouseX();
@@ -65,7 +69,6 @@ int gsReleased(gskey key);
 int gsShowKeyboard();
 int gsHideKeyboard();
 
-intptr_t gsInject(gseventtype, intptr_t, intptr_t);
 void gsReportV(const char * fmt, va_list ap);
 void gsReport(const char * fmt, ...);
 
@@ -83,8 +86,8 @@ int evArgC(const ev *);
 char ** evArgV(const ev *);
 const char * evMethod(const ev *);
 
+intptr_t gsInject(gseventtype, intptr_t, intptr_t);
+
 const char * keyName(gskey k);
 
-// Provided by the program
-intptr_t event(const ev * e);
 

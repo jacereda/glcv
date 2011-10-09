@@ -63,7 +63,6 @@ This is the event handling routine implemented by your application.
 unsigned gsWidth();
 #+end_src
 Current screen width
-
 #+begin_src c
 unsigned gsHeight();
 #+end_src
@@ -96,20 +95,15 @@ On platforms that support it, show the on-screen keyboard
 int gsHideKeyboard();
 #+end_src
 On platforms that support it, hide the on-screen keyboard
-*** Resources
-#+begin_src c
-const char * gsResPath();
-#+end_src
-Resources path
 *** Logging
 #+begin_src c
 void gsReportV(const char * fmt, va_list ap);
 #+end_src
-Report a message (depending on the platform, it might go to a file)
+Report a message (depending on the platform, it might go to a file).
 #+begin_src c
 void gsReport(const char * fmt, ...);
 #+end_src
-Report a message (depending on the platform, it might go to a file)
+Report a message (depending on the platform, it might go to a file).
 *** Events
 #+begin_src c
 int evType(const ev *);
@@ -131,10 +125,6 @@ Width for GSC_RESIZE events.
 gskey evWhich(const ev *);
 #+end_src
 Keycode associated to GSC_DOWN/GSC_UP events.
-#+begin_src c
-const char * evKeyName(const ev *);
-#+end_src
-Key name for GSC_DOWN/GSC_UP events.
 #+begin_src c
 int evX(const ev *);
 #+end_src
@@ -163,6 +153,10 @@ Second event argument, mostly internal.
 intptr_t gsInject(gseventtype, intptr_t, intptr_t);
 #+end_src
 Inject an event, mostly internal.
+#+begin_src c
+const char * keyName(gskey);
+#+end_src
+Key name for GSC_DOWN/GSC_UP events.
 
 ** Commands
 *** GSC_NONE
@@ -199,6 +193,12 @@ Function to be used for logging. The returned function prototype should be:
 #+begin_src c
 void report(const char * appname, const char * string);
 #+end_src
+
+* Examples
+** Simple example that just draws
+#+INCLUDE: "test/simple.c" src c
+** Complete example handling all queries/commands
+#+INCLUDE: "test/test.c" src c
 
 * License
   Copyright (c) 2011, Jorge Acereda Maciá
