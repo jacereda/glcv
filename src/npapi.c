@@ -1,3 +1,5 @@
+v
+
 #include <assert.h>
 #include <string.h>
 #include <stdio.h>
@@ -222,8 +224,6 @@ EXPORTED char * NP_GetMIMEDescription(void) {
         const char * name;
         debug("getmime");
         name = (const char *)gsInject(GSQ_NAME, 0, 0);
-        if (!name)
-                name = "unknown";
         snprintf(buf, sizeof(buf), 
                  "application/%s::xx@foo.bar", name);
         buf[sizeof(buf) - 1] = 0;

@@ -204,6 +204,23 @@ const char * keyName(gskey k) {
 	return buf;
 }
 
+static void defaultlog(const char * name, const char * s) {
+	char path[256];	
+	FILE *out;
+	snprintf(path, sizeof(path), 
+#if defined _WIN32
+		 "%s.log"
+#else
+		 "/tmp/%s.log"
+#endif
+		 , name);
+	out = fopen(path, "a");
+	if(out) {
+		fprintf(out, "%s", s);
+		fclose(out);
+	}
+}
+
 intptr_t gsInject(gseventtype type, intptr_t p1, intptr_t p2) {
 	extern intptr_t osEvent(ev *);
 	ev e;
@@ -230,6 +247,14 @@ intptr_t gsInject(gseventtype type, intptr_t p1, intptr_t p2) {
 	ret = event(&e);
 	if (!ret)
 		ret = osEvent(&e);
+	if (!ret) switch (evType(&e)) {
+	  case GSQ_NAME:
+	    ret = (intptr_t)"Unknown"; 
+	    break;
+	  case GSQ_LOGGER:
+	    ret = (intptr_t)defaultlog;
+	    break;
+	  }
 	return ret;
 }
 
@@ -243,36 +268,16 @@ void gsReport(const char * fmt, ...) {
 
 typedef void (*logger_t)(const char *, const char *);
 
-static void defaultlog(const char * name, const char * s) {
-	char path[256];	
-	FILE *out;
-	snprintf(path, sizeof(path), 
-#if defined _WIN32
-		 "\\%s.log"
-#else
-		 "/tmp/%s.log"
-#endif
-		 , name);
-	out = fopen(path, "a");
-	if(out) {
-		fprintf(out, "%s", s);
-		fclose(out);
-	}
-}
-
 void gsReportV(const char *fmt, va_list ap) {
 	static logger_t logger = 0;
-	static const char * name;
-	if (!logger) {
+	static const char * name = 0;
+	int good = logger != (logger_t)1;
+	if (!logger && good) {
 		logger = (logger_t)1;
-		logger = (logger_t)gsInject(GSQ_LOGGER, 0, 0);
-		if (!logger)
-			logger = defaultlog;
 		name = (const char *)gsInject(GSQ_NAME, 0, 0);
-		if (!name)
-			name = "unknown";
+		logger = (logger_t)gsInject(GSQ_LOGGER, 0, 0);
 	}
-	if (logger != (logger_t)1) {
+	if (good) {
 		char b[1024];
 		size_t s = 0;
 		s += vsnprintf(b + s, sizeof(b) - s, fmt, ap);
