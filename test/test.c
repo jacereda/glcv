@@ -19,6 +19,10 @@ static void down(gskey k) {
 
 static void up(gskey k) {
 	gsReport("up %s", keyName(k));
+	switch (k) {
+	case GSK_ESCAPE: gsQuit(); break;
+	default: break;
+	}
 }
 
 static void unicode(uint32_t c) {

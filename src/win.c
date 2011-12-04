@@ -9,9 +9,12 @@
 #define dbg gsReport
 #define err gsReport
 
+static int g_done = 0;
+
 intptr_t osEvent(ev * e) {
-	intptr_t ret;
+	intptr_t ret = 1;
 	switch (evType(e)) {
+	case GSC_QUIT: g_done = 1; break;		
 	default: ret = 0;
 	}
         return ret;
@@ -242,8 +245,6 @@ static int onSIZE(HWND win, UINT state, int w, int h) {
 	gsInject(GSC_GLINIT, 0, 0);
         return 1;
 }
-
-static int g_done = 0;
 
 static int onCLOSE(HWND win){
         gsInject(GSC_CLOSE, 0, 0);

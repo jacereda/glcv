@@ -285,3 +285,7 @@ void gsReportV(const char *fmt, va_list ap) {
 		logger(name, b);
 	}
 }
+
+void gsQuit() {
+	gsInject(GSC_QUIT, 0, 0);
+}

@@ -72,6 +72,8 @@ int gsHideKeyboard();
 void gsReportV(const char * fmt, va_list ap);
 void gsReport(const char * fmt, ...);
 
+void gsQuit();
+
 int evType(const ev *);
 const char * evName(const ev *);
 int evWidth(const ev *);
@@ -89,5 +91,3 @@ const char * evMethod(const ev *);
 intptr_t gsInject(gseventtype, intptr_t, intptr_t);
 
 const char * keyName(gskey k);
-
-
