@@ -35,6 +35,7 @@ static void motion(int x, int y) {
 
 static void close() {
 	gsReport("close");
+	gsQuit();
 }
 
 static void invoke(const char * s) {
@@ -62,6 +63,11 @@ intptr_t event(const ev * e) {
 			 evName(e), evArg0(e), evArg1(e));
 	switch (t) {
 	case GSQ_NAME: ret = (intptr_t)"test"; break;
+	case GSQ_XPOS: ret = 50; break;
+	case GSQ_YPOS: ret = 50; break;
+	case GSQ_WIDTH: ret = 640; break;
+	case GSQ_HEIGHT: ret = 480; break;
+	case GSQ_BORDERS: ret = 1; break;
 	case GSC_INIT: init(); break;
 	case GSC_TERM: term(); break;
 	case GSC_GLINIT: glinit(); break;

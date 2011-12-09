@@ -172,6 +172,9 @@ static int isAutoRepeat(Display * dpy, Window win, XEvent * e) {
 
 static void handle(Display * dpy, Window win, XIC xic, XEvent * e) {
         switch(e->type) {
+	case ClientMessage:
+		gsInject(GSC_CLOSE, 0, 0);
+		break;
         case ConfigureNotify:
 		gsInject(GSC_RESIZE, e->xconfigure.width, e->xconfigure.height);
 		gsInject(GSC_GLINIT, 0, 0);
@@ -222,8 +225,6 @@ int main(int argc, char ** argv) {
         XIC xic;
         XSetWindowAttributes swa; 
         unsigned long swamask;
-	long flags[5];
-	Atom hatom;
 	Atom datom;
 	int attr[] = {
 		GLX_RGBA,
@@ -234,25 +235,41 @@ int main(int argc, char ** argv) {
 		GLX_DEPTH_SIZE, 1,
 		None};
 	XVisualInfo * vi;
+        XSizeHints hints;
         dpy = XOpenDisplay(0);
 	xim = XOpenIM(dpy, 0, 0, 0);
 	swa.event_mask = EVMASK;
 	swamask = CWEventMask;
 	scr = XDefaultScreen(dpy);
+	hints.x = gsInject(GSQ_XPOS, 0, 0);
+	hints.y = gsInject(GSQ_YPOS, 0, 0);
+	hints.width = gsInject(GSQ_WIDTH, 0, 0);
+	hints.height = gsInject(GSQ_HEIGHT, 0, 0);
+	if (hints.width == -1) {
+		hints.x = 0;
+		hints.y = 0;
+		hints.width = DisplayWidth(dpy, scr);
+		hints.height = DisplayHeight(dpy, scr);
+	}
         win = XCreateWindow(dpy, XRootWindow(dpy, scr),
-			    0, 0, 
-			    DisplayWidth(dpy, scr), DisplayHeight(dpy, scr),
+			    hints.x, hints.y, hints.width, hints.height,
 			    0, CopyFromParent,
 			    InputOutput, 
 			    CopyFromParent,
 			    swamask, &swa);
-        //mwm.flags = MWM_HINTS_DECORATIONS;
-	flags[0] = 2; flags[1] = 0; flags[2] = 0; flags[3] = 0; flags[4] = 0;
+        hints.flags = USSize | USPosition;
+        XSetWMNormalHints(dpy, win, &hints);
+	if (!gsInject(GSQ_BORDERS, 0, 0)) {
+		Atom hatom = XInternAtom(dpy, "_MOTIF_WM_HINTS", 1);
+		long flags[5] = {0};
+		//mwm.flags = MWM_HINTS_DECORATIONS;
+		flags[0] = 2; flags[1] = 0; flags[2] = 0;
+		flags[3] = 0; flags[4] = 0;
+		XChangeProperty(dpy, win, hatom, hatom, 
+				32, PropModeReplace,
+				(unsigned char*)flags, sizeof(flags) / 4);
+	}
 	datom = XInternAtom(dpy, "WM_DELETE_WINDOW", False);
-	hatom = XInternAtom(dpy, "_MOTIF_WM_HINTS", 1);
-	XChangeProperty(dpy, win, hatom, hatom, 
-			32, PropModeReplace,
-			(unsigned char*)flags, sizeof(flags) / 4);
         XSetWMProtocols(dpy, win, &datom, 1);
         XSelectInput(dpy, win, EVMASK);
 	xic = XCreateIC(xim,
@@ -269,7 +286,8 @@ int main(int argc, char ** argv) {
 	((int(*)(int))glXGetProcAddress((GLubyte*)"glXSwapIntervalSGI"))(1);
 	while (!g_done) {
 		XEvent e;
-		if (XCheckWindowEvent(dpy, win, EVMASK, &e)) 
+		if (XCheckWindowEvent(dpy, win, EVMASK, &e)
+		    || XCheckTypedWindowEvent(dpy, win, ClientMessage, &e))
 			handle(dpy, win, xic, &e);
 		glXSwapBuffers(dpy, win);
 		gsInject(GSC_UPDATE, 0, 0);

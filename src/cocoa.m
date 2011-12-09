@@ -324,7 +324,12 @@ int main(int argc, char ** argv) {
 	NSScreen * scr;
 	NSRect frm;
 	View * view;
-	int style = NSBorderlessWindowMask;
+	int style = gsInject(GSQ_BORDERS, 0, 0)? 
+		0 
+		| NSTitledWindowMask
+		| NSClosableWindowMask
+		| NSMiniaturizableWindowMask 
+		: NSBorderlessWindowMask;
         GLint param = 1;
         NSOpenGLContext *ctx = 0;
         CGDirectDisplayID dpy = kCGDirectMainDisplay;
@@ -340,7 +345,7 @@ int main(int argc, char ** argv) {
                 0, 0, 0, 0, 0, 0, 0, 0,
                 };
         NSOpenGLPixelFormat * fmt;
-
+	NSRect rect;
         TransformProcessType(&psn, kProcessTransformToForegroundApplication);
         SetFrontProcess(&psn);
         NSApp = [NSApplication sharedApplication];
@@ -348,7 +353,15 @@ int main(int argc, char ** argv) {
         [NSApp activateIgnoringOtherApps: YES];
 	scrs = [NSScreen screens];
 	scr = [scrs objectAtIndex: 0];
-        win = [[Window alloc] initWithContentRect: [scr frame]
+	rect.origin.x = gsInject(GSQ_XPOS, 0, 0);
+	rect.origin.y = gsInject(GSQ_YPOS, 0, 0);
+	rect.size.width = gsInject(GSQ_WIDTH, 0, 0);
+	rect.size.height = gsInject(GSQ_HEIGHT, 0, 0);
+	rect.origin.y = [scr frame].size.height - 1 
+		- rect.origin.y - rect.size.height;
+	if (rect.size.width == -1)
+		rect = [scr frame];
+        win = [[Window alloc] initWithContentRect: rect
                               styleMask: style
                               backing: NSBackingStoreBuffered
                               defer:NO];

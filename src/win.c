@@ -6,6 +6,10 @@
 #include <windowsx.h>
 
 
+#if !defined HANDLE_WM_MOUSEWHEEL
+#define HANDLE_WM_MOUSEWHEEL(hwnd,wParam,lParam,fn) ((fn)((hwnd),(int)(short)LOWORD(lParam),(int)(short)HIWORD(lParam),(int)(short)HIWORD(wParam),(UINT)(short)LOWORD(wParam)),0L)
+#endif
+
 #define dbg gsReport
 #define err gsReport
 
@@ -248,7 +252,6 @@ static int onSIZE(HWND win, UINT state, int w, int h) {
 
 static int onCLOSE(HWND win){
         gsInject(GSC_CLOSE, 0, 0);
-	g_done = 1;
 	return 0;
 }
 
@@ -272,6 +275,11 @@ static int onPAINT(HWND win) {
 	SwapBuffers(dc);
 	ReleaseDC(win, dc);
 	return 1;
+}
+
+static int onSETCURSOR(HWND win, HWND cur, UINT l, UINT h) {
+        SetCursor(0);
+        return 1;
 }
 
 static int onMOUSEWHEEL(HWND win, int x, int y, int z, UINT keys) {
@@ -301,6 +309,7 @@ static LRESULT WINAPI handle(HWND win, UINT msg, WPARAM w, LPARAM l)  {
                 HANDLE(MBUTTONUP);
                 HANDLE(MOUSEWHEEL);
                 HANDLE(PAINT);
+		HANDLE(SETCURSOR);
 #undef HANDLE
         default: r = 0;
         }
@@ -318,6 +327,16 @@ int main(int argc, char ** argv) {
 	HDC dc;
 	WCHAR name[256];
 	int done = 0;
+	int full = 0;
+	int borders = gsInject(GSQ_BORDERS, 0, 0);
+	DWORD exstyle = borders? WS_EX_APPWINDOW : WS_EX_TOPMOST;
+	DWORD style = borders?
+		0
+		| WS_OVERLAPPED
+		| WS_CAPTION 
+		| WS_SYSMENU 
+		| WS_MINIMIZEBOX
+		: WS_POPUP;
         PIXELFORMATDESCRIPTOR pfd = { 
                 sizeof(PIXELFORMATDESCRIPTOR),   // size of this pfd 
                 1,                     // version number 
@@ -349,9 +368,22 @@ int main(int argc, char ** argv) {
         wc.hInstance = mod;
         wc.lpszClassName = name;
         RegisterClassW(&wc);
-	GetWindowRect(GetDesktopWindow(), &r);
-        win = CreateWindowExW(0, name, name, WS_POPUP, 0, 0,
-                              r.right, r.bottom,
+	r.left = gsInject(GSQ_XPOS, 0, 0);
+	r.top = gsInject(GSQ_YPOS, 0, 0);
+	r.right = gsInject(GSQ_WIDTH, 0, 0);
+	r.bottom = gsInject(GSQ_HEIGHT, 0, 0);
+	if (r.right == -1) {
+		GetWindowRect(GetDesktopWindow(), &r);
+		full = 1;
+	}
+	else {
+		r.right += r.left;
+		r.bottom += r.top;
+	}
+        AdjustWindowRect(&r, style, FALSE);
+        win = CreateWindowExW(exstyle, name, name, style, 
+			      r.left, r.top,
+                              r.right - r.left, r.bottom - r.top,
                               0, 0, mod, 0);
 	dc = GetDC(win);
         SetPixelFormat(dc, ChoosePixelFormat(dc, &pfd), &pfd); 
@@ -359,7 +391,8 @@ int main(int argc, char ** argv) {
 	gsInject(GSC_INIT, 1, (intptr_t)argv);
         wglMakeCurrent(dc, ctx);	
 	((int(*)(int))wglGetProcAddress("wglSwapIntervalEXT"))(1);
-        ShowWindow(win, SW_MAXIMIZE);
+	SetCursor(0);
+        ShowWindow(win, full? SW_MAXIMIZE : SW_SHOWNORMAL);
         while (!g_done) {
                 MSG msg;
                 if (PeekMessageW(&msg, 0, 0, 0, PM_REMOVE)) {

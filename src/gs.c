@@ -247,14 +247,23 @@ intptr_t gsInject(gseventtype type, intptr_t p1, intptr_t p2) {
 	ret = event(&e);
 	if (!ret)
 		ret = osEvent(&e);
-	if (!ret) switch (evType(&e)) {
-	  case GSQ_NAME:
-	    ret = (intptr_t)"Unknown"; 
-	    break;
-	  case GSQ_LOGGER:
-	    ret = (intptr_t)defaultlog;
-	    break;
-	  }
+	if (!ret) 
+		switch (evType(&e)) {
+		case GSQ_NAME:
+			ret = (intptr_t)"Unknown"; 
+			break;
+		case GSQ_LOGGER:
+			ret = (intptr_t)defaultlog;
+			break;
+		case GSQ_XPOS:
+		case GSQ_YPOS:
+			ret = 0;
+			break;
+		case GSQ_WIDTH:
+		case GSQ_HEIGHT:
+			ret = -1;
+			break;
+		}
 	return ret;
 }
 
