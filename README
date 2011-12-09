@@ -9,17 +9,20 @@ Table of Contents
 =================
 1 Purpose 
 2 Building 
-    2.1 Targets 
-        2.1.1 IOS 
-        2.1.2 Android 
-        2.1.3 NPAPI 
+    2.1 IOS 
+    2.2 Android 
+    2.3 NPAPI 
+    2.4 Xlib 
+    2.5 Cocoa 
+    2.6 Windows 
 3 API 
     3.1 Functions 
         3.1.1 Application hook 
-        3.1.2 Screen properties 
-        3.1.3 Keyboard 
-        3.1.4 Logging 
-        3.1.5 Events 
+        3.1.2 Application control 
+        3.1.3 Screen properties 
+        3.1.4 Keyboard 
+        3.1.5 Logging 
+        3.1.6 Events 
     3.2 Commands 
         3.2.1 GSC_NONE 
         3.2.2 GSC_INIT 
@@ -37,6 +40,11 @@ Table of Contents
     3.3 Queries 
         3.3.1 GSQ_NAME 
         3.3.2 GSQ_LOGGER 
+        3.3.3 GSQ_XPOS 
+        3.3.4 GSQ_YPOS 
+        3.3.5 GSQ_WIDTH 
+        3.3.6 GSQ_HEIGHT 
+        3.3.7 GSQ_BORDERS 
 4 Examples 
     4.1 Simple example that just draws 
     4.2 Complete example handling all queries/commands 
@@ -51,13 +59,9 @@ input. Sort of a simple GLUT/SDL.
 
 2 Building 
 -----------
-As of now, the build scripts only work on Mac OS X.
 
-2.1 Targets 
-============
-
-2.1.1 IOS 
-~~~~~~~~~~
+2.1 IOS 
+========
 The following command should build the library and the examples and
 install them in the IOS simulator directory.
 
@@ -66,8 +70,8 @@ install them in the IOS simulator directory.
 
 
 
-2.1.2 Android 
-~~~~~~~~~~~~~~
+2.2 Android 
+============
 The following command should build the library and the examples and
 install them in the Android emulator. The emulator must be running.
 
@@ -76,8 +80,8 @@ install them in the Android emulator. The emulator must be running.
 
 
 
-2.1.3 NPAPI 
-~~~~~~~~~~~~
+2.3 NPAPI 
+==========
 The following command should build the library and the examples and
 install them in the user's plugins directory.
 
@@ -87,6 +91,33 @@ install them in the user's plugins directory.
 
 
 After building, try opening [file:testplugin.html]
+
+2.4 Xlib 
+=========
+To compile the test application, use this command
+
+
+  ./mk-xlib
+
+
+
+2.5 Cocoa 
+==========
+To compile the test application, use this command
+
+
+  ./mk-cocoa
+
+
+
+2.6 Windows 
+============
+To compile the test application, use this command
+
+
+  mk-win
+
+
 
 3 API 
 ------
@@ -104,7 +135,17 @@ After building, try opening [file:testplugin.html]
 
 This is the event handling routine implemented by your application.
 
-3.1.2 Screen properties 
+3.1.2 Application control 
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+  void gsQuit();
+
+
+
+Call this to terminate your application.
+
+3.1.3 Screen properties 
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 
@@ -141,7 +182,7 @@ Current X mouse position
 
 Current Y mouse position
 
-3.1.3 Keyboard 
+3.1.4 Keyboard 
 ~~~~~~~~~~~~~~~
 
 
@@ -172,7 +213,7 @@ On platforms that support it, show the on-screen keyboard
 
 On platforms that support it, hide the on-screen keyboard
 
-3.1.4 Logging 
+3.1.5 Logging 
 ~~~~~~~~~~~~~~
 
 
@@ -189,7 +230,7 @@ Report a message (depending on the platform, it might go to a file).
 
 Report a message (depending on the platform, it might go to a file).
 
-3.1.5 Events 
+3.1.6 Events 
 ~~~~~~~~~~~~~
 
 
@@ -354,6 +395,27 @@ Function to be used for logging. The returned function prototype should be:
 
 
 
+3.3.3 GSQ_XPOS 
+~~~~~~~~~~~~~~~
+Return the desired X position. This is just a hint and can be ignored.
+
+3.3.4 GSQ_YPOS 
+~~~~~~~~~~~~~~~
+Return the desired Y position. This is just a hint and can be ignored.
+
+3.3.5 GSQ_WIDTH 
+~~~~~~~~~~~~~~~~
+Return the desired width. Note that this can be ignored, use the size
+reported in GSC_RESIZE.
+
+3.3.6 GSQ_HEIGHT 
+~~~~~~~~~~~~~~~~~
+Return the desired height. Note that this can be ignored, use the size
+reported in GSC_RESIZE.
+
+3.3.7 GSQ_BORDERS 
+~~~~~~~~~~~~~~~~~~
+Should the window have borders?
 
 4 Examples 
 -----------
@@ -377,7 +439,6 @@ Function to be used for logging. The returned function prototype should be:
           intptr_t ret = 1;
           gseventtype t = evType(e);
           switch (t) {
-          case GSQ_NAME: ret = (intptr_t)"simple"; break;
           case GSC_UPDATE: update(); break;
           default: ret = 0; break;
           }
@@ -411,6 +472,10 @@ Function to be used for logging. The returned function prototype should be:
   
   static void up(gskey k) {
           gsReport("up %s", keyName(k));
+          switch (k) {
+          case GSK_ESCAPE: gsQuit(); break;
+          default: break;
+          }
   }
   
   static void unicode(uint32_t c) {
@@ -423,6 +488,7 @@ Function to be used for logging. The returned function prototype should be:
   
   static void close() {
           gsReport("close");
+          gsQuit();
   }
   
   static void invoke(const char * s) {
@@ -450,6 +516,11 @@ Function to be used for logging. The returned function prototype should be:
                            evName(e), evArg0(e), evArg1(e));
           switch (t) {
           case GSQ_NAME: ret = (intptr_t)"test"; break;
+          case GSQ_XPOS: ret = 50; break;
+          case GSQ_YPOS: ret = 50; break;
+          case GSQ_WIDTH: ret = 640; break;
+          case GSQ_HEIGHT: ret = 480; break;
+          case GSQ_BORDERS: ret = 1; break;
           case GSC_INIT: init(); break;
           case GSC_TERM: term(); break;
           case GSC_GLINIT: glinit(); break;
