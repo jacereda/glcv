@@ -1,1 +1,2 @@
-gcc -o test -Wall -I src src/cocoa.m src/gs.c test/test.c -framework OpenGL -framework AppKit
+install -d b
+gcc -o b/test -Wall -I src src/cocoa.m src/gs.c test/test.c -framework OpenGL -framework AppKit
