@@ -8,6 +8,5 @@
 #elif defined __APPLE__
 #include <OpenGL/gl.h>
 #else
-#define GL_GLEXT_PROTOTYPES
 #include <GL/gl.h>
 #endif
