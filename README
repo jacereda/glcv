@@ -47,7 +47,7 @@ Table of Contents
         3.3.7 GSQ_BORDERS
 4 Examples
     4.1 Simple example that just draws
-    4.2 Complete example handling all queries/commands
+    4.2 Complete example handling all queries/events
 5 License
 
 
@@ -379,14 +379,22 @@ Should the window have borders?
           intptr_t ret = 1;
           gseventtype t = evType(e);
           switch (t) {
-          case GSC_UPDATE: update(); break;
+          case GSE_UPDATE: update(); break;
           default: ret = 0; break;
           }
           return ret;
   }
+  
+  /* 
+     Local variables: **
+     c-file-style: "bsd" **
+     c-basic-offset: 8 **
+     indent-tabs-mode: nil **
+     End: **
+  */
 
-4.2 Complete example handling all queries/commands 
-===================================================
+4.2 Complete example handling all queries/events 
+=================================================
 
 
   #include "gs.h"
@@ -446,10 +454,10 @@ Should the window have borders?
           glFlush();
   }
   
-  intptr_t myevent(const ev * e) {
+  intptr_t event(const ev * e) {
           intptr_t ret = 1;
           gseventtype t = evType(e);
-          if (t != GSC_UPDATE)
+          if (t != GSE_UPDATE)
                   gsReport("got event %s, %p %p", 
                            evName(e), evArg0(e), evArg1(e));
           switch (t) {
@@ -459,25 +467,29 @@ Should the window have borders?
           case GSQ_WIDTH: ret = 640; break;
           case GSQ_HEIGHT: ret = 480; break;
           case GSQ_BORDERS: ret = 1; break;
-          case GSC_INIT: init(); break;
-          case GSC_TERM: term(); break;
-          case GSC_GLINIT: glinit(); break;
-          case GSC_DOWN: down(evWhich(e)); break;
-          case GSC_UP: up(evWhich(e)); break;
-          case GSC_UNICODE: unicode(evUnicode(e)); break;
-          case GSC_MOTION: motion(evX(e), evY(e)); break;
-          case GSC_CLOSE: close(); break;
-          case GSC_INVOKE: invoke(evMethod(e)); break;
-          case GSC_RESIZE: resize(gsWidth(e), gsHeight(e)); break;
-          case GSC_UPDATE: update(); break;
+          case GSE_INIT: init(); break;
+          case GSE_TERM: term(); break;
+          case GSE_GLINIT: glinit(); break;
+          case GSE_DOWN: down(evWhich(e)); break;
+          case GSE_UP: up(evWhich(e)); break;
+          case GSE_UNICODE: unicode(evUnicode(e)); break;
+          case GSE_MOTION: motion(evX(e), evY(e)); break;
+          case GSE_CLOSE: close(); break;
+          case GSE_INVOKE: invoke(evMethod(e)); break;
+          case GSE_RESIZE: resize(gsWidth(e), gsHeight(e)); break;
+          case GSE_UPDATE: update(); break;
           default: ret = 0; break;
           }
           return ret;
   }
   
-  int main() {
-          return Run(myevent);
-  }
+  /* 
+     Local variables: **
+     c-file-style: "bsd" **
+     c-basic-offset: 8 **
+     indent-tabs-mode: nil **
+     End: **
+  */
 
 
 5 License 

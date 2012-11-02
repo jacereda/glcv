@@ -236,7 +236,7 @@ Should the window have borders?
 * Examples
 ** Simple example that just draws
 #+INCLUDE: "test/simple.c" src c
-** Complete example handling all queries/commands
+** Complete example handling all queries/events
 #+INCLUDE: "test/test.c" src c
 
 * License

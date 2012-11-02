@@ -153,7 +153,7 @@
 <li><a href="#sec-4">4 Examples</a>
 <ul>
 <li><a href="#sec-4-1">4.1 Simple example that just draws</a></li>
-<li><a href="#sec-4-2">4.2 Complete example handling all queries/commands</a></li>
+<li><a href="#sec-4-2">4.2 Complete example handling all queries/events</a></li>
 </ul>
 </li>
 <li><a href="#sec-5">5 License</a></li>
@@ -785,11 +785,19 @@ GSE_RESIZE or ask explicitly with gsHeight().
         <span style="color: #00cd00;">intptr_t</span> <span style="color: #cdcd00;">ret</span> = 1;
         <span style="color: #00cd00;">gseventtype</span> <span style="color: #cdcd00;">t</span> = evType(e);
         <span style="color: #00cdcd; font-weight: bold;">switch</span> (t) {
-        <span style="color: #00cdcd; font-weight: bold;">case</span> GSC_UPDATE: update(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> GSE_UPDATE: update(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
         <span style="color: #00cdcd; font-weight: bold;">default</span>: ret = 0; <span style="color: #00cdcd; font-weight: bold;">break</span>;
         }
         <span style="color: #00cdcd; font-weight: bold;">return</span> ret;
 }
+
+<span style="color: #cd0000;">/* </span>
+<span style="color: #cd0000;">   Local Variables&#58; **</span>
+<span style="color: #cd0000;">   c-file-style: "bsd" **</span>
+<span style="color: #cd0000;">   c-basic-offset: 8 **</span>
+<span style="color: #cd0000;">   indent-tabs-mode: nil **</span>
+<span style="color: #cd0000;">   End: **</span>
+<span style="color: #cd0000;">*/</span>
 </pre>
 
 </div>
@@ -797,7 +805,7 @@ GSE_RESIZE or ask explicitly with gsHeight().
 </div>
 
 <div id="outline-container-4-2" class="outline-3">
-<h3 id="sec-4-2"><span class="section-number-3">4.2</span> Complete example handling all queries/commands</h3>
+<h3 id="sec-4-2"><span class="section-number-3">4.2</span> Complete example handling all queries/events</h3>
 <div class="outline-text-3" id="text-4-2">
 
 
@@ -860,10 +868,10 @@ GSE_RESIZE or ask explicitly with gsHeight().
         glFlush();
 }
 
-<span style="color: #00cd00;">intptr_t</span> <span style="color: #0000ee; font-weight: bold;">myevent</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> * <span style="color: #cdcd00;">e</span>) {
+<span style="color: #00cd00;">intptr_t</span> <span style="color: #0000ee; font-weight: bold;">event</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> * <span style="color: #cdcd00;">e</span>) {
         <span style="color: #00cd00;">intptr_t</span> <span style="color: #cdcd00;">ret</span> = 1;
         <span style="color: #00cd00;">gseventtype</span> <span style="color: #cdcd00;">t</span> = evType(e);
-        <span style="color: #00cdcd; font-weight: bold;">if</span> (t != GSC_UPDATE)
+        <span style="color: #00cdcd; font-weight: bold;">if</span> (t != GSE_UPDATE)
                 gsReport(<span style="color: #00cd00;">"got event %s, %p %p"</span>, 
                          evName(e), evArg0(e), evArg1(e));
         <span style="color: #00cdcd; font-weight: bold;">switch</span> (t) {
@@ -873,25 +881,29 @@ GSE_RESIZE or ask explicitly with gsHeight().
         <span style="color: #00cdcd; font-weight: bold;">case</span> GSQ_WIDTH: ret = 640; <span style="color: #00cdcd; font-weight: bold;">break</span>;
         <span style="color: #00cdcd; font-weight: bold;">case</span> GSQ_HEIGHT: ret = 480; <span style="color: #00cdcd; font-weight: bold;">break</span>;
         <span style="color: #00cdcd; font-weight: bold;">case</span> GSQ_BORDERS: ret = 1; <span style="color: #00cdcd; font-weight: bold;">break</span>;
-        <span style="color: #00cdcd; font-weight: bold;">case</span> GSC_INIT: init(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
-        <span style="color: #00cdcd; font-weight: bold;">case</span> GSC_TERM: term(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
-        <span style="color: #00cdcd; font-weight: bold;">case</span> GSC_GLINIT: glinit(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
-        <span style="color: #00cdcd; font-weight: bold;">case</span> GSC_DOWN: down(evWhich(e)); <span style="color: #00cdcd; font-weight: bold;">break</span>;
-        <span style="color: #00cdcd; font-weight: bold;">case</span> GSC_UP: up(evWhich(e)); <span style="color: #00cdcd; font-weight: bold;">break</span>;
-        <span style="color: #00cdcd; font-weight: bold;">case</span> GSC_UNICODE: unicode(evUnicode(e)); <span style="color: #00cdcd; font-weight: bold;">break</span>;
-        <span style="color: #00cdcd; font-weight: bold;">case</span> GSC_MOTION: motion(evX(e), evY(e)); <span style="color: #00cdcd; font-weight: bold;">break</span>;
-        <span style="color: #00cdcd; font-weight: bold;">case</span> GSC_CLOSE: close(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
-        <span style="color: #00cdcd; font-weight: bold;">case</span> GSC_INVOKE: invoke(evMethod(e)); <span style="color: #00cdcd; font-weight: bold;">break</span>;
-        <span style="color: #00cdcd; font-weight: bold;">case</span> GSC_RESIZE: resize(gsWidth(e), gsHeight(e)); <span style="color: #00cdcd; font-weight: bold;">break</span>;
-        <span style="color: #00cdcd; font-weight: bold;">case</span> GSC_UPDATE: update(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> GSE_INIT: init(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> GSE_TERM: term(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> GSE_GLINIT: glinit(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> GSE_DOWN: down(evWhich(e)); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> GSE_UP: up(evWhich(e)); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> GSE_UNICODE: unicode(evUnicode(e)); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> GSE_MOTION: motion(evX(e), evY(e)); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> GSE_CLOSE: close(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> GSE_INVOKE: invoke(evMethod(e)); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> GSE_RESIZE: resize(gsWidth(e), gsHeight(e)); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> GSE_UPDATE: update(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
         <span style="color: #00cdcd; font-weight: bold;">default</span>: ret = 0; <span style="color: #00cdcd; font-weight: bold;">break</span>;
         }
         <span style="color: #00cdcd; font-weight: bold;">return</span> ret;
 }
 
-<span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">main</span>() {
-        <span style="color: #00cdcd; font-weight: bold;">return</span> Run(myevent);
-}
+<span style="color: #cd0000;">/* </span>
+<span style="color: #cd0000;">   Local Variables&#58; **</span>
+<span style="color: #cd0000;">   c-file-style: "bsd" **</span>
+<span style="color: #cd0000;">   c-basic-offset: 8 **</span>
+<span style="color: #cd0000;">   indent-tabs-mode: nil **</span>
+<span style="color: #cd0000;">   End: **</span>
+<span style="color: #cd0000;">*/</span>
 </pre>
 
 
