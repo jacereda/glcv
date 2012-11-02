@@ -1,5 +1,7 @@
 .*~$
 .*\.o$
+.*\.orig$
+.*\#$
 test$
 glestest$
 ^b$
