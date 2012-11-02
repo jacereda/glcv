@@ -1,4 +1,4 @@
-#include "gs.h"
+#include "gs.c"
 #include <stdlib.h>
 #include <windows.h>
 #include <wingdi.h>

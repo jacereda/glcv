@@ -1,5 +1,8 @@
+#!/bin/bash
+mk() {
+     gcc $* -Wall -I src src/cocoa.m -framework OpenGL -framework AppKit
+}
 install -d b
-MK="gcc -Wall -I src src/cocoa.m -framework OpenGL -framework AppKit"
-$MK test/simple.c -o b/simple
-$MK test/test.c -o b/test
+mk test/simple.c -o b/simple
+mk test/test.c -o b/test
 

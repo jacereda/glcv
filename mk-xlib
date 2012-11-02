@@ -1,4 +1,7 @@
+#!/bin/bash
+mk() {
+     gcc $* -Wall -I/usr/X11R6/include -I src src/xlib.c -L/usr/X11R6/lib -lX11 -lGL
+}
 install -d b
-MK="gcc -Wall -I/usr/X11R6/include -I src src/xlib.c -L/usr/X11R6/lib -lX11 -lGL"
-$MK test/simple.c -o b/simple
-$MK test/test.c -o b/test
+mk test/simple.c -o b/simple
+mk test/test.c -o b/test
