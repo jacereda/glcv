@@ -174,8 +174,9 @@ static gskey mapkeycode(unsigned k) {
 - (void) windowDidResize:(NSNotification *)n {
         NSRect fr = [self frame];
         NSSize sz = fr.size;
+        [[NSOpenGLContext currentContext] update];
+
         gsInject(GSE_RESIZE, sz.width, sz.height);
-        gsInject(GSE_GLINIT, 0, 0);
 }
 
 - (BOOL) windowShouldClose: (id)s {
@@ -342,6 +343,9 @@ int gsrun(int argc, char ** argv) {
         TransformProcessType(&psn, kProcessTransformToForegroundApplication);
         SetFrontProcess(&psn);
         app = [NSApplication sharedApplication];
+        [app activateIgnoringOtherApps: YES];
+        [app finishLaunching];
+
         scrs = [NSScreen screens];
         scr = [scrs objectAtIndex: 0];
         rect.origin.x = gsInject(GSQ_XPOS, 0, 0);
@@ -363,7 +367,6 @@ int gsrun(int argc, char ** argv) {
         [win setDelegate: view];
         [win setContentView: view];
         [win setReleasedWhenClosed: NO];
-        [win makeKeyAndOrderFront: view];
 
         fmt = [[NSOpenGLPixelFormat alloc] initWithAttributes: attr];
         ctx = [[NSOpenGLContext alloc] 
@@ -374,11 +377,10 @@ int gsrun(int argc, char ** argv) {
         [ctx setValues: &param forParameter: NSOpenGLCPSwapInterval];
         gsInject(GSE_INIT, argc, (intptr_t)argv);
         [ctx makeCurrentContext];
+        gsInject(GSE_GLINIT, 0, 0);
 //      [NSCursor hide];
-//              [app updateWindows];
-        [app activateIgnoringOtherApps: YES];
-        [app setWindowsNeedUpdate: YES];
-        [app finishLaunching];
+        [win makeKeyAndOrderFront: view];
+        gsInject(GSE_RESIZE, rect.size.width, rect.size.height);
 
         [arp drain];
         do {
