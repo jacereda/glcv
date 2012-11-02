@@ -1,2 +1,4 @@
 install -d b
-gcc -o b/test -Wall -I/usr/X11R6/include -I src src/xlib.c src/gs.c test/test.c -L/usr/X11R6/lib -lX11 -lGL
+MK="gcc -Wall -I/usr/X11R6/include -I src src/xlib.c -L/usr/X11R6/lib -lX11 -lGL"
+$MK test/simple.c -o b/simple
+$MK test/test.c -o b/test

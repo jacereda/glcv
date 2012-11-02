@@ -6,31 +6,31 @@ rc="$root/i386-mingw32msvc-windres"
 ar="$root/i386-mingw32msvc-ar"
 cc="$common -D_WIN32_WINNT=0x500 -DXULRUNNER_SDK -DWIN32 -D_WINDOWS -DXP_WIN32 -DMOZILLA_STRICT_API -DXPCOM_GLUE -DXP_WIN -D_X86_ -DNPSIMPLE_EXPORTS -Wall"
 
-function log() {
+log() {
     echo $* 1>&2
 }
 
-function builddir() {
+builddir() {
     echo "b"
 }
 
-function pkgdir() {
+pkgdir() {
     echo `builddir`/$1.plugin
 }
 
-function condir() {
+condir() {
     echo `pkgdir $1`
 }
 
-function resdir() {
+resdir() {
     echo `condir $1`
 }
 
-function bindir() {
+bindir() {
     echo `condir $1`
 }
 
-function obj() {
+obj() {
     log "compiling $*"
     dst=`builddir`/$1.o
     shift
@@ -38,15 +38,7 @@ function obj() {
     echo $dst
 }
 
-function lib() {
-    log "archiving $*"
-    dst=$1
-    shift
-    $ar rcs `builddir`/lib$dst.a $*
-    echo "-l$dst"
-}
-
-function plg() {
+plg() {
     log "linking $*"
     name=$1
     dst=`builddir`/np$name.dll
@@ -62,9 +54,7 @@ function plg() {
 
 rm -fR `builddir`
 install -d `builddir`
-gsobjs="`obj gs src/gs.c` `obj npapint src/npapint.c`"
-libgs=`lib gs $gsobjs`
+gsobj="`obj npapint src/npapint.c`"
 testobj=`obj test test/test.c`
-testplg=`plg testplugin $testobj $libgs src/npapi.def`
+testplg=`plg testplugin $testobj $gsobj src/npapi.def`
 cp b/nptestplugin.dll /tmp
-

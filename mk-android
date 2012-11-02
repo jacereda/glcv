@@ -12,31 +12,31 @@ ccflags="-Wall -fpic -ffunction-sections -funwind-tables -fstack-protector -Wno-
 cc="$common $commonflags $ccflags $cppflags"
 ld="$common $commonflags $ldflags"
 
-function log() {
+log() {
     echo $* 1>&2
 }
 
-function builddir() {
+builddir() {
     echo "b"
 }
 
-function pkgdir() {
+pkgdir() {
     echo `builddir`/$1.plugin
 }
 
-function condir() {
+condir() {
     echo `pkgdir $1`
 }
 
-function resdir() {
+resdir() {
     echo `condir $1`
 }
 
-function bindir() {
+bindir() {
     echo `condir $1`
 }
 
-function obj() {
+obj() {
     log "compiling $*"
     dst=`builddir`/$1.o
     shift
@@ -44,15 +44,7 @@ function obj() {
     echo $dst
 }
 
-function lib() {
-    log "archiving $*"
-    dst=$1
-    shift
-    $ar rcs `builddir`/lib$dst.a $*
-    echo "-l$dst"
-}
-
-function exe() {
+exe() {
     log "linking $*"
     name=$1
     shift
@@ -64,8 +56,7 @@ function exe() {
     echo $dst
 }
 
-
-function pkg() {
+pkg() {
     log "packaging $*"
     name=$1
     exe=$2
@@ -83,7 +74,7 @@ function pkg() {
     echo $apk
 }
 
-function ins() {
+ins() {
     name=$1
     apk=$2
     $sdk/platform-tools/adb uninstall $domain.$name
@@ -92,10 +83,9 @@ function ins() {
 
 rm -fR `builddir`
 install -d `builddir`
-glueobj=`obj glue $ndk/sources/android/native_app_glue/android_native_app_glue.c`
-gsobjs="`obj gs src/gs.c` `obj android src/android.c`"
-libgs=`lib gs $gsobjs $glueobj`
+gsobjs="`obj android src/android.c` \
+`obj glue $ndk/sources/android/native_app_glue/android_native_app_glue.c`"
 testobj=`obj test test/test.c`
-testexe=`exe test $testobj $libgs`
+testexe=`exe test $testobj $gsobjs`
 testpkg=`pkg test $testexe`
 itestpkg=`ins test $testpkg`

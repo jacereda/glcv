@@ -7,55 +7,57 @@ Date: 2011-10-02 Sun
 
 Table of Contents
 =================
-1 Purpose 
-2 Building 
-    2.1 IOS 
-    2.2 Android 
-    2.3 NPAPI 
-    2.4 Xlib 
-    2.5 Cocoa 
-    2.6 Windows 
-3 API 
-    3.1 Functions 
-        3.1.1 Application hook 
-        3.1.2 Application control 
-        3.1.3 Screen properties 
-        3.1.4 Keyboard 
-        3.1.5 Logging 
-        3.1.6 Events 
-    3.2 Commands 
-        3.2.1 GSC_NONE 
-        3.2.2 GSC_INIT 
-        3.2.3 GSC_TERM 
-        3.2.4 GSC_GLINIT 
-        3.2.5 GSC_GLTERM 
-        3.2.6 GSC_UPDATE 
-        3.2.7 GSC_RESIZE 
-        3.2.8 GSC_DOWN 
-        3.2.9 GSC_UP 
-        3.2.10 GSC_UNICODE 
-        3.2.11 GSC_MOTION 
-        3.2.12 GSC_CLOSE 
-        3.2.13 GSC_INVOKE 
-    3.3 Queries 
-        3.3.1 GSQ_NAME 
-        3.3.2 GSQ_LOGGER 
-        3.3.3 GSQ_XPOS 
-        3.3.4 GSQ_YPOS 
-        3.3.5 GSQ_WIDTH 
-        3.3.6 GSQ_HEIGHT 
-        3.3.7 GSQ_BORDERS 
-4 Examples 
-    4.1 Simple example that just draws 
-    4.2 Complete example handling all queries/commands 
-5 License 
+1 Purpose
+2 Building
+    2.1 IOS
+    2.2 Android
+    2.3 NPAPI
+    2.4 Xlib
+    2.5 Cocoa
+    2.6 Windows
+3 API
+    3.1 Functions
+        3.1.1 Application hook
+        3.1.2 Application control
+        3.1.3 Screen properties
+        3.1.4 Keyboard
+        3.1.5 Logging
+        3.1.6 Events
+    3.2 Events
+        3.2.1 GSE_NONE
+        3.2.2 GSE_INIT
+        3.2.3 GSE_TERM
+        3.2.4 GSE_GLINIT
+        3.2.5 GSE_GLTERM
+        3.2.6 GSE_UPDATE
+        3.2.7 GSE_RESIZE
+        3.2.8 GSE_DOWN
+        3.2.9 GSE_UP
+        3.2.10 GSE_UNICODE
+        3.2.11 GSE_MOTION
+        3.2.12 GSE_CLOSE
+        3.2.13 GSE_INVOKE
+    3.3 Queries
+        3.3.1 GSQ_NAME
+        3.3.2 GSQ_LOGGER
+        3.3.3 GSQ_XPOS
+        3.3.4 GSQ_YPOS
+        3.3.5 GSQ_WIDTH
+        3.3.6 GSQ_HEIGHT
+        3.3.7 GSQ_BORDERS
+4 Examples
+    4.1 Simple example that just draws
+    4.2 Complete example handling all queries/commands
+5 License
 
 
 1 Purpose 
 ----------
 GLGS is a small screen/event handling library that provides a thin
 layer abstracting the details of configuring the screen and handling
-input. Sort of a simple GLUT/SDL.
+input. Sort of a simple GLUT/SDL. No API is provided for
+sound/fonts/widgets, there are good solutions out there for those and
+freedom of choice is a good thing.
 
 2 Building 
 -----------
@@ -68,8 +70,6 @@ install them in the IOS simulator directory.
 
   ./mk-ios
 
-
-
 2.2 Android 
 ============
 The following command should build the library and the examples and
@@ -78,8 +78,6 @@ install them in the Android emulator. The emulator must be running.
 
   ./mk-android
 
-
-
 2.3 NPAPI 
 ==========
 The following command should build the library and the examples and
@@ -87,8 +85,6 @@ install them in the user's plugins directory.
 
 
   ./mk-npapi
-
-
 
 After building, try opening [file:testplugin.html]
 
@@ -99,8 +95,6 @@ To compile the test application, use this command
 
   ./mk-xlib
 
-
-
 2.5 Cocoa 
 ==========
 To compile the test application, use this command
@@ -108,16 +102,12 @@ To compile the test application, use this command
 
   ./mk-cocoa
 
-
-
 2.6 Windows 
 ============
 To compile the test application, use this command
 
 
   mk-win
-
-
 
 3 API 
 ------
@@ -131,8 +121,6 @@ To compile the test application, use this command
 
   intptr_t event(const ev * e);
 
-
-
 This is the event handling routine implemented by your application.
 
 3.1.2 Application control 
@@ -140,8 +128,6 @@ This is the event handling routine implemented by your application.
 
 
   void gsQuit();
-
-
 
 Call this to terminate your application.
 
@@ -151,14 +137,10 @@ Call this to terminate your application.
 
   unsigned gsWidth();
 
-
-
 Current screen width
 
 
   unsigned gsHeight();
-
-
 
 Current screen height
 
@@ -167,18 +149,12 @@ Current screen height
 
 
 
-
-
   int gsMouseX();
-
-
 
 Current X mouse position
 
 
   int gsMouseY();
-
-
 
 Current Y mouse position
 
@@ -188,28 +164,20 @@ Current Y mouse position
 
   int gsPressed(gskey key);
 
-
-
 True if key is currently pressed
 
 
   int gsReleased(gskey key);
-
-
 
 True if key has just been released
 
 
   int gsShowKeyboard();
 
-
-
 On platforms that support it, show the on-screen keyboard
 
 
   int gsHideKeyboard();
-
-
 
 On platforms that support it, hide the on-screen keyboard
 
@@ -219,14 +187,10 @@ On platforms that support it, hide the on-screen keyboard
 
   void gsReportV(const char * fmt, va_list ap);
 
-
-
 Report a message (depending on the platform, it might go to a file).
 
 
   void gsReport(const char * fmt, ...);
-
-
 
 Report a message (depending on the platform, it might go to a file).
 
@@ -236,146 +200,120 @@ Report a message (depending on the platform, it might go to a file).
 
   int evType(const ev *);
 
-
-
 Event type.
 
 
   const char * evName(const ev *);
-
-
 
 Event name.
 
 
   int evWidth(const ev *);
 
-
-
-Width for GSC_RESIZE events.
+Width for GSE_RESIZE events.
 
 
   int evHeight(const ev *);
 
-
-
-Width for GSC_RESIZE events.
+Width for GSE_RESIZE events.
 
 
   gskey evWhich(const ev *);
 
-
-
-Keycode associated to GSC_DOWN/GSC_UP events.
+Keycode associated to GSE_DOWN/GSE_UP events.
 
 
   int evX(const ev *);
 
-
-
-Mouse X position for GSC_DOWN/GSC_UP events.
+Mouse X position for GSE_DOWN/GSE_UP events.
 
 
   int evY(const ev *);
 
-
-
-Mouse Y position for GSC_DOWN/GSC_UP events.
+Mouse Y position for GSE_DOWN/GSE_UP events.
 
 
   int evArgC(const ev *);
 
-
-
-Argument count for GSC_INIT events.
+Argument count for GSE_INIT events.
 
 
   char ** evArgV(const ev *);
 
-
-
-Argument array for GSC_INIT events.
+Argument array for GSE_INIT events.
 
 
   intptr_t evArg0(const ev *);
-
-
 
 First event argument, mostly internal.
 
 
   intptr_t evArg1(const ev *);
 
-
-
 Second event argument, mostly internal.
 
 
   intptr_t gsInject(gseventtype, intptr_t, intptr_t);
-
-
 
 Inject an event, mostly internal.
 
 
   const char * keyName(gskey);
 
+Key name for GSE_DOWN/GSE_UP events.
 
+3.2 Events 
+===========
 
-Key name for GSC_DOWN/GSC_UP events.
-
-3.2 Commands 
-=============
-
-3.2.1 GSC_NONE 
+3.2.1 GSE_NONE 
 ~~~~~~~~~~~~~~~
 Null event, must be ignored.
 
-3.2.2 GSC_INIT 
+3.2.2 GSE_INIT 
 ~~~~~~~~~~~~~~~
 Called upon initialization, no GL operations should be performed at this stage.
 
-3.2.3 GSC_TERM 
+3.2.3 GSE_TERM 
 ~~~~~~~~~~~~~~~
-Called befor terminating the application.
+Called before terminating the application.
 
-3.2.4 GSC_GLINIT 
+3.2.4 GSE_GLINIT 
 ~~~~~~~~~~~~~~~~~
 The OpenGL context has been established. Might be called several times.
 
-3.2.5 GSC_GLTERM 
+3.2.5 GSE_GLTERM 
 ~~~~~~~~~~~~~~~~~
 The OpenGL context is going to be destroyed. Might be called several times.
 
-3.2.6 GSC_UPDATE 
+3.2.6 GSE_UPDATE 
 ~~~~~~~~~~~~~~~~~
 This is your update routine, should be called at ~60Hz.
 
-3.2.7 GSC_RESIZE 
+3.2.7 GSE_RESIZE 
 ~~~~~~~~~~~~~~~~~
 Called when the screen is resized. Might be called several times.
 
-3.2.8 GSC_DOWN 
+3.2.8 GSE_DOWN 
 ~~~~~~~~~~~~~~~
 A key/button has been pressed.
 
-3.2.9 GSC_UP 
+3.2.9 GSE_UP 
 ~~~~~~~~~~~~~
 A key/button has been released.
 
-3.2.10 GSC_UNICODE 
+3.2.10 GSE_UNICODE 
 ~~~~~~~~~~~~~~~~~~~
 Called when the user enters text.
 
-3.2.11 GSC_MOTION 
+3.2.11 GSE_MOTION 
 ~~~~~~~~~~~~~~~~~~
 The mouse moved.
 
-3.2.12 GSC_CLOSE 
+3.2.12 GSE_CLOSE 
 ~~~~~~~~~~~~~~~~~
 The application is about to close.
 
-3.2.13 GSC_INVOKE 
+3.2.13 GSE_INVOKE 
 ~~~~~~~~~~~~~~~~~~
 Invoke method. The argument is available as evMethod().
 
@@ -384,7 +322,7 @@ Invoke method. The argument is available as evMethod().
 
 3.3.1 GSQ_NAME 
 ~~~~~~~~~~~~~~~
-Used to query the application name.
+Return the desired application name.
 
 3.3.2 GSQ_LOGGER 
 ~~~~~~~~~~~~~~~~~
@@ -393,25 +331,27 @@ Function to be used for logging. The returned function prototype should be:
 
   void report(const char * appname, const char * string);
 
-
-
 3.3.3 GSQ_XPOS 
 ~~~~~~~~~~~~~~~
-Return the desired X position. This is just a hint and can be ignored.
+Return the desired X position. This is just a hint and can be ignored
+on some platforms.
 
 3.3.4 GSQ_YPOS 
 ~~~~~~~~~~~~~~~
-Return the desired Y position. This is just a hint and can be ignored.
+Return the desired Y position. This is just a hint and can be ignored
+on some platforms.
 
 3.3.5 GSQ_WIDTH 
 ~~~~~~~~~~~~~~~~
-Return the desired width. Note that this can be ignored, use the size
-reported in GSC_RESIZE.
+Return the desired width. Note that this is a hint and can be ignored
+on some platforms. Your code should use the width reported via
+GSE_RESIZE or ask explicitly with gsWidth().
 
 3.3.6 GSQ_HEIGHT 
 ~~~~~~~~~~~~~~~~~
-Return the desired height. Note that this can be ignored, use the size
-reported in GSC_RESIZE.
+Return the desired height. Note that this is a hint and can be ignored
+on some platforms. Your code should use the height reported via
+GSE_RESIZE or ask explicitly with gsHeight().
 
 3.3.7 GSQ_BORDERS 
 ~~~~~~~~~~~~~~~~~~
@@ -444,8 +384,6 @@ Should the window have borders?
           }
           return ret;
   }
-
-
 
 4.2 Complete example handling all queries/commands 
 ===================================================
@@ -508,7 +446,7 @@ Should the window have borders?
           glFlush();
   }
   
-  intptr_t event(const ev * e) {
+  intptr_t myevent(const ev * e) {
           intptr_t ret = 1;
           gseventtype t = evType(e);
           if (t != GSC_UPDATE)
@@ -536,13 +474,15 @@ Should the window have borders?
           }
           return ret;
   }
-
-
+  
+  int main() {
+          return Run(myevent);
+  }
 
 
 5 License 
 ----------
-  Copyright (c) 2011, Jorge Acereda Maciá
+  Copyright (c) 2011-2012, Jorge Acereda Maciá
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without

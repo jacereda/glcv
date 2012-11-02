@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2011, Jorge Acereda Maciá
+  Copyright (c) 2011-2012, Jorge Acereda Maciá
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -38,14 +38,14 @@
 #endif
 
 typedef enum {
-	GSC_NONE,
+	GSE_NONE,
 #define Q(x) GSQ_##x,
 #include "gsqueries.h"
 #undef Q
-#define C(x) GSC_##x,
-#include "gscommands.h"
+#define C(x) GSE_##x,
+#include "gsevents.h"
 #undef C
-	GSC_MAX,
+	GSE_MAX,
 } gseventtype;
 
 typedef enum {
@@ -54,11 +54,18 @@ typedef enum {
 #undef K
 } gskey;
 
+#ifdef FROM_GO
+typedef char ev;
+#else
 typedef struct _ev ev;
+#endif
 
 // Provided by the program
+#ifdef GS_EXPLICIT_ENTRY
+int gsRun(intptr_t (*handler)(const ev *));
+#else
 intptr_t event(const ev * e);
-
+#endif
 
 unsigned gsWidth();
 unsigned gsHeight();
@@ -91,3 +98,4 @@ const char * evMethod(const ev *);
 intptr_t gsInject(gseventtype, intptr_t, intptr_t);
 
 const char * keyName(gskey k);
+

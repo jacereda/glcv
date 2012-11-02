@@ -1,5 +1,4 @@
 #include "gs.h"
-#include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
 #include <wingdi.h>
@@ -16,11 +15,11 @@
 static int g_done = 0;
 
 intptr_t osEvent(ev * e) {
-	intptr_t ret = 1;
-	switch (evType(e)) {
-	case GSC_QUIT: g_done = 1; break;		
-	default: ret = 0;
-	}
+        intptr_t ret = 1;
+        switch (evType(e)) {
+        case GSE_QUIT: g_done = 1; break;               
+        default: ret = 0;
+        }
         return ret;
 }
 
@@ -57,7 +56,7 @@ intptr_t osEvent(ev * e) {
 #endif
 
 static gskey mapkey(int vk) {
-	gskey ret;
+        gskey ret;
         switch (vk) {
         case 'A': ret = GSK_A; break;
         case 'S': ret = GSK_S; break;
@@ -109,11 +108,11 @@ static gskey mapkey(int vk) {
         case VK_DECIMAL: ret = GSK_KEYPADDECIMAL; break;
         case VK_MULTIPLY: ret = GSK_KEYPADMULTIPLY; break;
         case VK_ADD: ret = GSK_KEYPADPLUS; break;
-//	case 'K'eypadClear: ret = GSK_KEYPADCLEAR; break;
+//      case 'K'eypadClear: ret = GSK_KEYPADCLEAR; break;
         case VK_DIVIDE: ret = GSK_KEYPADDIVIDE; break;
-//	case 'K'eypadEnter: ret = GSK_KEYPADENTER; break;
+//      case 'K'eypadEnter: ret = GSK_KEYPADENTER; break;
         case VK_SUBTRACT: ret = GSK_KEYPADMINUS; break;
-//	case 'K'eypadEquals: ret = GSK_KEYPADEQUALS; break;
+//      case 'K'eypadEquals: ret = GSK_KEYPADEQUALS; break;
         case VK_NUMPAD0: ret = GSK_KEYPAD0; break;
         case VK_NUMPAD1: ret = GSK_KEYPAD1; break;
         case VK_NUMPAD2: ret = GSK_KEYPAD2; break;
@@ -185,33 +184,33 @@ static gskey mapkey(int vk) {
 }
 
 static int onSYSKEYDOWN(HWND win, UINT vk, BOOL down, int repeats, UINT flags) {
-	gsInject(GSC_DOWN, mapkey(vk), 0);
-	return 0;
+        gsInject(GSE_DOWN, mapkey(vk), 0);
+        return 0;
 }
 
 static int onSYSKEYUP(HWND win, UINT vk, BOOL down, int repeats, UINT flags) {
-        gsInject(GSC_UP, mapkey(vk), 0);
-	return 0;
+        gsInject(GSE_UP, mapkey(vk), 0);
+        return 0;
 }
 
 static int onKEYDOWN(HWND win, UINT vk, BOOL down, int repeats, UINT flags) {
-	gsInject(GSC_DOWN, mapkey(vk), 0);
+        gsInject(GSE_DOWN, mapkey(vk), 0);
         return 0;
 }
 
 static int onKEYUP(HWND win, UINT vk, BOOL down, int repeats, UINT flags) {
-	gsInject(GSC_UP, mapkey(vk), 0);
-	return 0;
+        gsInject(GSE_UP, mapkey(vk), 0);
+        return 0;
 }
 
 static int mouseDown(int which) {
-        gsInject(GSC_DOWN, which, 0);        
-	return 1;
+        gsInject(GSE_DOWN, which, 0);        
+        return 1;
 }
 
 static int mouseUp(int which) {
-        gsInject(GSC_UP, which, 0);        
-	return 1;
+        gsInject(GSE_UP, which, 0);        
+        return 1;
 }
 
 static int onLBUTTONDOWN(HWND win, BOOL dbl, int x, int y, UINT flags) {
@@ -240,19 +239,19 @@ static int onRBUTTONUP(HWND win, int x, int y, UINT flags) {
 
 
 static int onMOUSEMOVE(HWND win, int x, int y, UINT flags ) {
-        gsInject(GSC_MOTION, x, y);
-	return 1;
+        gsInject(GSE_MOTION, x, y);
+        return 1;
 }
 
 static int onSIZE(HWND win, UINT state, int w, int h) {
-	gsInject(GSC_RESIZE, w, h);
-	gsInject(GSC_GLINIT, 0, 0);
+        gsInject(GSE_RESIZE, w, h);
+        gsInject(GSE_GLINIT, 0, 0);
         return 1;
 }
 
 static int onCLOSE(HWND win){
-        gsInject(GSC_CLOSE, 0, 0);
-	return 0;
+        gsInject(GSE_CLOSE, 0, 0);
+        return 0;
 }
 
 static unsigned uc2gs(unsigned uc) {
@@ -264,17 +263,17 @@ static unsigned uc2gs(unsigned uc) {
 }
 
 static int onCHAR(HWND win, unsigned c, int repeats) {
-        gsInject(GSC_UNICODE, uc2gs(c), 0); 
-	return 0;
+        gsInject(GSE_UNICODE, uc2gs(c), 0); 
+        return 0;
 }
 
 static int onPAINT(HWND win) {
-	HDC dc;
-	gsInject(GSC_UPDATE, 0, 0);
-	dc = GetDC(win);
-	SwapBuffers(dc);
-	ReleaseDC(win, dc);
-	return 1;
+        HDC dc;
+        gsInject(GSE_UPDATE, 0, 0);
+        dc = GetDC(win);
+        SwapBuffers(dc);
+        ReleaseDC(win, dc);
+        return 1;
 }
 
 static int onSETCURSOR(HWND win, HWND cur, UINT l, UINT h) {
@@ -284,9 +283,9 @@ static int onSETCURSOR(HWND win, HWND cur, UINT l, UINT h) {
 
 static int onMOUSEWHEEL(HWND win, int x, int y, int z, UINT keys) {
         int which = z >= 0? GSK_MOUSEWHEELUP : GSK_MOUSEWHEELDOWN;
-        gsInject(GSC_DOWN, which, 0);
-	gsInject(GSC_UP, which, 0);
-	return 1;
+        gsInject(GSE_DOWN, which, 0);
+        gsInject(GSE_UP, which, 0);
+        return 1;
 }
 
 static LRESULT WINAPI handle(HWND win, UINT msg, WPARAM w, LPARAM l)  {
@@ -309,7 +308,7 @@ static LRESULT WINAPI handle(HWND win, UINT msg, WPARAM w, LPARAM l)  {
                 HANDLE(MBUTTONUP);
                 HANDLE(MOUSEWHEEL);
                 HANDLE(PAINT);
-		HANDLE(SETCURSOR);
+                HANDLE(SETCURSOR);
 #undef HANDLE
         default: r = 0;
         }
@@ -318,25 +317,25 @@ static LRESULT WINAPI handle(HWND win, UINT msg, WPARAM w, LPARAM l)  {
         return r;
 }
 
-int main(int argc, char ** argv) {
-	HANDLE mod = GetModuleHandle(0);
+int gsrun(int argc, char ** argv) {
+        HANDLE mod = GetModuleHandle(0);
         WNDCLASSW  wc;
-	RECT r;
+        RECT r;
         HGLRC ctx;
-	HWND win;
-	HDC dc;
-	WCHAR name[256];
-	int done = 0;
-	int full = 0;
-	int borders = gsInject(GSQ_BORDERS, 0, 0);
-	DWORD exstyle = borders? WS_EX_APPWINDOW : WS_EX_TOPMOST;
-	DWORD style = borders?
-		0
-		| WS_OVERLAPPED
-		| WS_CAPTION 
-		| WS_SYSMENU 
-		| WS_MINIMIZEBOX
-		: WS_POPUP;
+        HWND win;
+        HDC dc;
+        WCHAR name[256];
+        int done = 0;
+        int full = 0;
+        int borders = gsInject(GSQ_BORDERS, 0, 0);
+        DWORD exstyle = borders? WS_EX_APPWINDOW : WS_EX_TOPMOST;
+        DWORD style = borders?
+                0
+                | WS_OVERLAPPED
+                | WS_CAPTION 
+                | WS_SYSMENU 
+                | WS_MINIMIZEBOX
+                : WS_POPUP;
         PIXELFORMATDESCRIPTOR pfd = { 
                 sizeof(PIXELFORMATDESCRIPTOR),   // size of this pfd 
                 1,                     // version number 
@@ -357,41 +356,41 @@ int main(int argc, char ** argv) {
                 0,                     // reserved 
                 0, 0, 0                // layer masks ignored 
         };
-	
+        
         MultiByteToWideChar(CP_UTF8, 0, 
-			    (const char *)gsInject(GSQ_NAME, 0, 0),
-			    -1, name, sizeof(name));
+                            (const char *)gsInject(GSQ_NAME, 0, 0),
+                            -1, name, sizeof(name));
 
         ZeroMemory(&wc, sizeof(wc));
-	wc.style += CS_OWNDC;
+        wc.style += CS_OWNDC;
         wc.lpfnWndProc = handle;
         wc.hInstance = mod;
         wc.lpszClassName = name;
         RegisterClassW(&wc);
-	r.left = gsInject(GSQ_XPOS, 0, 0);
-	r.top = gsInject(GSQ_YPOS, 0, 0);
-	r.right = gsInject(GSQ_WIDTH, 0, 0);
-	r.bottom = gsInject(GSQ_HEIGHT, 0, 0);
-	if (r.right == -1) {
-		GetWindowRect(GetDesktopWindow(), &r);
-		full = 1;
-	}
-	else {
-		r.right += r.left;
-		r.bottom += r.top;
-	}
+        r.left = gsInject(GSQ_XPOS, 0, 0);
+        r.top = gsInject(GSQ_YPOS, 0, 0);
+        r.right = gsInject(GSQ_WIDTH, 0, 0);
+        r.bottom = gsInject(GSQ_HEIGHT, 0, 0);
+        if (r.right == -1) {
+                GetWindowRect(GetDesktopWindow(), &r);
+                full = 1;
+        }
+        else {
+                r.right += r.left;
+                r.bottom += r.top;
+        }
         AdjustWindowRect(&r, style, FALSE);
         win = CreateWindowExW(exstyle, name, name, style, 
-			      r.left, r.top,
+                              r.left, r.top,
                               r.right - r.left, r.bottom - r.top,
                               0, 0, mod, 0);
-	dc = GetDC(win);
+        dc = GetDC(win);
         SetPixelFormat(dc, ChoosePixelFormat(dc, &pfd), &pfd); 
-	ctx = wglCreateContext(dc);
-	gsInject(GSC_INIT, 1, (intptr_t)argv);
-        wglMakeCurrent(dc, ctx);	
-	((int(*)(int))wglGetProcAddress("wglSwapIntervalEXT"))(1);
-	SetCursor(0);
+        ctx = wglCreateContext(dc);
+        gsInject(GSE_INIT, 1, (intptr_t)argv);
+        wglMakeCurrent(dc, ctx);        
+        ((int(*)(int))wglGetProcAddress("wglSwapIntervalEXT"))(1);
+        SetCursor(0);
         ShowWindow(win, full? SW_MAXIMIZE : SW_SHOWNORMAL);
         while (!g_done) {
                 MSG msg;
@@ -399,16 +398,17 @@ int main(int argc, char ** argv) {
                         TranslateMessage(&msg);
                         DispatchMessageW(&msg);
                 }
-		InvalidateRect(win, 0, 0);
-		UpdateWindow(win);
+                InvalidateRect(win, 0, 0);
+                UpdateWindow(win);
         }
         ReleaseDC(win, dc);
-	return gsInject(GSC_TERM, 0, 0);
+        return gsInject(GSE_TERM, 0, 0);
 }
 
 /* 
    Local variables: **
    c-file-style: "bsd" **
    c-basic-offset: 8 **
+   indent-tabs-mode: nil **
    End: **
 */

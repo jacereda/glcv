@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2011, Jorge Acereda Maciá
+  Copyright (c) 2011-2012, Jorge Acereda Maciá
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -34,11 +34,27 @@
 #include <stdio.h>
 #include <string.h>
 
+extern int gsrun(int, char**);
+
+#if defined GS_EXPLICIT_ENTRY
+intptr_t (*event)(const ev * e);
+int gsRun(intptr_t (*handler)(const ev *)) {
+        event = handler;
+        return gsrun(0, 0);
+}
+#endif
+#if !defined GS_NO_MAIN
+int main(int argc, char ** argv) {
+        return gsrun(argc, argv);
+}
+#endif
+
+
 #define MAX_PRESSED 256
 
 struct _ev {
-	uintptr_t type;
-	uintptr_t p[2];
+        uintptr_t type;
+        uintptr_t p[2];
 };
 
 static unsigned s_w = 0;
@@ -57,10 +73,10 @@ static __inline void bitclear(unsigned char * b, unsigned bit) {
 }
 
 static __inline void bitassign(unsigned char * b, unsigned bit, int val) {
-	if (val)
-		bitset(b, bit);
-	else
-		bitclear(b, bit);
+        if (val)
+                bitset(b, bit);
+        else
+                bitclear(b, bit);
 }
 
 static __inline int bittest(const unsigned char * b, unsigned bit) {
@@ -68,27 +84,27 @@ static __inline int bittest(const unsigned char * b, unsigned bit) {
 }
 
 static void mysnprintf(char * buf, size_t sz, const char * fmt, ...) {
-	va_list ap;
-	va_start(ap, fmt);
-	vsnprintf(buf, sz, fmt, ap);
-	va_end(ap);
-	buf[sz-1] = 0;
+        va_list ap;
+        va_start(ap, fmt);
+        vsnprintf(buf, sz, fmt, ap);
+        va_end(ap);
+        buf[sz-1] = 0;
 }
 
 unsigned gsWidth() {
-	return s_w;
+        return s_w;
 }
 
 unsigned gsHeight() {
-	return s_h;
+        return s_h;
 }
 
 int gsMouseX() {
-	return s_mx;
+        return s_mx;
 }
 
 int gsMouseY() {
-	return s_my;
+        return s_my;
 }
 
 static unsigned char * bitarrayFor(unsigned char * p, gskey * k) {
@@ -123,178 +139,193 @@ int gsReleased(gskey k) {
 }
 
 int evType(const ev * e) {
-	return e->type;
+        return e->type;
 }
 
 const char * evName(const ev * e) {
-	const char * n;
-	static char buf[32];
-	switch (evType(e)) {
-	default: // Falls to GSC_NONE
+        const char * n;
+        static char buf[32];
+        switch (evType(e)) {
+        default: // Falls to GSE_NONE
 #define Q(x) case GSQ_##x: n = #x; break;
 #include "gsqueries.h"
 #undef Q
-#define C(x) case GSC_##x: n = #x; break;
-#include "gscommands.h"
+#define C(x) case GSE_##x: n = #x; break;
+#include "gsevents.h"
 #undef C
-	}
-	mysnprintf(buf, sizeof(buf), "GSC_%s", n);
-	return buf;
+        }
+        mysnprintf(buf, sizeof(buf), "GSE_%s", n);
+        return buf;
 }
 
 intptr_t evArg0(const ev * e) {
-	return e->p[0];
+        return e->p[0];
 }
 
 intptr_t evArg1(const ev * e) {
-	return e->p[1];
+        return e->p[1];
 }
 
 int evWidth(const ev * e) {
-	return evArg0(e);
+        return evArg0(e);
 }
 
 int evHeight(const ev * e) {
-	return evArg1(e);
+        return evArg1(e);
 }
 
 gskey evWhich(const ev * e) {
-	return evArg0(e);
+        return evArg0(e);
 }
 
 uint32_t evUnicode(const ev * e) {
-	return evArg0(e);
+        return evArg0(e);
 }
 
 int evX(const ev * e) {
-	return evArg0(e);
+        return evArg0(e);
 }
 
 int evY(const ev * e) {
-	return evArg1(e);
+        return evArg1(e);
 }
 
 int evArgC(const ev * e) {
-	return evArg0(e);
+        return evArg0(e);
 }
 
 char ** evArgV(const ev * e) {
-	return (char**) evArg1(e);
+        return (char**) evArg1(e);
 }
 
 const char * evMethod(const ev * e) {
-	return (char*)evArg0(e);
+        return (char*)evArg0(e);
 }
 
 const char * keyName(gskey k) {
-	const char * n = 0;
-	static char buf[32];
-	switch (k) {
+        const char * n = 0;
+        static char buf[32];
+        switch (k) {
 #define K(x) case GSK_##x: n = #x; break;
 #include "gskeys.h"
 #undef K
-	default: n = 0; break;
+        default: n = 0; break;
         }
         if (n)
-                mysnprintf(buf, sizeof(buf), "GSK_%s", n);
+                mysnprintf(buf, sizeof(buf), "%s", n);
         else if (k >= 32 && k < 127)
                 mysnprintf(buf, sizeof(buf), "%c", (unsigned)k);                
         else
                 mysnprintf(buf, sizeof(buf), "0x%x", (unsigned)k);
-	return buf;
+        return buf;
 }
 
 static void defaultlog(const char * name, const char * s) {
-	char path[256];	
-	FILE *out;
-	snprintf(path, sizeof(path), 
+        char path[256]; 
+        FILE *out;
+        snprintf(path, sizeof(path), 
 #if defined _WIN32
-		 "%s.log"
+                 "%s.log"
 #else
-		 "/tmp/%s.log"
+                 "/tmp/%s.log"
 #endif
-		 , name);
-	out = fopen(path, "a");
-	if(out) {
-		fprintf(out, "%s", s);
-		fclose(out);
-	}
+                 , name);
+        out = fopen(path, "a");
+        if(out) {
+                fprintf(out, "%s", s);
+                fclose(out);
+        }
 }
 
 intptr_t gsInject(gseventtype type, intptr_t p1, intptr_t p2) {
-	extern intptr_t osEvent(ev *);
-	ev e;
-	intptr_t ret;
+        extern intptr_t osEvent(ev *);
+        ev e;
+        intptr_t ret;
         e.type = type;
         e.p[0] = p1;
         e.p[1] = p2;
         switch (evType(&e)) {   
-	case GSC_RESIZE:
-		s_w = evWidth(&e);
-		s_h = evHeight(&e);
-		break;
-	case GSC_MOTION:
-		s_mx = evX(&e);
-		s_my = evY(&e);
-		break;
-	case GSC_DOWN:
-		press(evWhich(&e));
-		break;
-	case GSC_UP:
-		release(evWhich(&e));
-		break;
-	};
-	ret = event(&e);
-	if (!ret)
-		ret = osEvent(&e);
-	if (!ret) 
-		switch (evType(&e)) {
-		case GSQ_NAME:
-			ret = (intptr_t)"Unknown"; 
-			break;
-		case GSQ_LOGGER:
-			ret = (intptr_t)defaultlog;
-			break;
-		case GSQ_XPOS:
-		case GSQ_YPOS:
-			ret = 0;
-			break;
-		case GSQ_WIDTH:
-		case GSQ_HEIGHT:
-			ret = -1;
-			break;
-		}
-	return ret;
+        case GSE_RESIZE:
+                s_w = evWidth(&e);
+                s_h = evHeight(&e);
+                break;
+        case GSE_MOTION:
+                s_mx = evX(&e);
+                s_my = evY(&e);
+                break;
+        case GSE_DOWN:
+                press(evWhich(&e));
+                break;
+        case GSE_UP:
+                release(evWhich(&e));
+                break;
+        };
+        ret = event(&e);
+        if (!ret)
+                ret = osEvent(&e);
+        if (!ret) 
+                switch (evType(&e)) {
+                case GSQ_NAME:
+                        ret = (intptr_t)"Unknown"; 
+                        break;
+                case GSQ_LOGGER:
+                        ret = (intptr_t)defaultlog;
+                        break;
+                case GSQ_XPOS:
+                case GSQ_YPOS:
+                        ret = 0;
+                        break;
+                case GSQ_WIDTH:
+                case GSQ_HEIGHT:
+                        ret = -1;
+                        break;
+                case GSE_DOWN:
+                        if (evWhich(&e) == GSK_ESCAPE)
+                                gsQuit();
+                        break;
+                case GSE_CLOSE:
+                        gsQuit();
+                        break;
+                }
+        return ret;
 }
 
 void gsReport(const char * fmt, ...) {
-	va_list ap;
-	va_start(ap, fmt);
-	gsReportV(fmt, ap);
-	va_end(ap);
+        va_list ap;
+        va_start(ap, fmt);
+        gsReportV(fmt, ap);
+        va_end(ap);
 }
 
 
 typedef void (*logger_t)(const char *, const char *);
 
 void gsReportV(const char *fmt, va_list ap) {
-	static logger_t logger = 0;
-	static const char * name = 0;
-	int good = logger != (logger_t)1;
-	if (!logger && good) {
-		logger = (logger_t)1;
-		name = (const char *)gsInject(GSQ_NAME, 0, 0);
-		logger = (logger_t)gsInject(GSQ_LOGGER, 0, 0);
-	}
-	if (good) {
-		char b[1024];
-		size_t s = 0;
-		s += vsnprintf(b + s, sizeof(b) - s, fmt, ap);
-		s += snprintf(b + s, sizeof(b) - s, "\n");
-		logger(name, b);
-	}
+        static logger_t logger = 0;
+        static const char * name = 0;
+        int good = logger != (logger_t)1;
+        if (!logger && good) {
+                logger = (logger_t)1;
+                name = (const char *)gsInject(GSQ_NAME, 0, 0);
+                logger = (logger_t)gsInject(GSQ_LOGGER, 0, 0);
+        }
+        if (good) {
+                char b[1024];
+                size_t s = 0;
+                s += vsnprintf(b + s, sizeof(b) - s, fmt, ap);
+                s += snprintf(b + s, sizeof(b) - s, "\n");
+                logger(name, b);
+        }
 }
 
 void gsQuit() {
-	gsInject(GSC_QUIT, 0, 0);
+        gsInject(GSE_QUIT, 0, 0);
 }
+
+/* 
+   Local variables: **
+   c-file-style: "bsd" **
+   c-basic-offset: 8 **
+   indent-tabs-mode: nil **
+   End: **
+*/

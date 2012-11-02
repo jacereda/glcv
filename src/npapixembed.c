@@ -43,28 +43,28 @@ static gboolean event(GtkWidget * wid, GdkEvent * ev, gpointer data) {
         switch (ev->type) {
         case GDK_KEY_PRESS: {
                 GdkEventKey * kev = (GdkEventKey*)ev;
-                gsInject(GSC_DOWN, mapkeycode(kev->hardware_keycode), 0);
+                gsInject(GSE_DOWN, mapkeycode(kev->hardware_keycode), 0);
                 break;
         }
         case GDK_KEY_RELEASE: {
                 GdkEventKey * kev = (GdkEventKey*)ev;
-                gsInject(GSC_UP, mapkeycode(kev->hardware_keycode), 0);
+                gsInject(GSE_UP, mapkeycode(kev->hardware_keycode), 0);
                 break;
         }
         case GDK_BUTTON_PRESS: {
                 GdkEventButton * bev = (GdkEventButton*)ev;
                 gtk_widget_grab_focus(g_plug);
-                got(w, GSC_DOWN, mapbutton(bev->button), 0);
+                got(w, GSE_DOWN, mapbutton(bev->button), 0);
                 break;
         }
         case GDK_BUTTON_RELEASE: {
                 GdkEventButton * bev = (GdkEventButton*)ev;
-                got(w, GSC_UP, mapbutton(bev->button), 0);
+                got(w, GSE_UP, mapbutton(bev->button), 0);
                 break;
         }
         case GDK_MOTION_NOTIFY: {
                 GdkEventMotion * mev = (GdkEventMotion*)ev;
-                got(w, GSC_MOTION, mev->x, mev->y);
+                got(w, GSE_MOTION, mev->x, mev->y);
                 break;
         }
         default: ret = FALSE; break;
@@ -73,7 +73,7 @@ static gboolean event(GtkWidget * wid, GdkEvent * ev, gpointer data) {
 }
 
 static gboolean update(gpointer data) {
-        gsInject(GSC_UPDATE);
+        gsInject(GSE_UPDATE);
         glXSwapBuffers(g_dpy, g_w);
         return 1;
 }
@@ -103,8 +103,8 @@ static void osglinit(NPWindow * w) {
         g_ctx = glXCreateContext(g_dpy, vinfo, 0, True);
         XFree(vinfo);
         glXMakeCurrent(g_dpy, g_w, g_ctx);
-	gsInject(GSC_RESIZE, w->width, w->height);
-	gsInject(GSC_GLINIT, 0, 0);
+        gsInject(GSE_RESIZE, w->width, w->height);
+        gsInject(GSE_GLINIT, 0, 0);
 }
 
 void osterm(ins * o) {
@@ -123,18 +123,18 @@ void osterm(ins * o) {
 }
 
 static NPError getvalue(NPP i, NPPVariable var, void * v) {
-	NPError ret = NPERR_NO_ERROR;
-	debug("os getvalue"); 
-	switch(var) {
+        NPError ret = NPERR_NO_ERROR;
+        debug("os getvalue"); 
+        switch(var) {
         case NPPVpluginNeedsXEmbed:
                 *(int*)v = 1;
                 break;
-	default: 
-		debug("os getval default"); 
-		ret = NPERR_GENERIC_ERROR; 
-		break;
-	}
-	return ret;
+        default: 
+                debug("os getval default"); 
+                ret = NPERR_GENERIC_ERROR; 
+                break;
+        }
+        return ret;
 } 
 
 /* 

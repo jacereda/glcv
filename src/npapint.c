@@ -22,7 +22,7 @@ static inline BOOL _chk(int line, BOOL b) {
 #define chk(x) _chk(__LINE__, x)
 
 static void setPF(HDC dc) {
-	int pf;
+        int pf;
         PIXELFORMATDESCRIPTOR pfd = { 
                 sizeof(PIXELFORMATDESCRIPTOR),   // size of this pfd 
                 1,                     // version number 
@@ -43,8 +43,8 @@ static void setPF(HDC dc) {
                 0,                     // reserved 
                 0, 0, 0                // layer masks ignored 
         }; 
-	pf = ChoosePixelFormat(dc, &pfd);
-	gsReport("pf: %d", pf);
+        pf = ChoosePixelFormat(dc, &pfd);
+        gsReport("pf: %d", pf);
         chk(SetPixelFormat(dc, pf, &pfd)); 
 }
 
@@ -109,11 +109,11 @@ static unsigned mapkeycode(unsigned vk) {
         case VK_DECIMAL: ret = GSK_KEYPADDECIMAL; break;
         case VK_MULTIPLY: ret = GSK_KEYPADMULTIPLY; break;
         case VK_ADD: ret = GSK_KEYPADPLUS; break;
-//	case 'K'eypadClear: ret = GSK_KEYPADCLEAR; break;
+//      case 'K'eypadClear: ret = GSK_KEYPADCLEAR; break;
         case VK_DIVIDE: ret = GSK_KEYPADDIVIDE; break;
-//	case 'K'eypadEnter: ret = GSK_KEYPADENTER; break;
+//      case 'K'eypadEnter: ret = GSK_KEYPADENTER; break;
         case VK_SUBTRACT: ret = GSK_KEYPADMINUS; break;
-//	case 'K'eypadEquals: ret = GSK_KEYPADEQUALS; break;
+//      case 'K'eypadEquals: ret = GSK_KEYPADEQUALS; break;
         case VK_NUMPAD0: ret = GSK_KEYPAD0; break;
         case VK_NUMPAD1: ret = GSK_KEYPAD1; break;
         case VK_NUMPAD2: ret = GSK_KEYPAD2; break;
@@ -185,69 +185,69 @@ static unsigned mapkeycode(unsigned vk) {
 }
 
 static int wgot(HWND win, gseventtype evt, intptr_t a0, intptr_t a1) {
-	int handled = win == s_win;
-	if (handled)
-		gsInject(evt, a0, a1);
-	else
-		gsReport("not handled: win: %p s_win: %p", win, s_win);
-	return handled;
+        int handled = win == s_win;
+        if (handled)
+                gsInject(evt, a0, a1);
+        else
+                gsReport("not handled: win: %p s_win: %p", win, s_win);
+        return handled;
 }
 
 static int onPAINT(HWND win) {
-	int handled = s_win == win;
-	if (handled) {
-//		PAINTSTRUCT ps;
-//		HDC dc = BeginPaint(win, &ps);
-		HDC dc = GetDC(win);
-		gsReport("Painting");
-//		chk(wglMakeCurrent(s_dc, s_rc));
-		gsInject(GSC_UPDATE, 0, 0);
-		chk(SwapBuffers(dc));
-		ReleaseDC(win, dc);
-//		chk(EndPaint(win, &ps));
-	}
-	return handled;
+        int handled = s_win == win;
+        if (handled) {
+//              PAINTSTRUCT ps;
+//              HDC dc = BeginPaint(win, &ps);
+                HDC dc = GetDC(win);
+                gsReport("Painting");
+//              chk(wglMakeCurrent(s_dc, s_rc));
+                gsInject(GSE_UPDATE, 0, 0);
+                chk(SwapBuffers(dc));
+                ReleaseDC(win, dc);
+//              chk(EndPaint(win, &ps));
+        }
+        return handled;
 }
 
 static int onTIMER(HWND win, UINT i) {
-	chk(PostMessage(win, WM_PAINT, 0, 0));
+        chk(PostMessage(win, WM_PAINT, 0, 0));
         return 1;
 }
 
 static int onMOUSEMOVE(HWND win, int x, int y, UINT flags ) {
-        return wgot(win, GSC_MOTION, x, y);
+        return wgot(win, GSE_MOTION, x, y);
 }
 
 static int onSIZE(HWND win, UINT state, int w, int h) {
-        return wgot(win, GSC_RESIZE, w, h);
+        return wgot(win, GSE_RESIZE, w, h);
 }
 
 static int onCLOSE(HWND win) {
-        return wgot(win, GSC_CLOSE, 0, 0);
+        return wgot(win, GSE_CLOSE, 0, 0);
 }
 static int onSYSKEYDOWN(HWND win, UINT vk, BOOL down, int repeats, UINT flags) {
-        return wgot(win, GSC_DOWN, mapkeycode(vk), 0);
+        return wgot(win, GSE_DOWN, mapkeycode(vk), 0);
 }
 
 static int onSYSKEYUP(HWND win, UINT vk, BOOL down, int repeats, UINT flags) {
-        return wgot(win, GSC_UP, mapkeycode(vk), 0);
+        return wgot(win, GSE_UP, mapkeycode(vk), 0);
 }
 
 static int onKEYDOWN(HWND win, UINT vk, BOOL down, int repeats, UINT flags) {
-        return wgot(win, GSC_DOWN, mapkeycode(vk), 0);
+        return wgot(win, GSE_DOWN, mapkeycode(vk), 0);
 }
 
 static int onKEYUP(HWND win, UINT vk, BOOL down, int repeats, UINT flags) {
-        return wgot(win, GSC_UP, mapkeycode(vk), 0);
+        return wgot(win, GSE_UP, mapkeycode(vk), 0);
 }
 
 static int mouseDown(HWND win, int which) {
         SetCapture(win);
-        return wgot(win, GSC_DOWN, which, 0);        
+        return wgot(win, GSE_DOWN, which, 0);        
 }
 
 static int mouseUp(HWND win, int which) {
-        int ret = wgot(win, GSC_UP, which, 0);        
+        int ret = wgot(win, GSE_UP, which, 0);        
         ReleaseCapture();
         return ret;
 }
@@ -278,26 +278,26 @@ static int onRBUTTONUP(HWND win, int x, int y, UINT flags) {
 
 static int onMOUSEWHEEL(HWND win, int x, int y, int z, UINT keys) {
         int which = z >= 0? GSK_MOUSEWHEELUP : GSK_MOUSEWHEELDOWN;
-        return wgot(win, GSC_DOWN, which, 0)
-                && wgot(win, GSC_UP, which, 0);
+        return wgot(win, GSE_DOWN, which, 0)
+                && wgot(win, GSE_UP, which, 0);
 }
 
 static int onCHAR(HWND win, unsigned c, int repeats) {
-        return wgot(win, GSC_UNICODE, uc2aw(c), 0); 
+        return wgot(win, GSE_UNICODE, uc2aw(c), 0); 
 }
 
 static int onDESTROY(HWND win) {
         chk(KillTimer(win, 1));
-	return 1;
+        return 1;
 }
 
 
 static LONG WINAPI handle(HWND win, UINT msg, WPARAM w, LPARAM l) {
-	LONG r;
-	switch (msg) {
+        LONG r;
+        switch (msg) {
 #define HANDLE(x) case WM_##x: gsReport("han " #x); r = HANDLE_WM_##x(win, w, l, on##x); break
-		HANDLE(TIMER);
-		HANDLE(PAINT);
+                HANDLE(TIMER);
+                HANDLE(PAINT);
                 HANDLE(MOUSEMOVE);
                 HANDLE(SIZE);
                 HANDLE(KEYDOWN);
@@ -313,16 +313,16 @@ static LONG WINAPI handle(HWND win, UINT msg, WPARAM w, LPARAM l) {
                 HANDLE(MBUTTONUP);
                 HANDLE(MOUSEWHEEL);
                 HANDLE(DESTROY);
-		HANDLE(CLOSE);
+                HANDLE(CLOSE);
 #undef HANDLE
         case WM_IME_STARTCOMPOSITION: {
-		HIMC imc = ImmGetContext(win);
-		COMPOSITIONFORM cf;
-		cf.dwStyle = CFS_POINT;
-		cf.ptCurrentPos.x = gsMouseX();
-		cf.ptCurrentPos.y = gsMouseY();
-		ImmSetCompositionWindow(imc, &cf);
-		ImmReleaseContext(win, imc);
+                HIMC imc = ImmGetContext(win);
+                COMPOSITIONFORM cf;
+                cf.dwStyle = CFS_POINT;
+                cf.ptCurrentPos.x = gsMouseX();
+                cf.ptCurrentPos.y = gsMouseY();
+                ImmSetCompositionWindow(imc, &cf);
+                ImmReleaseContext(win, imc);
                 r = 1;
         }
         break;
@@ -335,7 +335,7 @@ static LONG WINAPI handle(HWND win, UINT msg, WPARAM w, LPARAM l) {
                         len = ImmGetCompositionString(imc, GCS_RESULTSTR, str, sizeof(str));
                         len >>= 1;
                         for (i = 0; i < len; i++)
-                                wgot(win, GSC_UNICODE, str[i], 0); 
+                                wgot(win, GSE_UNICODE, str[i], 0); 
                         ImmReleaseContext(win, imc);
                         chk(ReleaseDC(win, dc));
                 }
@@ -351,59 +351,67 @@ static LONG WINAPI handle(HWND win, UINT msg, WPARAM w, LPARAM l) {
 }
 
 static void osglinit(NPWindow * w) {
-	HDC dc;
-	osterm();
-	BOOL (APIENTRY *wglSwapInterval)(int);
-	s_win = w->window;
-	gsReport("win: %p", s_win);
-	s_oldproc = SubclassWindow(s_win, handle);
-	gsReport("old: %p", s_oldproc);
-	dc = GetDC(s_win);
-	gsReport("dc: %p", dc);
-	setPF(dc);
-	s_rc = wglCreateContext(dc);
-	gsReport("ct: %p", s_rc);
-	chk(wglMakeCurrent(dc, s_rc));
-	wglSwapInterval = (void*)wglGetProcAddress("wglSwapIntervalEXT");
-	if (wglSwapInterval)
-		chk(wglSwapInterval(1));
-	gsInject(GSC_RESIZE, w->width, w->height);
-	gsInject(GSC_GLINIT, 0, 0);
-	chk(ReleaseDC(s_win, dc));
-	chk(SetTimer(s_win, 10, 10, 0));
-	chk(PostMessage(s_win, WM_PAINT, 0, 0));
+        HDC dc;
+        osterm();
+        BOOL (APIENTRY *wglSwapInterval)(int);
+        s_win = w->window;
+        gsReport("win: %p", s_win);
+        s_oldproc = SubclassWindow(s_win, handle);
+        gsReport("old: %p", s_oldproc);
+        dc = GetDC(s_win);
+        gsReport("dc: %p", dc);
+        setPF(dc);
+        s_rc = wglCreateContext(dc);
+        gsReport("ct: %p", s_rc);
+        chk(wglMakeCurrent(dc, s_rc));
+        wglSwapInterval = (void*)wglGetProcAddress("wglSwapIntervalEXT");
+        if (wglSwapInterval)
+                chk(wglSwapInterval(1));
+        gsInject(GSE_RESIZE, w->width, w->height);
+        gsInject(GSE_GLINIT, 0, 0);
+        chk(ReleaseDC(s_win, dc));
+        chk(SetTimer(s_win, 10, 10, 0));
+        chk(PostMessage(s_win, WM_PAINT, 0, 0));
 }
 
 static void osinit(NPNetscapeFuncs * browser, NPP i) {
 }
 
 static void osterm() {
-	if (s_win)
-		KillTimer(s_win, 10);
+        if (s_win)
+                KillTimer(s_win, 10);
 
-	chk(wglMakeCurrent(0, 0));
-	if (s_rc)
-		chk(wglDeleteContext(s_rc));
-	s_rc = 0;
-	if (s_oldproc)
-		(void)SubclassWindow(s_win, s_oldproc);
-	s_oldproc = 0;
-	s_win = 0;
-	
+        chk(wglMakeCurrent(0, 0));
+        if (s_rc)
+                chk(wglDeleteContext(s_rc));
+        s_rc = 0;
+        if (s_oldproc)
+                (void)SubclassWindow(s_win, s_oldproc);
+        s_oldproc = 0;
+        s_win = 0;
+        
 }
 
 static NPError osgetval(NPP i, NPPVariable var, void * v) {
-	NPError ret;
-	debug("os getvalue"); 
-	switch(var) {
-	default: 
-		debug("os getval default"); 
-		ret = NPERR_GENERIC_ERROR; 
-		break;
-	}
-	return ret;
+        NPError ret;
+        debug("os getvalue"); 
+        switch(var) {
+        default: 
+                debug("os getval default"); 
+                ret = NPERR_GENERIC_ERROR; 
+                break;
+        }
+        return ret;
 } 
 
 static NPError osevent(void * ve) {
-	return NPERR_NO_ERROR;
+        return NPERR_NO_ERROR;
 }
+
+/* 
+   Local variables: **
+   c-file-style: "bsd" **
+   c-basic-offset: 8 **
+   indent-tabs-mode: nil **
+   End: **
+*/

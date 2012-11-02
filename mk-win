@@ -1,0 +1,7 @@
+#!/bin/bash
+mk () {
+     $HOME/mingw-cross-env/usr/bin/i386-mingw32msvc-gcc $* -I src src/win.c src/gs.c -lgdi32 -lopengl32
+}
+
+mk test/simple.c -o b/simple.exe
+mk test/test.c -o b/test.exe

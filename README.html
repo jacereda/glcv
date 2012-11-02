@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
                "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-lang="en" xml:lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
 <title>GLGS</title>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<meta name="title" content="GLGS"/>
 <meta name="generator" content="Org-mode"/>
 <meta name="generated" content="2011-10-02 Sun"/>
 <meta name="author" content="Jorge Acereda"/>
@@ -44,6 +44,12 @@ lang="en" xml:lang="en">
   dt { font-weight: bold; }
   div.figure { padding: 0.5em; }
   div.figure p { text-align: center; }
+  div.inlinetask {
+    padding:10px;
+    border:2px solid gray;
+    margin:10px;
+    background: #ffffcc;
+  }
   textarea { overflow-x: auto; }
   .linenr { font-size:smaller }
   .code-highlighted {background-color:#ffff00;}
@@ -92,89 +98,92 @@ lang="en" xml:lang="en">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#sec-1">1 Purpose </a></li>
-<li><a href="#sec-2">2 Building </a>
+<li><a href="#sec-1">1 Purpose</a></li>
+<li><a href="#sec-2">2 Building</a>
 <ul>
-<li><a href="#sec-2-1">2.1 IOS </a></li>
-<li><a href="#sec-2-2">2.2 Android </a></li>
-<li><a href="#sec-2-3">2.3 NPAPI </a></li>
-<li><a href="#sec-2-4">2.4 Xlib </a></li>
-<li><a href="#sec-2-5">2.5 Cocoa </a></li>
-<li><a href="#sec-2-6">2.6 Windows </a></li>
+<li><a href="#sec-2-1">2.1 IOS</a></li>
+<li><a href="#sec-2-2">2.2 Android</a></li>
+<li><a href="#sec-2-3">2.3 NPAPI</a></li>
+<li><a href="#sec-2-4">2.4 Xlib</a></li>
+<li><a href="#sec-2-5">2.5 Cocoa</a></li>
+<li><a href="#sec-2-6">2.6 Windows</a></li>
 </ul>
 </li>
-<li><a href="#sec-3">3 API </a>
+<li><a href="#sec-3">3 API</a>
 <ul>
-<li><a href="#sec-3-1">3.1 Functions </a>
+<li><a href="#sec-3-1">3.1 Functions</a>
 <ul>
-<li><a href="#sec-3-1-1">3.1.1 Application hook </a></li>
-<li><a href="#sec-3-1-2">3.1.2 Application control </a></li>
-<li><a href="#sec-3-1-3">3.1.3 Screen properties </a></li>
-<li><a href="#sec-3-1-4">3.1.4 Keyboard </a></li>
-<li><a href="#sec-3-1-5">3.1.5 Logging </a></li>
-<li><a href="#sec-3-1-6">3.1.6 Events </a></li>
+<li><a href="#sec-3-1-1">3.1.1 Application hook</a></li>
+<li><a href="#sec-3-1-2">3.1.2 Application control</a></li>
+<li><a href="#sec-3-1-3">3.1.3 Screen properties</a></li>
+<li><a href="#sec-3-1-4">3.1.4 Keyboard</a></li>
+<li><a href="#sec-3-1-5">3.1.5 Logging</a></li>
+<li><a href="#sec-3-1-6">3.1.6 Events</a></li>
 </ul>
 </li>
-<li><a href="#sec-3-2">3.2 Commands </a>
+<li><a href="#sec-3-2">3.2 Events</a>
 <ul>
-<li><a href="#sec-3-2-1">3.2.1 GSC_NONE </a></li>
-<li><a href="#sec-3-2-2">3.2.2 GSC_INIT </a></li>
-<li><a href="#sec-3-2-3">3.2.3 GSC_TERM </a></li>
-<li><a href="#sec-3-2-4">3.2.4 GSC_GLINIT </a></li>
-<li><a href="#sec-3-2-5">3.2.5 GSC_GLTERM </a></li>
-<li><a href="#sec-3-2-6">3.2.6 GSC_UPDATE </a></li>
-<li><a href="#sec-3-2-7">3.2.7 GSC_RESIZE </a></li>
-<li><a href="#sec-3-2-8">3.2.8 GSC_DOWN </a></li>
-<li><a href="#sec-3-2-9">3.2.9 GSC_UP </a></li>
-<li><a href="#sec-3-2-10">3.2.10 GSC_UNICODE </a></li>
-<li><a href="#sec-3-2-11">3.2.11 GSC_MOTION </a></li>
-<li><a href="#sec-3-2-12">3.2.12 GSC_CLOSE </a></li>
-<li><a href="#sec-3-2-13">3.2.13 GSC_INVOKE </a></li>
+<li><a href="#sec-3-2-1">3.2.1 GSE_NONE</a></li>
+<li><a href="#sec-3-2-2">3.2.2 GSE_INIT</a></li>
+<li><a href="#sec-3-2-3">3.2.3 GSE_TERM</a></li>
+<li><a href="#sec-3-2-4">3.2.4 GSE_GLINIT</a></li>
+<li><a href="#sec-3-2-5">3.2.5 GSE_GLTERM</a></li>
+<li><a href="#sec-3-2-6">3.2.6 GSE_UPDATE</a></li>
+<li><a href="#sec-3-2-7">3.2.7 GSE_RESIZE</a></li>
+<li><a href="#sec-3-2-8">3.2.8 GSE_DOWN</a></li>
+<li><a href="#sec-3-2-9">3.2.9 GSE_UP</a></li>
+<li><a href="#sec-3-2-10">3.2.10 GSE_UNICODE</a></li>
+<li><a href="#sec-3-2-11">3.2.11 GSE_MOTION</a></li>
+<li><a href="#sec-3-2-12">3.2.12 GSE_CLOSE</a></li>
+<li><a href="#sec-3-2-13">3.2.13 GSE_INVOKE</a></li>
 </ul>
 </li>
-<li><a href="#sec-3-3">3.3 Queries </a>
+<li><a href="#sec-3-3">3.3 Queries</a>
 <ul>
-<li><a href="#sec-3-3-1">3.3.1 GSQ_NAME </a></li>
-<li><a href="#sec-3-3-2">3.3.2 GSQ_LOGGER </a></li>
-<li><a href="#sec-3-3-3">3.3.3 GSQ_XPOS </a></li>
-<li><a href="#sec-3-3-4">3.3.4 GSQ_YPOS </a></li>
-<li><a href="#sec-3-3-5">3.3.5 GSQ_WIDTH </a></li>
-<li><a href="#sec-3-3-6">3.3.6 GSQ_HEIGHT </a></li>
-<li><a href="#sec-3-3-7">3.3.7 GSQ_BORDERS </a></li>
+<li><a href="#sec-3-3-1">3.3.1 GSQ_NAME</a></li>
+<li><a href="#sec-3-3-2">3.3.2 GSQ_LOGGER</a></li>
+<li><a href="#sec-3-3-3">3.3.3 GSQ_XPOS</a></li>
+<li><a href="#sec-3-3-4">3.3.4 GSQ_YPOS</a></li>
+<li><a href="#sec-3-3-5">3.3.5 GSQ_WIDTH</a></li>
+<li><a href="#sec-3-3-6">3.3.6 GSQ_HEIGHT</a></li>
+<li><a href="#sec-3-3-7">3.3.7 GSQ_BORDERS</a></li>
 </ul></li>
 </ul>
 </li>
-<li><a href="#sec-4">4 Examples </a>
+<li><a href="#sec-4">4 Examples</a>
 <ul>
-<li><a href="#sec-4-1">4.1 Simple example that just draws </a></li>
-<li><a href="#sec-4-2">4.2 Complete example handling all queries/commands </a></li>
+<li><a href="#sec-4-1">4.1 Simple example that just draws</a></li>
+<li><a href="#sec-4-2">4.2 Complete example handling all queries/commands</a></li>
 </ul>
 </li>
-<li><a href="#sec-5">5 License </a></li>
+<li><a href="#sec-5">5 License</a></li>
 </ul>
 </div>
 </div>
 
 <div id="outline-container-1" class="outline-2">
-<h2 id="sec-1"><span class="section-number-2">1</span> Purpose </h2>
+<h2 id="sec-1"><span class="section-number-2">1</span> Purpose</h2>
 <div class="outline-text-2" id="text-1">
 
 <p>GLGS is a small screen/event handling library that provides a thin
 layer abstracting the details of configuring the screen and handling
-input. Sort of a simple GLUT/SDL.
-</p></div>
+input. Sort of a simple GLUT/SDL. No API is provided for
+sound/fonts/widgets, there are good solutions out there for those and
+freedom of choice is a good thing.
+</p>
+</div>
 
 </div>
 
 <div id="outline-container-2" class="outline-2">
-<h2 id="sec-2"><span class="section-number-2">2</span> Building </h2>
+<h2 id="sec-2"><span class="section-number-2">2</span> Building</h2>
 <div class="outline-text-2" id="text-2">
 
 
 </div>
 
 <div id="outline-container-2-1" class="outline-3">
-<h3 id="sec-2-1"><span class="section-number-3">2.1</span> IOS </h3>
+<h3 id="sec-2-1"><span class="section-number-3">2.1</span> IOS</h3>
 <div class="outline-text-3" id="text-2-1">
 
 <p>The following command should build the library and the examples and
@@ -185,14 +194,12 @@ install them in the IOS simulator directory.
 <pre class="src src-sh">./mk-ios
 </pre>
 
-
-
 </div>
 
 </div>
 
 <div id="outline-container-2-2" class="outline-3">
-<h3 id="sec-2-2"><span class="section-number-3">2.2</span> Android </h3>
+<h3 id="sec-2-2"><span class="section-number-3">2.2</span> Android</h3>
 <div class="outline-text-3" id="text-2-2">
 
 <p>The following command should build the library and the examples and
@@ -203,14 +210,12 @@ install them in the Android emulator. The emulator must be running.
 <pre class="src src-sh">./mk-android
 </pre>
 
-
-
 </div>
 
 </div>
 
 <div id="outline-container-2-3" class="outline-3">
-<h3 id="sec-2-3"><span class="section-number-3">2.3</span> NPAPI </h3>
+<h3 id="sec-2-3"><span class="section-number-3">2.3</span> NPAPI</h3>
 <div class="outline-text-3" id="text-2-3">
 
 <p>The following command should build the library and the examples and
@@ -221,8 +226,6 @@ install them in the user's plugins directory.
 <pre class="src src-sh">./mk-npapi
 </pre>
 
-
-
 <p>
 After building, try opening <a href="testplugin.html">testplugin.html</a>
 </p></div>
@@ -230,7 +233,7 @@ After building, try opening <a href="testplugin.html">testplugin.html</a>
 </div>
 
 <div id="outline-container-2-4" class="outline-3">
-<h3 id="sec-2-4"><span class="section-number-3">2.4</span> Xlib </h3>
+<h3 id="sec-2-4"><span class="section-number-3">2.4</span> Xlib</h3>
 <div class="outline-text-3" id="text-2-4">
 
 <p>To compile the test application, use this command
@@ -240,14 +243,12 @@ After building, try opening <a href="testplugin.html">testplugin.html</a>
 <pre class="src src-sh">./mk-xlib
 </pre>
 
-
-
 </div>
 
 </div>
 
 <div id="outline-container-2-5" class="outline-3">
-<h3 id="sec-2-5"><span class="section-number-3">2.5</span> Cocoa </h3>
+<h3 id="sec-2-5"><span class="section-number-3">2.5</span> Cocoa</h3>
 <div class="outline-text-3" id="text-2-5">
 
 <p>To compile the test application, use this command
@@ -257,14 +258,12 @@ After building, try opening <a href="testplugin.html">testplugin.html</a>
 <pre class="src src-sh">./mk-cocoa
 </pre>
 
-
-
 </div>
 
 </div>
 
 <div id="outline-container-2-6" class="outline-3">
-<h3 id="sec-2-6"><span class="section-number-3">2.6</span> Windows </h3>
+<h3 id="sec-2-6"><span class="section-number-3">2.6</span> Windows</h3>
 <div class="outline-text-3" id="text-2-6">
 
 <p>To compile the test application, use this command
@@ -274,38 +273,34 @@ After building, try opening <a href="testplugin.html">testplugin.html</a>
 <pre class="src src-sh">mk-win
 </pre>
 
-
-
 </div>
 </div>
 
 </div>
 
 <div id="outline-container-3" class="outline-2">
-<h2 id="sec-3"><span class="section-number-2">3</span> API </h2>
+<h2 id="sec-3"><span class="section-number-2">3</span> API</h2>
 <div class="outline-text-2" id="text-3">
 
 
 </div>
 
 <div id="outline-container-3-1" class="outline-3">
-<h3 id="sec-3-1"><span class="section-number-3">3.1</span> Functions </h3>
+<h3 id="sec-3-1"><span class="section-number-3">3.1</span> Functions</h3>
 <div class="outline-text-3" id="text-3-1">
 
 
 </div>
 
 <div id="outline-container-3-1-1" class="outline-4">
-<h4 id="sec-3-1-1"><span class="section-number-4">3.1.1</span> Application hook </h4>
+<h4 id="sec-3-1-1"><span class="section-number-4">3.1.1</span> Application hook</h4>
 <div class="outline-text-4" id="text-3-1-1">
 
 
 
 
-<pre class="src src-c"><span style="color: #228b22;">intptr_t</span> <span style="color: #0000ff;">event</span>(<span style="color: #7f007f;">const</span> <span style="color: #228b22;">ev</span> * <span style="color: #a0522d;">e</span>);
+<pre class="src src-c"><span style="color: #00cd00;">intptr_t</span> <span style="color: #0000ee; font-weight: bold;">event</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> * <span style="color: #cdcd00;">e</span>);
 </pre>
-
-
 
 <p>
 This is the event handling routine implemented by your application.
@@ -314,16 +309,14 @@ This is the event handling routine implemented by your application.
 </div>
 
 <div id="outline-container-3-1-2" class="outline-4">
-<h4 id="sec-3-1-2"><span class="section-number-4">3.1.2</span> Application control </h4>
+<h4 id="sec-3-1-2"><span class="section-number-4">3.1.2</span> Application control</h4>
 <div class="outline-text-4" id="text-3-1-2">
 
 
 
 
-<pre class="src src-c"><span style="color: #228b22;">void</span> <span style="color: #0000ff;">gsQuit</span>();
+<pre class="src src-c"><span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">gsQuit</span>();
 </pre>
-
-
 
 <p>
 Call this to terminate your application.
@@ -332,52 +325,42 @@ Call this to terminate your application.
 </div>
 
 <div id="outline-container-3-1-3" class="outline-4">
-<h4 id="sec-3-1-3"><span class="section-number-4">3.1.3</span> Screen properties </h4>
+<h4 id="sec-3-1-3"><span class="section-number-4">3.1.3</span> Screen properties</h4>
 <div class="outline-text-4" id="text-3-1-3">
 
 
 
 
-<pre class="src src-c"><span style="color: #228b22;">unsigned</span> <span style="color: #0000ff;">gsWidth</span>();
+<pre class="src src-c"><span style="color: #00cd00;">unsigned</span> <span style="color: #0000ee; font-weight: bold;">gsWidth</span>();
 </pre>
-
-
 
 <p>
 Current screen width
 </p>
 
 
-<pre class="src src-c"><span style="color: #228b22;">unsigned</span> <span style="color: #0000ff;">gsHeight</span>();
+<pre class="src src-c"><span style="color: #00cd00;">unsigned</span> <span style="color: #0000ee; font-weight: bold;">gsHeight</span>();
 </pre>
-
-
 
 <p>
 Current screen height
 </p>
 
 
-<pre class="src src-c"><span style="color: #228b22;">Mouse</span> <span style="color: #a0522d;">location</span>
+<pre class="src src-c"><span style="color: #00cd00;">Mouse</span> <span style="color: #cdcd00;">location</span>
 </pre>
 
 
-
-
-<pre class="src src-c"><span style="color: #228b22;">int</span> <span style="color: #0000ff;">gsMouseX</span>();
+<pre class="src src-c"><span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">gsMouseX</span>();
 </pre>
-
-
 
 <p>
 Current X mouse position
 </p>
 
 
-<pre class="src src-c"><span style="color: #228b22;">int</span> <span style="color: #0000ff;">gsMouseY</span>();
+<pre class="src src-c"><span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">gsMouseY</span>();
 </pre>
-
-
 
 <p>
 Current Y mouse position
@@ -386,46 +369,38 @@ Current Y mouse position
 </div>
 
 <div id="outline-container-3-1-4" class="outline-4">
-<h4 id="sec-3-1-4"><span class="section-number-4">3.1.4</span> Keyboard </h4>
+<h4 id="sec-3-1-4"><span class="section-number-4">3.1.4</span> Keyboard</h4>
 <div class="outline-text-4" id="text-3-1-4">
 
 
 
 
-<pre class="src src-c"><span style="color: #228b22;">int</span> <span style="color: #0000ff;">gsPressed</span>(<span style="color: #228b22;">gskey</span> <span style="color: #a0522d;">key</span>);
+<pre class="src src-c"><span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">gsPressed</span>(<span style="color: #00cd00;">gskey</span> <span style="color: #cdcd00;">key</span>);
 </pre>
-
-
 
 <p>
 True if key is currently pressed
 </p>
 
 
-<pre class="src src-c"><span style="color: #228b22;">int</span> <span style="color: #0000ff;">gsReleased</span>(<span style="color: #228b22;">gskey</span> <span style="color: #a0522d;">key</span>);
+<pre class="src src-c"><span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">gsReleased</span>(<span style="color: #00cd00;">gskey</span> <span style="color: #cdcd00;">key</span>);
 </pre>
-
-
 
 <p>
 True if key has just been released
 </p>
 
 
-<pre class="src src-c"><span style="color: #228b22;">int</span> <span style="color: #0000ff;">gsShowKeyboard</span>();
+<pre class="src src-c"><span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">gsShowKeyboard</span>();
 </pre>
-
-
 
 <p>
 On platforms that support it, show the on-screen keyboard
 </p>
 
 
-<pre class="src src-c"><span style="color: #228b22;">int</span> <span style="color: #0000ff;">gsHideKeyboard</span>();
+<pre class="src src-c"><span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">gsHideKeyboard</span>();
 </pre>
-
-
 
 <p>
 On platforms that support it, hide the on-screen keyboard
@@ -434,26 +409,22 @@ On platforms that support it, hide the on-screen keyboard
 </div>
 
 <div id="outline-container-3-1-5" class="outline-4">
-<h4 id="sec-3-1-5"><span class="section-number-4">3.1.5</span> Logging </h4>
+<h4 id="sec-3-1-5"><span class="section-number-4">3.1.5</span> Logging</h4>
 <div class="outline-text-4" id="text-3-1-5">
 
 
 
 
-<pre class="src src-c"><span style="color: #228b22;">void</span> <span style="color: #0000ff;">gsReportV</span>(<span style="color: #7f007f;">const</span> <span style="color: #228b22;">char</span> * <span style="color: #a0522d;">fmt</span>, <span style="color: #228b22;">va_list</span> <span style="color: #a0522d;">ap</span>);
+<pre class="src src-c"><span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">gsReportV</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">char</span> * <span style="color: #cdcd00;">fmt</span>, <span style="color: #00cd00;">va_list</span> <span style="color: #cdcd00;">ap</span>);
 </pre>
-
-
 
 <p>
 Report a message (depending on the platform, it might go to a file).
 </p>
 
 
-<pre class="src src-c"><span style="color: #228b22;">void</span> <span style="color: #0000ff;">gsReport</span>(<span style="color: #7f007f;">const</span> <span style="color: #228b22;">char</span> * <span style="color: #a0522d;">fmt</span>, ...);
+<pre class="src src-c"><span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">gsReport</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">char</span> * <span style="color: #cdcd00;">fmt</span>, ...);
 </pre>
-
-
 
 <p>
 Report a message (depending on the platform, it might go to a file).
@@ -462,139 +433,113 @@ Report a message (depending on the platform, it might go to a file).
 </div>
 
 <div id="outline-container-3-1-6" class="outline-4">
-<h4 id="sec-3-1-6"><span class="section-number-4">3.1.6</span> Events </h4>
+<h4 id="sec-3-1-6"><span class="section-number-4">3.1.6</span> Events</h4>
 <div class="outline-text-4" id="text-3-1-6">
 
 
 
 
-<pre class="src src-c"><span style="color: #228b22;">int</span> <span style="color: #0000ff;">evType</span>(<span style="color: #7f007f;">const</span> <span style="color: #228b22;">ev</span> *);
+<pre class="src src-c"><span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">evType</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> *);
 </pre>
-
-
 
 <p>
 Event type.
 </p>
 
 
-<pre class="src src-c"><span style="color: #7f007f;">const</span> <span style="color: #228b22;">char</span> * <span style="color: #0000ff;">evName</span>(<span style="color: #7f007f;">const</span> <span style="color: #228b22;">ev</span> *);
+<pre class="src src-c"><span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">char</span> * <span style="color: #0000ee; font-weight: bold;">evName</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> *);
 </pre>
-
-
 
 <p>
 Event name.
 </p>
 
 
-<pre class="src src-c"><span style="color: #228b22;">int</span> <span style="color: #0000ff;">evWidth</span>(<span style="color: #7f007f;">const</span> <span style="color: #228b22;">ev</span> *);
+<pre class="src src-c"><span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">evWidth</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> *);
 </pre>
 
-
-
 <p>
-Width for GSC_RESIZE events.
+Width for GSE_RESIZE events.
 </p>
 
 
-<pre class="src src-c"><span style="color: #228b22;">int</span> <span style="color: #0000ff;">evHeight</span>(<span style="color: #7f007f;">const</span> <span style="color: #228b22;">ev</span> *);
+<pre class="src src-c"><span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">evHeight</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> *);
 </pre>
 
-
-
 <p>
-Width for GSC_RESIZE events.
+Width for GSE_RESIZE events.
 </p>
 
 
-<pre class="src src-c"><span style="color: #228b22;">gskey</span> <span style="color: #0000ff;">evWhich</span>(<span style="color: #7f007f;">const</span> <span style="color: #228b22;">ev</span> *);
+<pre class="src src-c"><span style="color: #00cd00;">gskey</span> <span style="color: #0000ee; font-weight: bold;">evWhich</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> *);
 </pre>
 
-
-
 <p>
-Keycode associated to GSC_DOWN/GSC_UP events.
+Keycode associated to GSE_DOWN/GSE_UP events.
 </p>
 
 
-<pre class="src src-c"><span style="color: #228b22;">int</span> <span style="color: #0000ff;">evX</span>(<span style="color: #7f007f;">const</span> <span style="color: #228b22;">ev</span> *);
+<pre class="src src-c"><span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">evX</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> *);
 </pre>
 
-
-
 <p>
-Mouse X position for GSC_DOWN/GSC_UP events.
+Mouse X position for GSE_DOWN/GSE_UP events.
 </p>
 
 
-<pre class="src src-c"><span style="color: #228b22;">int</span> <span style="color: #0000ff;">evY</span>(<span style="color: #7f007f;">const</span> <span style="color: #228b22;">ev</span> *);
+<pre class="src src-c"><span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">evY</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> *);
 </pre>
 
-
-
 <p>
-Mouse Y position for GSC_DOWN/GSC_UP events.
+Mouse Y position for GSE_DOWN/GSE_UP events.
 </p>
 
 
-<pre class="src src-c"><span style="color: #228b22;">int</span> <span style="color: #0000ff;">evArgC</span>(<span style="color: #7f007f;">const</span> <span style="color: #228b22;">ev</span> *);
+<pre class="src src-c"><span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">evArgC</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> *);
 </pre>
 
-
-
 <p>
-Argument count for GSC_INIT events.
+Argument count for GSE_INIT events.
 </p>
 
 
-<pre class="src src-c"><span style="color: #228b22;">char</span> ** <span style="color: #0000ff;">evArgV</span>(<span style="color: #7f007f;">const</span> <span style="color: #228b22;">ev</span> *);
+<pre class="src src-c"><span style="color: #00cd00;">char</span> ** <span style="color: #0000ee; font-weight: bold;">evArgV</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> *);
 </pre>
 
-
-
 <p>
-Argument array for GSC_INIT events.
+Argument array for GSE_INIT events.
 </p>
 
 
-<pre class="src src-c"><span style="color: #228b22;">intptr_t</span> <span style="color: #0000ff;">evArg0</span>(<span style="color: #7f007f;">const</span> <span style="color: #228b22;">ev</span> *);
+<pre class="src src-c"><span style="color: #00cd00;">intptr_t</span> <span style="color: #0000ee; font-weight: bold;">evArg0</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> *);
 </pre>
-
-
 
 <p>
 First event argument, mostly internal.
 </p>
 
 
-<pre class="src src-c"><span style="color: #228b22;">intptr_t</span> <span style="color: #0000ff;">evArg1</span>(<span style="color: #7f007f;">const</span> <span style="color: #228b22;">ev</span> *);
+<pre class="src src-c"><span style="color: #00cd00;">intptr_t</span> <span style="color: #0000ee; font-weight: bold;">evArg1</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> *);
 </pre>
-
-
 
 <p>
 Second event argument, mostly internal.
 </p>
 
 
-<pre class="src src-c"><span style="color: #228b22;">intptr_t</span> <span style="color: #0000ff;">gsInject</span>(gseventtype, <span style="color: #228b22;">intptr_t</span>, <span style="color: #228b22;">intptr_t</span>);
+<pre class="src src-c"><span style="color: #00cd00;">intptr_t</span> <span style="color: #0000ee; font-weight: bold;">gsInject</span>(gseventtype, <span style="color: #00cd00;">intptr_t</span>, <span style="color: #00cd00;">intptr_t</span>);
 </pre>
-
-
 
 <p>
 Inject an event, mostly internal.
 </p>
 
 
-<pre class="src src-c"><span style="color: #7f007f;">const</span> <span style="color: #228b22;">char</span> * <span style="color: #0000ff;">keyName</span>(gskey);
+<pre class="src src-c"><span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">char</span> * <span style="color: #0000ee; font-weight: bold;">keyName</span>(gskey);
 </pre>
 
-
-
 <p>
-Key name for GSC_DOWN/GSC_UP events.
+Key name for GSE_DOWN/GSE_UP events.
 </p>
 </div>
 </div>
@@ -602,14 +547,14 @@ Key name for GSC_DOWN/GSC_UP events.
 </div>
 
 <div id="outline-container-3-2" class="outline-3">
-<h3 id="sec-3-2"><span class="section-number-3">3.2</span> Commands </h3>
+<h3 id="sec-3-2"><span class="section-number-3">3.2</span> Events</h3>
 <div class="outline-text-3" id="text-3-2">
 
 
 </div>
 
 <div id="outline-container-3-2-1" class="outline-4">
-<h4 id="sec-3-2-1"><span class="section-number-4">3.2.1</span> GSC_NONE </h4>
+<h4 id="sec-3-2-1"><span class="section-number-4">3.2.1</span> GSE_NONE</h4>
 <div class="outline-text-4" id="text-3-2-1">
 
 <p>Null event, must be ignored.
@@ -618,7 +563,7 @@ Key name for GSC_DOWN/GSC_UP events.
 </div>
 
 <div id="outline-container-3-2-2" class="outline-4">
-<h4 id="sec-3-2-2"><span class="section-number-4">3.2.2</span> GSC_INIT </h4>
+<h4 id="sec-3-2-2"><span class="section-number-4">3.2.2</span> GSE_INIT</h4>
 <div class="outline-text-4" id="text-3-2-2">
 
 <p>Called upon initialization, no GL operations should be performed at this stage.
@@ -627,16 +572,16 @@ Key name for GSC_DOWN/GSC_UP events.
 </div>
 
 <div id="outline-container-3-2-3" class="outline-4">
-<h4 id="sec-3-2-3"><span class="section-number-4">3.2.3</span> GSC_TERM </h4>
+<h4 id="sec-3-2-3"><span class="section-number-4">3.2.3</span> GSE_TERM</h4>
 <div class="outline-text-4" id="text-3-2-3">
 
-<p>Called befor terminating the application.
+<p>Called before terminating the application.
 </p></div>
 
 </div>
 
 <div id="outline-container-3-2-4" class="outline-4">
-<h4 id="sec-3-2-4"><span class="section-number-4">3.2.4</span> GSC_GLINIT </h4>
+<h4 id="sec-3-2-4"><span class="section-number-4">3.2.4</span> GSE_GLINIT</h4>
 <div class="outline-text-4" id="text-3-2-4">
 
 <p>The OpenGL context has been established. Might be called several times.
@@ -645,7 +590,7 @@ Key name for GSC_DOWN/GSC_UP events.
 </div>
 
 <div id="outline-container-3-2-5" class="outline-4">
-<h4 id="sec-3-2-5"><span class="section-number-4">3.2.5</span> GSC_GLTERM </h4>
+<h4 id="sec-3-2-5"><span class="section-number-4">3.2.5</span> GSE_GLTERM</h4>
 <div class="outline-text-4" id="text-3-2-5">
 
 <p>The OpenGL context is going to be destroyed. Might be called several times.
@@ -654,7 +599,7 @@ Key name for GSC_DOWN/GSC_UP events.
 </div>
 
 <div id="outline-container-3-2-6" class="outline-4">
-<h4 id="sec-3-2-6"><span class="section-number-4">3.2.6</span> GSC_UPDATE </h4>
+<h4 id="sec-3-2-6"><span class="section-number-4">3.2.6</span> GSE_UPDATE</h4>
 <div class="outline-text-4" id="text-3-2-6">
 
 <p>This is your update routine, should be called at ~60Hz.
@@ -663,7 +608,7 @@ Key name for GSC_DOWN/GSC_UP events.
 </div>
 
 <div id="outline-container-3-2-7" class="outline-4">
-<h4 id="sec-3-2-7"><span class="section-number-4">3.2.7</span> GSC_RESIZE </h4>
+<h4 id="sec-3-2-7"><span class="section-number-4">3.2.7</span> GSE_RESIZE</h4>
 <div class="outline-text-4" id="text-3-2-7">
 
 <p>Called when the screen is resized. Might be called several times.
@@ -672,7 +617,7 @@ Key name for GSC_DOWN/GSC_UP events.
 </div>
 
 <div id="outline-container-3-2-8" class="outline-4">
-<h4 id="sec-3-2-8"><span class="section-number-4">3.2.8</span> GSC_DOWN </h4>
+<h4 id="sec-3-2-8"><span class="section-number-4">3.2.8</span> GSE_DOWN</h4>
 <div class="outline-text-4" id="text-3-2-8">
 
 <p>A key/button has been pressed.
@@ -681,7 +626,7 @@ Key name for GSC_DOWN/GSC_UP events.
 </div>
 
 <div id="outline-container-3-2-9" class="outline-4">
-<h4 id="sec-3-2-9"><span class="section-number-4">3.2.9</span> GSC_UP </h4>
+<h4 id="sec-3-2-9"><span class="section-number-4">3.2.9</span> GSE_UP</h4>
 <div class="outline-text-4" id="text-3-2-9">
 
 <p>A key/button has been released.
@@ -690,7 +635,7 @@ Key name for GSC_DOWN/GSC_UP events.
 </div>
 
 <div id="outline-container-3-2-10" class="outline-4">
-<h4 id="sec-3-2-10"><span class="section-number-4">3.2.10</span> GSC_UNICODE </h4>
+<h4 id="sec-3-2-10"><span class="section-number-4">3.2.10</span> GSE_UNICODE</h4>
 <div class="outline-text-4" id="text-3-2-10">
 
 <p>Called when the user enters text.
@@ -699,7 +644,7 @@ Key name for GSC_DOWN/GSC_UP events.
 </div>
 
 <div id="outline-container-3-2-11" class="outline-4">
-<h4 id="sec-3-2-11"><span class="section-number-4">3.2.11</span> GSC_MOTION </h4>
+<h4 id="sec-3-2-11"><span class="section-number-4">3.2.11</span> GSE_MOTION</h4>
 <div class="outline-text-4" id="text-3-2-11">
 
 <p>The mouse moved.
@@ -708,7 +653,7 @@ Key name for GSC_DOWN/GSC_UP events.
 </div>
 
 <div id="outline-container-3-2-12" class="outline-4">
-<h4 id="sec-3-2-12"><span class="section-number-4">3.2.12</span> GSC_CLOSE </h4>
+<h4 id="sec-3-2-12"><span class="section-number-4">3.2.12</span> GSE_CLOSE</h4>
 <div class="outline-text-4" id="text-3-2-12">
 
 <p>The application is about to close.
@@ -717,7 +662,7 @@ Key name for GSC_DOWN/GSC_UP events.
 </div>
 
 <div id="outline-container-3-2-13" class="outline-4">
-<h4 id="sec-3-2-13"><span class="section-number-4">3.2.13</span> GSC_INVOKE </h4>
+<h4 id="sec-3-2-13"><span class="section-number-4">3.2.13</span> GSE_INVOKE</h4>
 <div class="outline-text-4" id="text-3-2-13">
 
 <p>Invoke method. The argument is available as evMethod().
@@ -727,78 +672,80 @@ Key name for GSC_DOWN/GSC_UP events.
 </div>
 
 <div id="outline-container-3-3" class="outline-3">
-<h3 id="sec-3-3"><span class="section-number-3">3.3</span> Queries </h3>
+<h3 id="sec-3-3"><span class="section-number-3">3.3</span> Queries</h3>
 <div class="outline-text-3" id="text-3-3">
 
 
 </div>
 
 <div id="outline-container-3-3-1" class="outline-4">
-<h4 id="sec-3-3-1"><span class="section-number-4">3.3.1</span> GSQ_NAME </h4>
+<h4 id="sec-3-3-1"><span class="section-number-4">3.3.1</span> GSQ_NAME</h4>
 <div class="outline-text-4" id="text-3-3-1">
 
-<p>Used to query the application name.
+<p>Return the desired application name.
 </p></div>
 
 </div>
 
 <div id="outline-container-3-3-2" class="outline-4">
-<h4 id="sec-3-3-2"><span class="section-number-4">3.3.2</span> GSQ_LOGGER </h4>
+<h4 id="sec-3-3-2"><span class="section-number-4">3.3.2</span> GSQ_LOGGER</h4>
 <div class="outline-text-4" id="text-3-3-2">
 
 <p>Function to be used for logging. The returned function prototype should be:
 </p>
 
 
-<pre class="src src-c"><span style="color: #228b22;">void</span> <span style="color: #0000ff;">report</span>(<span style="color: #7f007f;">const</span> <span style="color: #228b22;">char</span> * <span style="color: #a0522d;">appname</span>, <span style="color: #7f007f;">const</span> <span style="color: #228b22;">char</span> * <span style="color: #a0522d;">string</span>);
+<pre class="src src-c"><span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">report</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">char</span> * <span style="color: #cdcd00;">appname</span>, <span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">char</span> * <span style="color: #cdcd00;">string</span>);
 </pre>
-
-
 
 </div>
 
 </div>
 
 <div id="outline-container-3-3-3" class="outline-4">
-<h4 id="sec-3-3-3"><span class="section-number-4">3.3.3</span> GSQ_XPOS </h4>
+<h4 id="sec-3-3-3"><span class="section-number-4">3.3.3</span> GSQ_XPOS</h4>
 <div class="outline-text-4" id="text-3-3-3">
 
-<p>Return the desired X position. This is just a hint and can be ignored.
+<p>Return the desired X position. This is just a hint and can be ignored
+on some platforms.
 </p></div>
 
 </div>
 
 <div id="outline-container-3-3-4" class="outline-4">
-<h4 id="sec-3-3-4"><span class="section-number-4">3.3.4</span> GSQ_YPOS </h4>
+<h4 id="sec-3-3-4"><span class="section-number-4">3.3.4</span> GSQ_YPOS</h4>
 <div class="outline-text-4" id="text-3-3-4">
 
-<p>Return the desired Y position. This is just a hint and can be ignored.
+<p>Return the desired Y position. This is just a hint and can be ignored
+on some platforms.
 </p></div>
 
 </div>
 
 <div id="outline-container-3-3-5" class="outline-4">
-<h4 id="sec-3-3-5"><span class="section-number-4">3.3.5</span> GSQ_WIDTH </h4>
+<h4 id="sec-3-3-5"><span class="section-number-4">3.3.5</span> GSQ_WIDTH</h4>
 <div class="outline-text-4" id="text-3-3-5">
 
-<p>Return the desired width. Note that this can be ignored, use the size
-reported in GSC_RESIZE.
+<p>Return the desired width. Note that this is a hint and can be ignored
+on some platforms. Your code should use the width reported via
+GSE_RESIZE or ask explicitly with gsWidth().
 </p></div>
 
 </div>
 
 <div id="outline-container-3-3-6" class="outline-4">
-<h4 id="sec-3-3-6"><span class="section-number-4">3.3.6</span> GSQ_HEIGHT </h4>
+<h4 id="sec-3-3-6"><span class="section-number-4">3.3.6</span> GSQ_HEIGHT</h4>
 <div class="outline-text-4" id="text-3-3-6">
 
-<p>Return the desired height. Note that this can be ignored, use the size
-reported in GSC_RESIZE.
+<p>Return the desired height. Note that this is a hint and can be ignored
+on some platforms. Your code should use the height reported via
+GSE_RESIZE or ask explicitly with gsHeight().
 </p></div>
 
 </div>
 
 <div id="outline-container-3-3-7" class="outline-4">
-<h4 id="sec-3-3-7"><span class="section-number-4">3.3.7</span> GSQ_BORDERS </h4>
+<h4 id="sec-3-3-7"><span class="section-number-4">3.3.7</span> GSQ_BORDERS</h4>
 <div class="outline-text-4" id="text-3-3-7">
 
 <p>Should the window have borders?
@@ -810,142 +757,142 @@ reported in GSC_RESIZE.
 </div>
 
 <div id="outline-container-4" class="outline-2">
-<h2 id="sec-4"><span class="section-number-2">4</span> Examples </h2>
+<h2 id="sec-4"><span class="section-number-2">4</span> Examples</h2>
 <div class="outline-text-2" id="text-4">
 
 
 </div>
 
 <div id="outline-container-4-1" class="outline-3">
-<h3 id="sec-4-1"><span class="section-number-3">4.1</span> Simple example that just draws </h3>
+<h3 id="sec-4-1"><span class="section-number-3">4.1</span> Simple example that just draws</h3>
 <div class="outline-text-3" id="text-4-1">
 
 
 
 
-<pre class="src src-c"><span style="color: #483d8b;">#include</span> <span style="color: #8b2252;">"gs.h"</span>
-<span style="color: #483d8b;">#include</span> <span style="color: #8b2252;">"gsgl.h"</span>
+<pre class="src src-c"><span style="color: #0000ee; font-weight: bold;">#include</span> <span style="color: #00cd00;">"gs.h"</span>
+<span style="color: #0000ee; font-weight: bold;">#include</span> <span style="color: #00cd00;">"gsgl.h"</span>
 
-<span style="color: #7f007f;">static</span> <span style="color: #228b22;">void</span> <span style="color: #0000ff;">update</span>() {
-        <span style="color: #7f007f;">static</span> <span style="color: #228b22;">int</span> <span style="color: #a0522d;">i</span> = 128;
+<span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">update</span>() {
+        <span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">int</span> <span style="color: #cdcd00;">i</span> = 128;
         i++;
         glClearColor(((2*i) &amp; 0xff) / 255.0f, 0.f, 1.f, (i &amp; 0xff) / 255.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glFlush();
 }
 
-<span style="color: #228b22;">intptr_t</span> <span style="color: #0000ff;">event</span>(<span style="color: #7f007f;">const</span> <span style="color: #228b22;">ev</span> * <span style="color: #a0522d;">e</span>) {
-        <span style="color: #228b22;">intptr_t</span> <span style="color: #a0522d;">ret</span> = 1;
-        <span style="color: #228b22;">gseventtype</span> <span style="color: #a0522d;">t</span> = evType(e);
-        <span style="color: #7f007f;">switch</span> (t) {
-        <span style="color: #7f007f;">case</span> GSC_UPDATE: update(); <span style="color: #7f007f;">break</span>;
-        <span style="color: #7f007f;">default</span>: ret = 0; <span style="color: #7f007f;">break</span>;
+<span style="color: #00cd00;">intptr_t</span> <span style="color: #0000ee; font-weight: bold;">event</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> * <span style="color: #cdcd00;">e</span>) {
+        <span style="color: #00cd00;">intptr_t</span> <span style="color: #cdcd00;">ret</span> = 1;
+        <span style="color: #00cd00;">gseventtype</span> <span style="color: #cdcd00;">t</span> = evType(e);
+        <span style="color: #00cdcd; font-weight: bold;">switch</span> (t) {
+        <span style="color: #00cdcd; font-weight: bold;">case</span> GSC_UPDATE: update(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">default</span>: ret = 0; <span style="color: #00cdcd; font-weight: bold;">break</span>;
         }
-        <span style="color: #7f007f;">return</span> ret;
+        <span style="color: #00cdcd; font-weight: bold;">return</span> ret;
 }
 </pre>
-
-
 
 </div>
 
 </div>
 
 <div id="outline-container-4-2" class="outline-3">
-<h3 id="sec-4-2"><span class="section-number-3">4.2</span> Complete example handling all queries/commands </h3>
+<h3 id="sec-4-2"><span class="section-number-3">4.2</span> Complete example handling all queries/commands</h3>
 <div class="outline-text-3" id="text-4-2">
 
 
 
 
-<pre class="src src-c"><span style="color: #483d8b;">#include</span> <span style="color: #8b2252;">"gs.h"</span>
-<span style="color: #483d8b;">#include</span> <span style="color: #8b2252;">"gsgl.h"</span>
+<pre class="src src-c"><span style="color: #0000ee; font-weight: bold;">#include</span> <span style="color: #00cd00;">"gs.h"</span>
+<span style="color: #0000ee; font-weight: bold;">#include</span> <span style="color: #00cd00;">"gsgl.h"</span>
 
-<span style="color: #7f007f;">static</span> <span style="color: #228b22;">void</span> <span style="color: #0000ff;">init</span>() {
-        gsReport(<span style="color: #8b2252;">"init"</span>);
+<span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">init</span>() {
+        gsReport(<span style="color: #00cd00;">"init"</span>);
 }
 
-<span style="color: #7f007f;">static</span> <span style="color: #228b22;">void</span> <span style="color: #0000ff;">term</span>() {
-        gsReport(<span style="color: #8b2252;">"term"</span>);
+<span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">term</span>() {
+        gsReport(<span style="color: #00cd00;">"term"</span>);
 }
 
-<span style="color: #7f007f;">static</span> <span style="color: #228b22;">void</span> <span style="color: #0000ff;">glinit</span>() {
-        gsReport(<span style="color: #8b2252;">"glinit"</span>);
+<span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">glinit</span>() {
+        gsReport(<span style="color: #00cd00;">"glinit"</span>);
 }
 
-<span style="color: #7f007f;">static</span> <span style="color: #228b22;">void</span> <span style="color: #0000ff;">down</span>(<span style="color: #228b22;">gskey</span> <span style="color: #a0522d;">k</span>) {
-        gsReport(<span style="color: #8b2252;">"down %s"</span>, keyName(k));
+<span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">down</span>(<span style="color: #00cd00;">gskey</span> <span style="color: #cdcd00;">k</span>) {
+        gsReport(<span style="color: #00cd00;">"down %s"</span>, keyName(k));
 }
 
-<span style="color: #7f007f;">static</span> <span style="color: #228b22;">void</span> <span style="color: #0000ff;">up</span>(<span style="color: #228b22;">gskey</span> <span style="color: #a0522d;">k</span>) {
-        gsReport(<span style="color: #8b2252;">"up %s"</span>, keyName(k));
-        <span style="color: #7f007f;">switch</span> (k) {
-        <span style="color: #7f007f;">case</span> GSK_ESCAPE: gsQuit(); <span style="color: #7f007f;">break</span>;
-        <span style="color: #7f007f;">default</span>: <span style="color: #7f007f;">break</span>;
+<span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">up</span>(<span style="color: #00cd00;">gskey</span> <span style="color: #cdcd00;">k</span>) {
+        gsReport(<span style="color: #00cd00;">"up %s"</span>, keyName(k));
+        <span style="color: #00cdcd; font-weight: bold;">switch</span> (k) {
+        <span style="color: #00cdcd; font-weight: bold;">case</span> GSK_ESCAPE: gsQuit(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">default</span>: <span style="color: #00cdcd; font-weight: bold;">break</span>;
         }
 }
 
-<span style="color: #7f007f;">static</span> <span style="color: #228b22;">void</span> <span style="color: #0000ff;">unicode</span>(<span style="color: #228b22;">uint32_t</span> <span style="color: #a0522d;">c</span>) {
-        gsReport(<span style="color: #8b2252;">"unicode %c"</span>, c);
+<span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">unicode</span>(<span style="color: #00cd00;">uint32_t</span> <span style="color: #cdcd00;">c</span>) {
+        gsReport(<span style="color: #00cd00;">"unicode %c"</span>, c);
 }
 
-<span style="color: #7f007f;">static</span> <span style="color: #228b22;">void</span> <span style="color: #0000ff;">motion</span>(<span style="color: #228b22;">int</span> <span style="color: #a0522d;">x</span>, <span style="color: #228b22;">int</span> <span style="color: #a0522d;">y</span>) {
-        gsReport(<span style="color: #8b2252;">"motion %d %d"</span>, x, y);
+<span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">motion</span>(<span style="color: #00cd00;">int</span> <span style="color: #cdcd00;">x</span>, <span style="color: #00cd00;">int</span> <span style="color: #cdcd00;">y</span>) {
+        gsReport(<span style="color: #00cd00;">"motion %d %d"</span>, x, y);
 }
 
-<span style="color: #7f007f;">static</span> <span style="color: #228b22;">void</span> <span style="color: #0000ff;">close</span>() {
-        gsReport(<span style="color: #8b2252;">"close"</span>);
+<span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">close</span>() {
+        gsReport(<span style="color: #00cd00;">"close"</span>);
         gsQuit();
 }
 
-<span style="color: #7f007f;">static</span> <span style="color: #228b22;">void</span> <span style="color: #0000ff;">invoke</span>(<span style="color: #7f007f;">const</span> <span style="color: #228b22;">char</span> * <span style="color: #a0522d;">s</span>) {
-        gsReport(<span style="color: #8b2252;">"invoked method '%s'"</span>, s);
+<span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">invoke</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">char</span> * <span style="color: #cdcd00;">s</span>) {
+        gsReport(<span style="color: #00cd00;">"invoked method '%s'"</span>, s);
 }
 
-<span style="color: #7f007f;">static</span> <span style="color: #228b22;">void</span> <span style="color: #0000ff;">resize</span>(<span style="color: #228b22;">unsigned</span> <span style="color: #a0522d;">w</span>, <span style="color: #228b22;">unsigned</span> <span style="color: #a0522d;">h</span>) {
-        gsReport(<span style="color: #8b2252;">"resize %d %d"</span>, w, h);
+<span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">resize</span>(<span style="color: #00cd00;">unsigned</span> <span style="color: #cdcd00;">w</span>, <span style="color: #00cd00;">unsigned</span> <span style="color: #cdcd00;">h</span>) {
+        gsReport(<span style="color: #00cd00;">"resize %d %d"</span>, w, h);
         glViewport(0, 0, w, h);
 }
 
-<span style="color: #7f007f;">static</span> <span style="color: #228b22;">void</span> <span style="color: #0000ff;">update</span>() {
-        <span style="color: #7f007f;">static</span> <span style="color: #228b22;">int</span> <span style="color: #a0522d;">i</span> = 128;
+<span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">update</span>() {
+        <span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">int</span> <span style="color: #cdcd00;">i</span> = 128;
         i++;
         glClearColor(((2*i) &amp; 0xff) / 255.0f, 0.f, 1.f, (i &amp; 0xff) / 255.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glFlush();
 }
 
-<span style="color: #228b22;">intptr_t</span> <span style="color: #0000ff;">event</span>(<span style="color: #7f007f;">const</span> <span style="color: #228b22;">ev</span> * <span style="color: #a0522d;">e</span>) {
-        <span style="color: #228b22;">intptr_t</span> <span style="color: #a0522d;">ret</span> = 1;
-        <span style="color: #228b22;">gseventtype</span> <span style="color: #a0522d;">t</span> = evType(e);
-        <span style="color: #7f007f;">if</span> (t != GSC_UPDATE)
-                gsReport(<span style="color: #8b2252;">"got event %s, %p %p"</span>, 
+<span style="color: #00cd00;">intptr_t</span> <span style="color: #0000ee; font-weight: bold;">myevent</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> * <span style="color: #cdcd00;">e</span>) {
+        <span style="color: #00cd00;">intptr_t</span> <span style="color: #cdcd00;">ret</span> = 1;
+        <span style="color: #00cd00;">gseventtype</span> <span style="color: #cdcd00;">t</span> = evType(e);
+        <span style="color: #00cdcd; font-weight: bold;">if</span> (t != GSC_UPDATE)
+                gsReport(<span style="color: #00cd00;">"got event %s, %p %p"</span>, 
                          evName(e), evArg0(e), evArg1(e));
-        <span style="color: #7f007f;">switch</span> (t) {
-        <span style="color: #7f007f;">case</span> GSQ_NAME: ret = (<span style="color: #228b22;">intptr_t</span>)<span style="color: #8b2252;">"test"</span>; <span style="color: #7f007f;">break</span>;
-        <span style="color: #7f007f;">case</span> GSQ_XPOS: ret = 50; <span style="color: #7f007f;">break</span>;
-        <span style="color: #7f007f;">case</span> GSQ_YPOS: ret = 50; <span style="color: #7f007f;">break</span>;
-        <span style="color: #7f007f;">case</span> GSQ_WIDTH: ret = 640; <span style="color: #7f007f;">break</span>;
-        <span style="color: #7f007f;">case</span> GSQ_HEIGHT: ret = 480; <span style="color: #7f007f;">break</span>;
-        <span style="color: #7f007f;">case</span> GSQ_BORDERS: ret = 1; <span style="color: #7f007f;">break</span>;
-        <span style="color: #7f007f;">case</span> GSC_INIT: init(); <span style="color: #7f007f;">break</span>;
-        <span style="color: #7f007f;">case</span> GSC_TERM: term(); <span style="color: #7f007f;">break</span>;
-        <span style="color: #7f007f;">case</span> GSC_GLINIT: glinit(); <span style="color: #7f007f;">break</span>;
-        <span style="color: #7f007f;">case</span> GSC_DOWN: down(evWhich(e)); <span style="color: #7f007f;">break</span>;
-        <span style="color: #7f007f;">case</span> GSC_UP: up(evWhich(e)); <span style="color: #7f007f;">break</span>;
-        <span style="color: #7f007f;">case</span> GSC_UNICODE: unicode(evUnicode(e)); <span style="color: #7f007f;">break</span>;
-        <span style="color: #7f007f;">case</span> GSC_MOTION: motion(evX(e), evY(e)); <span style="color: #7f007f;">break</span>;
-        <span style="color: #7f007f;">case</span> GSC_CLOSE: close(); <span style="color: #7f007f;">break</span>;
-        <span style="color: #7f007f;">case</span> GSC_INVOKE: invoke(evMethod(e)); <span style="color: #7f007f;">break</span>;
-        <span style="color: #7f007f;">case</span> GSC_RESIZE: resize(gsWidth(e), gsHeight(e)); <span style="color: #7f007f;">break</span>;
-        <span style="color: #7f007f;">case</span> GSC_UPDATE: update(); <span style="color: #7f007f;">break</span>;
-        <span style="color: #7f007f;">default</span>: ret = 0; <span style="color: #7f007f;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">switch</span> (t) {
+        <span style="color: #00cdcd; font-weight: bold;">case</span> GSQ_NAME: ret = (<span style="color: #00cd00;">intptr_t</span>)<span style="color: #00cd00;">"test"</span>; <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> GSQ_XPOS: ret = 50; <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> GSQ_YPOS: ret = 50; <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> GSQ_WIDTH: ret = 640; <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> GSQ_HEIGHT: ret = 480; <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> GSQ_BORDERS: ret = 1; <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> GSC_INIT: init(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> GSC_TERM: term(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> GSC_GLINIT: glinit(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> GSC_DOWN: down(evWhich(e)); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> GSC_UP: up(evWhich(e)); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> GSC_UNICODE: unicode(evUnicode(e)); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> GSC_MOTION: motion(evX(e), evY(e)); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> GSC_CLOSE: close(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> GSC_INVOKE: invoke(evMethod(e)); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> GSC_RESIZE: resize(gsWidth(e), gsHeight(e)); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> GSC_UPDATE: update(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">default</span>: ret = 0; <span style="color: #00cdcd; font-weight: bold;">break</span>;
         }
-        <span style="color: #7f007f;">return</span> ret;
+        <span style="color: #00cdcd; font-weight: bold;">return</span> ret;
+}
+
+<span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">main</span>() {
+        <span style="color: #00cdcd; font-weight: bold;">return</span> Run(myevent);
 }
 </pre>
-
-
 
 
 </div>
@@ -954,10 +901,10 @@ reported in GSC_RESIZE.
 </div>
 
 <div id="outline-container-5" class="outline-2">
-<h2 id="sec-5"><span class="section-number-2">5</span> License </h2>
+<h2 id="sec-5"><span class="section-number-2">5</span> License</h2>
 <div class="outline-text-2" id="text-5">
 
-<p>  Copyright (c) 2011, Jorge Acereda Maciá
+<p>  Copyright (c) 2011-2012, Jorge Acereda Maciá
   All rights reserved.
 </p>
 <p>
@@ -1002,7 +949,7 @@ reported in GSC_RESIZE.
 <div id="postamble">
 <p class="date">Date: 2011-10-02 Sun</p>
 <p class="author">Author: Jorge Acereda</p>
-<p class="creator">Org version 7.7 with Emacs version 24</p>
+<p class="creator">Org version 7.8.09 with Emacs version 24</p>
 <a href="http://validator.w3.org/check?uri=referer">Validate XHTML 1.0</a>
 
 </div>

@@ -1,30 +1,30 @@
 #!/bin/bash
 
-function log() {
+log() {
     echo $* 1>&2
 }
 
-function builddir() {
+builddir() {
     echo "b"
 }
 
-function pkgdir() {
+pkgdir() {
     echo `builddir`/$1.plugin
 }
 
-function condir() {
+condir() {
     echo `pkgdir $1`/Contents
 }
 
-function resdir() {
+resdir() {
     echo `condir $1`/Resources
 }
 
-function bindir() {
+bindir() {
     echo `condir $1`/MacOS
 }
 
-function obj() {
+obj() {
     log "compiling $*"
     dst=`builddir`/$1.o
     shift
@@ -32,15 +32,7 @@ function obj() {
     echo $dst
 }
 
-function lib() {
-    log "archiving $*"
-    dst=$1
-    shift
-    ar rcs `builddir`/lib$dst.a $*
-    echo "-l$dst"
-}
-
-function plg() {
+plg() {
     log "linking $*"
     dst=`builddir`/$1
     shift
@@ -50,7 +42,7 @@ function plg() {
     echo $dst
 }
 
-function pkg() {
+pkg() {
     log "packaging $*"
     install -d `resdir $1`
     install -d `bindir $1`
@@ -61,19 +53,18 @@ function pkg() {
     echo `pkgdir $1`
 }
 
-function ins() {
+ins() {
     log "installing $*"
     dst="$HOME/Library/Internet Plug-Ins"
     cp -R $1 "$dst/"
-    echo "$dst/$1"
+    echo "$dst/`basename $1`"
 }
 
 rm -fR `builddir`
 install -d `builddir`
-gsobjs="`obj gs src/gs.c` `obj npapicocoa src/npapicocoa.m`"
-libgs=`lib gs $gsobjs`
+gsobj="`obj npapicocoa src/npapicocoa.m`"
 testobj=`obj test test/test.c`
-testplg=`plg testplugin $testobj $libgs`
+testplg=`plg testplugin $testobj $gsobj`
 testpkg=`pkg testplugin $testplg`
 itestpkg=`ins $testpkg`
 echo "installed $itestpkg"

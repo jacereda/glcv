@@ -21,6 +21,8 @@
   (rename-file "README.txt" "README" t))
 (save-excursion 
   (org-export-as-html 3))
+(save-excursion
+  (org-export-generic 3))
 #+end_src
 file:README
 file:README.html
@@ -28,7 +30,10 @@ file:README.html
 * Purpose
 GLGS is a small screen/event handling library that provides a thin
 layer abstracting the details of configuring the screen and handling
-input. Sort of a simple GLUT/SDL.
+input. Sort of a simple GLUT/SDL. No API is provided for
+sound/fonts/widgets, there are good solutions out there for those and
+freedom of choice is a good thing.
+
 * Building
 ** IOS
 The following command should build the library and the examples and
@@ -134,31 +139,31 @@ Event name.
 #+begin_src c
 int evWidth(const ev *);
 #+end_src
-Width for GSC_RESIZE events.
+Width for GSE_RESIZE events.
 #+begin_src c
 int evHeight(const ev *);
 #+end_src
-Width for GSC_RESIZE events.
+Width for GSE_RESIZE events.
 #+begin_src c
 gskey evWhich(const ev *);
 #+end_src
-Keycode associated to GSC_DOWN/GSC_UP events.
+Keycode associated to GSE_DOWN/GSE_UP events.
 #+begin_src c
 int evX(const ev *);
 #+end_src
-Mouse X position for GSC_DOWN/GSC_UP events.
+Mouse X position for GSE_DOWN/GSE_UP events.
 #+begin_src c
 int evY(const ev *);
 #+end_src
-Mouse Y position for GSC_DOWN/GSC_UP events.
+Mouse Y position for GSE_DOWN/GSE_UP events.
 #+begin_src c
 int evArgC(const ev *);
 #+end_src
-Argument count for GSC_INIT events.
+Argument count for GSE_INIT events.
 #+begin_src c
 char ** evArgV(const ev *);
 #+end_src
-Argument array for GSC_INIT events.
+Argument array for GSE_INIT events.
 #+begin_src c
 intptr_t evArg0(const ev *);
 #+end_src
@@ -174,53 +179,57 @@ Inject an event, mostly internal.
 #+begin_src c
 const char * keyName(gskey);
 #+end_src
-Key name for GSC_DOWN/GSC_UP events.
+Key name for GSE_DOWN/GSE_UP events.
 
-** Commands
-*** GSC_NONE
+** Events
+*** GSE_NONE
 Null event, must be ignored.
-*** GSC_INIT
+*** GSE_INIT
 Called upon initialization, no GL operations should be performed at this stage.
-*** GSC_TERM
-Called befor terminating the application.
-*** GSC_GLINIT
+*** GSE_TERM
+Called before terminating the application.
+*** GSE_GLINIT
 The OpenGL context has been established. Might be called several times.
-*** GSC_GLTERM
+*** GSE_GLTERM
 The OpenGL context is going to be destroyed. Might be called several times.
-*** GSC_UPDATE
+*** GSE_UPDATE
 This is your update routine, should be called at ~60Hz.
-*** GSC_RESIZE
+*** GSE_RESIZE
 Called when the screen is resized. Might be called several times.
-*** GSC_DOWN
+*** GSE_DOWN
 A key/button has been pressed.
-*** GSC_UP
+*** GSE_UP
 A key/button has been released.
-*** GSC_UNICODE
+*** GSE_UNICODE
 Called when the user enters text.
-*** GSC_MOTION
+*** GSE_MOTION
 The mouse moved.
-*** GSC_CLOSE
+*** GSE_CLOSE
 The application is about to close.
-*** GSC_INVOKE
+*** GSE_INVOKE
 Invoke method. The argument is available as evMethod().
 ** Queries
 *** GSQ_NAME
-Used to query the application name.
+Return the desired application name.
 *** GSQ_LOGGER
 Function to be used for logging. The returned function prototype should be:
 #+begin_src c
 void report(const char * appname, const char * string);
 #+end_src
 *** GSQ_XPOS
-Return the desired X position. This is just a hint and can be ignored.
+Return the desired X position. This is just a hint and can be ignored
+on some platforms.
 *** GSQ_YPOS
-Return the desired Y position. This is just a hint and can be ignored.
+Return the desired Y position. This is just a hint and can be ignored
+on some platforms.
 *** GSQ_WIDTH
-Return the desired width. Note that this can be ignored, use the size
-reported in GSC_RESIZE.
+Return the desired width. Note that this is a hint and can be ignored
+on some platforms. Your code should use the width reported via
+GSE_RESIZE or ask explicitly with gsWidth().
 *** GSQ_HEIGHT
-Return the desired height. Note that this can be ignored, use the size
-reported in GSC_RESIZE.
+Return the desired height. Note that this is a hint and can be ignored
+on some platforms. Your code should use the height reported via
+GSE_RESIZE or ask explicitly with gsHeight().
 *** GSQ_BORDERS
 Should the window have borders?
 
@@ -231,7 +240,7 @@ Should the window have borders?
 #+INCLUDE: "test/test.c" src c
 
 * License
-  Copyright (c) 2011, Jorge Acereda Maciá
+  Copyright (c) 2011-2012, Jorge Acereda Maciá
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
