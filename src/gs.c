@@ -52,11 +52,6 @@ int main(int argc, char ** argv) {
 
 #define MAX_PRESSED 256
 
-struct _ev {
-        uintptr_t type;
-        uintptr_t p[2];
-};
-
 static unsigned s_w = 0;
 static unsigned s_h = 0;
 static int s_mx = 0;

@@ -54,11 +54,11 @@ typedef enum {
 #undef K
 } gskey;
 
-#ifdef FROM_GO
-typedef char ev;
-#else
-typedef struct _ev ev;
-#endif
+// Don't access this struct directly, use ev*() functions
+typedef struct _ev {
+        uintptr_t type;
+        uintptr_t p[2];
+} ev;
 
 // Provided by the program
 #ifdef GS_EXPLICIT_ENTRY
