@@ -62,9 +62,9 @@ ins() {
 
 rm -fR `builddir`
 install -d `builddir`
-gsobj="`obj npapicocoa src/npapicocoa.m`"
+cvobj="`obj npapicocoa src/npapicocoa.m`"
 testobj=`obj test test/test.c`
-testplg=`plg testplugin $testobj $gsobj`
+testplg=`plg testplugin $testobj $cvobj`
 testpkg=`pkg testplugin $testplg`
 itestpkg=`ins $testpkg`
 echo "installed $itestpkg"

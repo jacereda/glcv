@@ -54,7 +54,7 @@ plg() {
 
 rm -fR `builddir`
 install -d `builddir`
-gsobj="`obj npapint src/npapint.c`"
+cvobj="`obj npapint src/npapint.c`"
 testobj=`obj test test/test.c`
-testplg=`plg testplugin $testobj $gsobj src/npapi.def`
+testplg=`plg testplugin $testobj $cvobj src/npapi.def`
 cp b/nptestplugin.dll /tmp

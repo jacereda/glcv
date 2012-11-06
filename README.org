@@ -1,4 +1,4 @@
-#+TITLE:     GLGS
+#+TITLE:     GLCV
 #+AUTHOR:    Jorge Acereda
 #+EMAIL:     jacereda@gmail.com
 #+DATE:      2011-10-02 Sun
@@ -28,8 +28,8 @@ file:README
 file:README.html
 
 * Purpose
-GLGS is a small screen/event handling library that provides a thin
-layer abstracting the details of configuring the screen and handling
+GLCV is a small canvas/event handling library that provides a thin
+layer abstracting the details of configuring the window and handling
 input. Sort of a simple GLUT/SDL. No API is provided for
 sound/fonts/widgets, there are good solutions out there for those and
 freedom of choice is a good thing.
@@ -78,53 +78,53 @@ intptr_t event(const ev * e);
 This is the event handling routine implemented by your application.
 *** Application control
 #+begin_src c
-void gsQuit();
+void cvQuit();
 #+end_src
 Call this to terminate your application.
-*** Screen properties
+*** Window properties
 #+begin_src c
-unsigned gsWidth();
+unsigned cvWidth();
 #+end_src
-Current screen width
+Current window width
 #+begin_src c
-unsigned gsHeight();
+unsigned cvHeight();
 #+end_src
-Current screen height
+Current window height
 #+begin_src c
 Mouse location
 #+end_src
 #+begin_src c
-int gsMouseX();
+int cvMouseX();
 #+end_src
 Current X mouse position
 #+begin_src c
-int gsMouseY();
+int cvMouseY();
 #+end_src
 Current Y mouse position
 *** Keyboard
 #+begin_src c
-int gsPressed(gskey key);
+int cvPressed(cvkey key);
 #+end_src
 True if key is currently pressed
 #+begin_src c
-int gsReleased(gskey key);
+int cvReleased(cvkey key);
 #+end_src
 True if key has just been released
 #+begin_src c
-int gsShowKeyboard();
+int cvShowKeyboard();
 #+end_src
 On platforms that support it, show the on-screen keyboard
 #+begin_src c
-int gsHideKeyboard();
+int cvHideKeyboard();
 #+end_src
 On platforms that support it, hide the on-screen keyboard
 *** Logging
 #+begin_src c
-void gsReportV(const char * fmt, va_list ap);
+void cvReportV(const char * fmt, va_list ap);
 #+end_src
 Report a message (depending on the platform, it might go to a file).
 #+begin_src c
-void gsReport(const char * fmt, ...);
+void cvReport(const char * fmt, ...);
 #+end_src
 Report a message (depending on the platform, it might go to a file).
 *** Events
@@ -139,31 +139,31 @@ Event name.
 #+begin_src c
 int evWidth(const ev *);
 #+end_src
-Width for GSE_RESIZE events.
+Width for CVE_RESIZE events.
 #+begin_src c
 int evHeight(const ev *);
 #+end_src
-Width for GSE_RESIZE events.
+Width for CVE_RESIZE events.
 #+begin_src c
-gskey evWhich(const ev *);
+cvkey evWhich(const ev *);
 #+end_src
-Keycode associated to GSE_DOWN/GSE_UP events.
+Keycode associated to CVE_DOWN/CVE_UP events.
 #+begin_src c
 int evX(const ev *);
 #+end_src
-Mouse X position for GSE_DOWN/GSE_UP events.
+Mouse X position for CVE_DOWN/CVE_UP events.
 #+begin_src c
 int evY(const ev *);
 #+end_src
-Mouse Y position for GSE_DOWN/GSE_UP events.
+Mouse Y position for CVE_DOWN/CVE_UP events.
 #+begin_src c
 int evArgC(const ev *);
 #+end_src
-Argument count for GSE_INIT events.
+Argument count for CVE_INIT events.
 #+begin_src c
 char ** evArgV(const ev *);
 #+end_src
-Argument array for GSE_INIT events.
+Argument array for CVE_INIT events.
 #+begin_src c
 intptr_t evArg0(const ev *);
 #+end_src
@@ -173,64 +173,64 @@ intptr_t evArg1(const ev *);
 #+end_src
 Second event argument, mostly internal.
 #+begin_src c
-intptr_t gsInject(gseventtype, intptr_t, intptr_t);
+intptr_t cvInject(cveventtype, intptr_t, intptr_t);
 #+end_src
 Inject an event, mostly internal.
 #+begin_src c
-const char * keyName(gskey);
+const char * keyName(cvkey);
 #+end_src
-Key name for GSE_DOWN/GSE_UP events.
+Key name for CVE_DOWN/CVE_UP events.
 
 ** Events
-*** GSE_NONE
+*** CVE_NONE
 Null event, must be ignored.
-*** GSE_INIT
+*** CVE_INIT
 Called upon initialization, no GL operations should be performed at this stage.
-*** GSE_TERM
+*** CVE_TERM
 Called before terminating the application.
-*** GSE_GLINIT
+*** CVE_GLINIT
 The OpenGL context has been established. Might be called several times.
-*** GSE_GLTERM
+*** CVE_GLTERM
 The OpenGL context is going to be destroyed. Might be called several times.
-*** GSE_UPDATE
+*** CVE_UPDATE
 This is your update routine, should be called at ~60Hz.
-*** GSE_RESIZE
-Called when the screen is resized. Might be called several times.
-*** GSE_DOWN
+*** CVE_RESIZE
+Called when the window is resized. Might be called several times.
+*** CVE_DOWN
 A key/button has been pressed.
-*** GSE_UP
+*** CVE_UP
 A key/button has been released.
-*** GSE_UNICODE
+*** CVE_UNICODE
 Called when the user enters text.
-*** GSE_MOTION
+*** CVE_MOTION
 The mouse moved.
-*** GSE_CLOSE
+*** CVE_CLOSE
 The application is about to close.
-*** GSE_INVOKE
+*** CVE_INVOKE
 Invoke method. The argument is available as evMethod().
 ** Queries
-*** GSQ_NAME
+*** CVQ_NAME
 Return the desired application name.
-*** GSQ_LOGGER
+*** CVQ_LOGGER
 Function to be used for logging. The returned function prototype should be:
 #+begin_src c
 void report(const char * appname, const char * string);
 #+end_src
-*** GSQ_XPOS
+*** CVQ_XPOS
 Return the desired X position. This is just a hint and can be ignored
 on some platforms.
-*** GSQ_YPOS
+*** CVQ_YPOS
 Return the desired Y position. This is just a hint and can be ignored
 on some platforms.
-*** GSQ_WIDTH
+*** CVQ_WIDTH
 Return the desired width. Note that this is a hint and can be ignored
 on some platforms. Your code should use the width reported via
-GSE_RESIZE or ask explicitly with gsWidth().
-*** GSQ_HEIGHT
+CVE_RESIZE or ask explicitly with cvWidth().
+*** CVQ_HEIGHT
 Return the desired height. Note that this is a hint and can be ignored
 on some platforms. Your code should use the height reported via
-GSE_RESIZE or ask explicitly with gsHeight().
-*** GSQ_BORDERS
+CVE_RESIZE or ask explicitly with cvHeight().
+*** CVQ_BORDERS
 Should the window have borders?
 
 * Examples

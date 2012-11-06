@@ -69,14 +69,14 @@ ins() {
 
 rm -fR `builddir`
 install -d `builddir`
-gsobj="`obj ios src/ios.m`"
+cvobj="`obj ios src/ios.m`"
 
 testobj=`obj test test/test.c`
-testexe=`exe test $testobj $gsobj`
+testexe=`exe test $testobj $cvobj`
 testpkg=`pkg test $testexe`
 itestpkg=`ins test $testpkg`
 
 glestestobj=`obj glestest test/glestest.c`
-glestestexe=`exe glestest $glestestobj $gsobj`
+glestestexe=`exe glestest $glestestobj $cvobj`
 glestestpkg=`pkg glestest $glestestexe`
 iglestestpkg=`ins glestest $glestestpkg`

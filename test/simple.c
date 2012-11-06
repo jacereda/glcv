@@ -1,5 +1,5 @@
-#include "gs.h"
-#include "gsgl.h"
+#include "cv.h"
+#include "cvgl.h"
 
 static void update() {
         static int i = 128;
@@ -11,9 +11,9 @@ static void update() {
 
 intptr_t event(const ev * e) {
         intptr_t ret = 1;
-        gseventtype t = evType(e);
+        cveventtype t = evType(e);
         switch (t) {
-        case GSE_UPDATE: update(); break;
+        case CVE_UPDATE: update(); break;
         default: ret = 0; break;
         }
         return ret;

@@ -38,21 +38,21 @@
 #endif
 
 typedef enum {
-	GSE_NONE,
-#define Q(x) GSQ_##x,
-#include "gsqueries.h"
+	CVE_NONE,
+#define Q(x) CVQ_##x,
+#include "cvqueries.h"
 #undef Q
-#define C(x) GSE_##x,
-#include "gsevents.h"
+#define C(x) CVE_##x,
+#include "cvevents.h"
 #undef C
-	GSE_MAX,
-} gseventtype;
+	CVE_MAX,
+} cveventtype;
 
 typedef enum {
-#define K(x) GSK_##x,
-#include "gskeys.h"
+#define K(x) CVK_##x,
+#include "cvkeys.h"
 #undef K
-} gskey;
+} cvkey;
 
 // Don't access this struct directly, use ev*() functions
 typedef struct _ev {
@@ -61,31 +61,31 @@ typedef struct _ev {
 } ev;
 
 // Provided by the program
-#ifdef GS_EXPLICIT_ENTRY
-int gsRun(intptr_t (*handler)(const ev *));
+#ifdef CV_EXPLICIT_ENTRY
+int cvRun(intptr_t (*handler)(const ev *));
 #else
 intptr_t event(const ev * e);
 #endif
 
-unsigned gsWidth();
-unsigned gsHeight();
-int gsMouseX();
-int gsMouseY();
-int gsPressed(gskey key);
-int gsReleased(gskey key);
-int gsShowKeyboard();
-int gsHideKeyboard();
+unsigned cvWidth();
+unsigned cvHeight();
+int cvMouseX();
+int cvMouseY();
+int cvPressed(cvkey key);
+int cvReleased(cvkey key);
+int cvShowKeyboard();
+int cvHideKeyboard();
 
-void gsReportV(const char * fmt, va_list ap);
-void gsReport(const char * fmt, ...);
+void cvReportV(const char * fmt, va_list ap);
+void cvReport(const char * fmt, ...);
 
-void gsQuit();
+void cvQuit();
 
 int evType(const ev *);
 const char * evName(const ev *);
 int evWidth(const ev *);
 int evHeight(const ev *);
-gskey evWhich(const ev *);
+cvkey evWhich(const ev *);
 uint32_t evUnicode(const ev *);
 intptr_t evArg0(const ev *);
 intptr_t evArg1(const ev *);
@@ -95,7 +95,7 @@ int evArgC(const ev *);
 char ** evArgV(const ev *);
 const char * evMethod(const ev *);
 
-intptr_t gsInject(gseventtype, intptr_t, intptr_t);
+intptr_t cvInject(cveventtype, intptr_t, intptr_t);
 
-const char * keyName(gskey k);
+const char * keyName(cvkey k);
 

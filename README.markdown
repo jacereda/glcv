@@ -1,9 +1,9 @@
-GLGS
+GLCV
 ====
 
 ## 1) Purpose
-  GLGS is a small screen/event handling library that provides a thin
-  layer abstracting the details of configuring the screen and handling
+  GLCV is a small canvas/event handling library that provides a thin
+  layer abstracting the details of configuring the window and handling
   input. Sort of a simple GLUT/SDL. No API is provided for
   sound/fonts/widgets, there are good solutions out there for those and
   freedom of choice is a good thing.
@@ -47,34 +47,34 @@ GLGS
   This is the event handling routine implemented by your application.
 
 #### 3.1.2) Application control
-    void gsQuit();
+    void cvQuit();
   Call this to terminate your application.
 
-#### 3.1.3) Screen properties
-    unsigned gsWidth();
-  Current screen width
-    unsigned gsHeight();
-  Current screen height
+#### 3.1.3) Window properties
+    unsigned cvWidth();
+  Current window width
+    unsigned cvHeight();
+  Current window height
     Mouse location
-    int gsMouseX();
+    int cvMouseX();
   Current X mouse position
-    int gsMouseY();
+    int cvMouseY();
   Current Y mouse position
 
 #### 3.1.4) Keyboard
-    int gsPressed(gskey key);
+    int cvPressed(cvkey key);
   True if key is currently pressed
-    int gsReleased(gskey key);
+    int cvReleased(cvkey key);
   True if key has just been released
-    int gsShowKeyboard();
+    int cvShowKeyboard();
   On platforms that support it, show the on-screen keyboard
-    int gsHideKeyboard();
+    int cvHideKeyboard();
   On platforms that support it, hide the on-screen keyboard
 
 #### 3.1.5) Logging
-    void gsReportV(const char * fmt, va_list ap);
+    void cvReportV(const char * fmt, va_list ap);
   Report a message (depending on the platform, it might go to a file).
-    void gsReport(const char * fmt, ...);
+    void cvReport(const char * fmt, ...);
   Report a message (depending on the platform, it might go to a file).
 
 #### 3.1.6) Events
@@ -83,105 +83,105 @@ GLGS
     const char * evName(const ev *);
   Event name.
     int evWidth(const ev *);
-  Width for GSE_RESIZE events.
+  Width for CVE_RESIZE events.
     int evHeight(const ev *);
-  Width for GSE_RESIZE events.
-    gskey evWhich(const ev *);
-  Keycode associated to GSE_DOWN/GSE_UP events.
+  Width for CVE_RESIZE events.
+    cvkey evWhich(const ev *);
+  Keycode associated to CVE_DOWN/CVE_UP events.
     int evX(const ev *);
-  Mouse X position for GSE_DOWN/GSE_UP events.
+  Mouse X position for CVE_DOWN/CVE_UP events.
     int evY(const ev *);
-  Mouse Y position for GSE_DOWN/GSE_UP events.
+  Mouse Y position for CVE_DOWN/CVE_UP events.
     int evArgC(const ev *);
-  Argument count for GSE_INIT events.
+  Argument count for CVE_INIT events.
     char ** evArgV(const ev *);
-  Argument array for GSE_INIT events.
+  Argument array for CVE_INIT events.
     intptr_t evArg0(const ev *);
   First event argument, mostly internal.
     intptr_t evArg1(const ev *);
   Second event argument, mostly internal.
-    intptr_t gsInject(gseventtype, intptr_t, intptr_t);
+    intptr_t cvInject(cveventtype, intptr_t, intptr_t);
   Inject an event, mostly internal.
-    const char * keyName(gskey);
-  Key name for GSE_DOWN/GSE_UP events.
+    const char * keyName(cvkey);
+  Key name for CVE_DOWN/CVE_UP events.
 
 ### 3.2) Events
 
-#### 3.2.1) GSE_NONE
+#### 3.2.1) CVE_NONE
   Null event, must be ignored.
 
-#### 3.2.2) GSE_INIT
+#### 3.2.2) CVE_INIT
   Called upon initialization, no GL operations should be performed at this
 stage.
 
-#### 3.2.3) GSE_TERM
+#### 3.2.3) CVE_TERM
   Called before terminating the application.
 
-#### 3.2.4) GSE_GLINIT
+#### 3.2.4) CVE_GLINIT
   The OpenGL context has been established. Might be called several times.
 
-#### 3.2.5) GSE_GLTERM
+#### 3.2.5) CVE_GLTERM
   The OpenGL context is going to be destroyed. Might be called several times.
 
-#### 3.2.6) GSE_UPDATE
+#### 3.2.6) CVE_UPDATE
   This is your update routine, should be called at ~60Hz.
 
-#### 3.2.7) GSE_RESIZE
-  Called when the screen is resized. Might be called several times.
+#### 3.2.7) CVE_RESIZE
+  Called when the window is resized. Might be called several times.
 
-#### 3.2.8) GSE_DOWN
+#### 3.2.8) CVE_DOWN
   A key/button has been pressed.
 
-#### 3.2.9) GSE_UP
+#### 3.2.9) CVE_UP
   A key/button has been released.
 
-#### 3.2.10) GSE_UNICODE
+#### 3.2.10) CVE_UNICODE
   Called when the user enters text.
 
-#### 3.2.11) GSE_MOTION
+#### 3.2.11) CVE_MOTION
   The mouse moved.
 
-#### 3.2.12) GSE_CLOSE
+#### 3.2.12) CVE_CLOSE
   The application is about to close.
 
-#### 3.2.13) GSE_INVOKE
+#### 3.2.13) CVE_INVOKE
   Invoke method. The argument is available as evMethod().
 
 ### 3.3) Queries
 
-#### 3.3.1) GSQ_NAME
+#### 3.3.1) CVQ_NAME
   Return the desired application name.
 
-#### 3.3.2) GSQ_LOGGER
+#### 3.3.2) CVQ_LOGGER
   Function to be used for logging. The returned function prototype should be:
     void report(const char * appname, const char * string);
 
-#### 3.3.3) GSQ_XPOS
+#### 3.3.3) CVQ_XPOS
   Return the desired X position. This is just a hint and can be ignored
   on some platforms.
 
-#### 3.3.4) GSQ_YPOS
+#### 3.3.4) CVQ_YPOS
   Return the desired Y position. This is just a hint and can be ignored
   on some platforms.
 
-#### 3.3.5) GSQ_WIDTH
+#### 3.3.5) CVQ_WIDTH
   Return the desired width. Note that this is a hint and can be ignored
   on some platforms. Your code should use the width reported via
-  GSE_RESIZE or ask explicitly with gsWidth().
+  CVE_RESIZE or ask explicitly with cvWidth().
 
-#### 3.3.6) GSQ_HEIGHT
+#### 3.3.6) CVQ_HEIGHT
   Return the desired height. Note that this is a hint and can be ignored
   on some platforms. Your code should use the height reported via
-  GSE_RESIZE or ask explicitly with gsHeight().
+  CVE_RESIZE or ask explicitly with cvHeight().
 
-#### 3.3.7) GSQ_BORDERS
+#### 3.3.7) CVQ_BORDERS
   Should the window have borders?
 
 ## 4) Examples
 
 ### 4.1) Simple example that just draws
-    #include "gs.h"
-    #include "gsgl.h"
+    #include "cv.h"
+    #include "cvgl.h"
     static void update() {
             static int i = 128;
             i++;
@@ -192,9 +192,9 @@ stage.
     }
     intptr_t event(const ev * e) {
             intptr_t ret = 1;
-            gseventtype t = evType(e);
+            cveventtype t = evType(e);
             switch (t) {
-            case GSE_UPDATE: update(); break;
+            case CVE_UPDATE: update(); break;
             default: ret = 0; break;
             }
             return ret;
@@ -210,42 +210,42 @@ stage.
 
 
 ### 4.2) Complete example handling all queries/events
-    #include "gs.h"
-    #include "gsgl.h"
+    #include "cv.h"
+    #include "cvgl.h"
     static void init() {
-            gsReport("init");
+            cvReport("init");
     }
     static void term() {
-            gsReport("term");
+            cvReport("term");
     }
     static void glinit() {
-            gsReport("glinit");
+            cvReport("glinit");
     }
-    static void down(gskey k) {
-            gsReport("down %s", keyName(k));
+    static void down(cvkey k) {
+            cvReport("down %s", keyName(k));
     }
-    static void up(gskey k) {
-            gsReport("up %s", keyName(k));
+    static void up(cvkey k) {
+            cvReport("up %s", keyName(k));
             switch (k) {
-            case GSK_ESCAPE: gsQuit(); break;
+            case CVK_ESCAPE: cvQuit(); break;
             default: break;
             }
     }
     static void unicode(uint32_t c) {
-            gsReport("unicode %c", c);
+            cvReport("unicode %c", c);
     }
     static void motion(int x, int y) {
-            gsReport("motion %d %d", x, y);
+            cvReport("motion %d %d", x, y);
     }
     static void close() {
-            gsReport("close");
-            gsQuit();
+            cvReport("close");
+            cvQuit();
     }
     static void invoke(const char * s) {
-            gsReport("invoked method '%s'", s);
+            cvReport("invoked method '%s'", s);
     }
     static void resize(unsigned w, unsigned h) {
-            gsReport("resize %d %d", w, h);
+            cvReport("resize %d %d", w, h);
             glViewport(0, 0, w, h);
     }
     static void update() {
@@ -258,28 +258,28 @@ stage.
     }
     intptr_t event(const ev * e) {
             intptr_t ret = 1;
-            gseventtype t = evType(e);
-            if (t != GSE_UPDATE)
-                    gsReport("got event %s, %p %p", 
+            cveventtype t = evType(e);
+            if (t != CVE_UPDATE)
+                    cvReport("got event %s, %p %p", 
                              evName(e), evArg0(e), evArg1(e));
             switch (t) {
-            case GSQ_NAME: ret = (intptr_t)"test"; break;
-            case GSQ_XPOS: ret = 50; break;
-            case GSQ_YPOS: ret = 50; break;
-            case GSQ_WIDTH: ret = 640; break;
-            case GSQ_HEIGHT: ret = 480; break;
-            case GSQ_BORDERS: ret = 1; break;
-            case GSE_INIT: init(); break;
-            case GSE_TERM: term(); break;
-            case GSE_GLINIT: glinit(); break;
-            case GSE_DOWN: down(evWhich(e)); break;
-            case GSE_UP: up(evWhich(e)); break;
-            case GSE_UNICODE: unicode(evUnicode(e)); break;
-            case GSE_MOTION: motion(evX(e), evY(e)); break;
-            case GSE_CLOSE: close(); break;
-            case GSE_INVOKE: invoke(evMethod(e)); break;
-            case GSE_RESIZE: resize(gsWidth(e), gsHeight(e)); break;
-            case GSE_UPDATE: update(); break;
+            case CVQ_NAME: ret = (intptr_t)"test"; break;
+            case CVQ_XPOS: ret = 50; break;
+            case CVQ_YPOS: ret = 50; break;
+            case CVQ_WIDTH: ret = 640; break;
+            case CVQ_HEIGHT: ret = 480; break;
+            case CVQ_BORDERS: ret = 1; break;
+            case CVE_INIT: init(); break;
+            case CVE_TERM: term(); break;
+            case CVE_GLINIT: glinit(); break;
+            case CVE_DOWN: down(evWhich(e)); break;
+            case CVE_UP: up(evWhich(e)); break;
+            case CVE_UNICODE: unicode(evUnicode(e)); break;
+            case CVE_MOTION: motion(evX(e), evY(e)); break;
+            case CVE_CLOSE: close(); break;
+            case CVE_INVOKE: invoke(evMethod(e)); break;
+            case CVE_RESIZE: resize(cvWidth(e), cvHeight(e)); break;
+            case CVE_UPDATE: update(); break;
             default: ret = 0; break;
             }
             return ret;

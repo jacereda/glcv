@@ -1,49 +1,49 @@
-#include "gs.h"
-#include "gsgl.h"
+#include "cv.h"
+#include "cvgl.h"
 
 static void init() {
-        gsReport("init");
+        cvReport("init");
 }
 
 static void term() {
-        gsReport("term");
+        cvReport("term");
 }
 
 static void glinit() {
-        gsReport("glinit");
+        cvReport("glinit");
 }
 
-static void down(gskey k) {
-        gsReport("down %s", keyName(k));
+static void down(cvkey k) {
+        cvReport("down %s", keyName(k));
 }
 
-static void up(gskey k) {
-        gsReport("up %s", keyName(k));
+static void up(cvkey k) {
+        cvReport("up %s", keyName(k));
         switch (k) {
-        case GSK_ESCAPE: gsQuit(); break;
+        case CVK_ESCAPE: cvQuit(); break;
         default: break;
         }
 }
 
 static void unicode(uint32_t c) {
-        gsReport("unicode %c", c);
+        cvReport("unicode %c", c);
 }
 
 static void motion(int x, int y) {
-        gsReport("motion %d %d", x, y);
+        cvReport("motion %d %d", x, y);
 }
 
 static void close() {
-        gsReport("close");
-        gsQuit();
+        cvReport("close");
+        cvQuit();
 }
 
 static void invoke(const char * s) {
-        gsReport("invoked method '%s'", s);
+        cvReport("invoked method '%s'", s);
 }
 
 static void resize(unsigned w, unsigned h) {
-        gsReport("resize %d %d", w, h);
+        cvReport("resize %d %d", w, h);
         glViewport(0, 0, w, h);
 }
 
@@ -57,28 +57,28 @@ static void update() {
 
 intptr_t event(const ev * e) {
         intptr_t ret = 1;
-        gseventtype t = evType(e);
-        if (t != GSE_UPDATE)
-                gsReport("got event %s, %p %p", 
+        cveventtype t = evType(e);
+        if (t != CVE_UPDATE)
+                cvReport("got event %s, %p %p", 
                          evName(e), evArg0(e), evArg1(e));
         switch (t) {
-        case GSQ_NAME: ret = (intptr_t)"test"; break;
-        case GSQ_XPOS: ret = 50; break;
-        case GSQ_YPOS: ret = 50; break;
-        case GSQ_WIDTH: ret = 640; break;
-        case GSQ_HEIGHT: ret = 480; break;
-        case GSQ_BORDERS: ret = 1; break;
-        case GSE_INIT: init(); break;
-        case GSE_TERM: term(); break;
-        case GSE_GLINIT: glinit(); break;
-        case GSE_DOWN: down(evWhich(e)); break;
-        case GSE_UP: up(evWhich(e)); break;
-        case GSE_UNICODE: unicode(evUnicode(e)); break;
-        case GSE_MOTION: motion(evX(e), evY(e)); break;
-        case GSE_CLOSE: close(); break;
-        case GSE_INVOKE: invoke(evMethod(e)); break;
-        case GSE_RESIZE: resize(gsWidth(e), gsHeight(e)); break;
-        case GSE_UPDATE: update(); break;
+        case CVQ_NAME: ret = (intptr_t)"test"; break;
+        case CVQ_XPOS: ret = 50; break;
+        case CVQ_YPOS: ret = 50; break;
+        case CVQ_WIDTH: ret = 640; break;
+        case CVQ_HEIGHT: ret = 480; break;
+        case CVQ_BORDERS: ret = 1; break;
+        case CVE_INIT: init(); break;
+        case CVE_TERM: term(); break;
+        case CVE_GLINIT: glinit(); break;
+        case CVE_DOWN: down(evWhich(e)); break;
+        case CVE_UP: up(evWhich(e)); break;
+        case CVE_UNICODE: unicode(evUnicode(e)); break;
+        case CVE_MOTION: motion(evX(e), evY(e)); break;
+        case CVE_CLOSE: close(); break;
+        case CVE_INVOKE: invoke(evMethod(e)); break;
+        case CVE_RESIZE: resize(cvWidth(e), cvHeight(e)); break;
+        case CVE_UPDATE: update(); break;
         default: ret = 0; break;
         }
         return ret;

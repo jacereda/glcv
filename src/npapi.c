@@ -1,5 +1,5 @@
-#define GS_NO_MAIN
-#include "gs.c"
+#define CV_NO_MAIN
+#include "cv.c"
 
 #if defined __APPLE__
 #define NP_NO_CARBON
@@ -40,23 +40,23 @@ intptr_t osEvent(ev * e) {
         return 0;
 }
 
-#define debug gsReport
+#define debug cvReport
 
 static bool hasmethod(NPObject* obj, NPIdentifier methodid) {
         return 1;
 }
 
 static bool invoke(NPObject* obj, NPIdentifier methodid, 
-                   const NPVariant *args, uint32_t nargs, NPVariant *res) {
+                   const NPVariant *arcv, uint32_t narcv, NPVariant *res) {
         debug("invoke");
         int ret;
-        if (nargs == 1 && NPVARIANT_IS_STRING(args[0])) {
-                NPString s = NPVARIANT_TO_STRING(args[0]);
+        if (narcv == 1 && NPVARIANT_IS_STRING(arcv[0])) {
+                NPString s = NPVARIANT_TO_STRING(arcv[0]);
                 char buf[1024];
                 debug("len: %d", s.UTF8Length);
                 memcpy(buf, s.UTF8Characters, s.UTF8Length);
                 buf[s.UTF8Length] = 0;
-                gsInject(GSE_INVOKE, (intptr_t)buf, 0);
+                cvInject(CVE_INVOKE, (intptr_t)buf, 0);
                 ret = 1;
         } else {
                 debug("no such method");
@@ -67,7 +67,7 @@ static bool invoke(NPObject* obj, NPIdentifier methodid,
 }
 
 static bool invokedefault(NPObject *obj, 
-                          const NPVariant *args, uint32_t nargs, 
+                          const NPVariant *arcv, uint32_t narcv, 
                           NPVariant *res) {
         debug("invokedefault");
         return 0;
@@ -83,7 +83,7 @@ static bool getproperty(NPObject *obj, NPIdentifier prop, NPVariant *res) {
         return 0;
 }
 
-static bool construct (NPObject *obj, const NPVariant *args, uint32_t argc, NPVariant *res) {
+static bool construct (NPObject *obj, const NPVariant *arcv, uint32_t argc, NPVariant *res) {
         debug("construct");
         return 0;
 }
@@ -110,7 +110,7 @@ static NPError nnew(NPMIMEType type, NPP i,
                     char* argv[], NPSavedData* saved) {
         int ok;
         debug("nnew");
-        ok = gsInject(GSE_INIT, argc, (intptr_t)argv);
+        ok = cvInject(CVE_INIT, argc, (intptr_t)argv);
         if (ok) {
                 unsigned j;
                 snprintf(s_plgname, sizeof s_plgname - 1, "%s", argv[0]);
@@ -132,8 +132,8 @@ static NPError setwindow(NPP i, NPWindow* w) {
 
 static NPError destroy(NPP i, NPSavedData **save) {
         debug("destroy");
-        gsInject(GSE_CLOSE, 0, 0);
-        gsInject(GSE_TERM, 0, 0);
+        cvInject(CVE_CLOSE, 0, 0);
+        cvInject(CVE_TERM, 0, 0);
         osterm();
         if(s_so)
                 s_browser->releaseobject(s_so);
@@ -218,7 +218,7 @@ EXPORTED char * NP_GetMIMEDescription(void) {
         static char buf[256];
         const char * name;
         debug("getmime");
-        name = (const char *)gsInject(GSQ_NAME, 0, 0);
+        name = (const char *)cvInject(CVQ_NAME, 0, 0);
         snprintf(buf, sizeof(buf), 
                  "application/%s::xx@foo.bar", name);
         buf[sizeof(buf) - 1] = 0;
@@ -238,11 +238,11 @@ EXPORTED NPError OSCALL NP_GetValue(
         return getvalue(npp, variable, val);
 }
 
-int gsShowKeyboard() {
+int cvShowKeyboard() {
         return 1;
 }
 
-int gsHideKeyboard() {
+int cvHideKeyboard() {
         return 1;
 }
 

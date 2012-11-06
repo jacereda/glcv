@@ -43,28 +43,28 @@ static gboolean event(GtkWidget * wid, GdkEvent * ev, gpointer data) {
         switch (ev->type) {
         case GDK_KEY_PRESS: {
                 GdkEventKey * kev = (GdkEventKey*)ev;
-                gsInject(GSE_DOWN, mapkeycode(kev->hardware_keycode), 0);
+                cvInject(CVE_DOWN, mapkeycode(kev->hardware_keycode), 0);
                 break;
         }
         case GDK_KEY_RELEASE: {
                 GdkEventKey * kev = (GdkEventKey*)ev;
-                gsInject(GSE_UP, mapkeycode(kev->hardware_keycode), 0);
+                cvInject(CVE_UP, mapkeycode(kev->hardware_keycode), 0);
                 break;
         }
         case GDK_BUTTON_PRESS: {
                 GdkEventButton * bev = (GdkEventButton*)ev;
                 gtk_widget_grab_focus(g_plug);
-                got(w, GSE_DOWN, mapbutton(bev->button), 0);
+                got(w, CVE_DOWN, mapbutton(bev->button), 0);
                 break;
         }
         case GDK_BUTTON_RELEASE: {
                 GdkEventButton * bev = (GdkEventButton*)ev;
-                got(w, GSE_UP, mapbutton(bev->button), 0);
+                got(w, CVE_UP, mapbutton(bev->button), 0);
                 break;
         }
         case GDK_MOTION_NOTIFY: {
                 GdkEventMotion * mev = (GdkEventMotion*)ev;
-                got(w, GSE_MOTION, mev->x, mev->y);
+                got(w, CVE_MOTION, mev->x, mev->y);
                 break;
         }
         default: ret = FALSE; break;
@@ -73,7 +73,7 @@ static gboolean event(GtkWidget * wid, GdkEvent * ev, gpointer data) {
 }
 
 static gboolean update(gpointer data) {
-        gsInject(GSE_UPDATE);
+        cvInject(CVE_UPDATE);
         glXSwapBuffers(g_dpy, g_w);
         return 1;
 }
@@ -84,7 +84,7 @@ static void osglinit(NPWindow * w) {
         XVisualInfo * vinfo;
         osterm();
         g_plug = gtk_plug_new((GdkNativeWindow)(win->window));
-        GTK_WIDGET_SET_FLAGS(GTK_WIDGET(g_plug), GTK_CAN_FOCUS);
+        GTK_WIDGET_SET_FLACV(GTK_WIDGET(g_plug), GTK_CAN_FOCUS);
         gtk_widget_add_events(g_plug, 0
                               | GDK_BUTTON_PRESS_MASK 
                               | GDK_BUTTON_RELEASE_MASK
@@ -103,8 +103,8 @@ static void osglinit(NPWindow * w) {
         g_ctx = glXCreateContext(g_dpy, vinfo, 0, True);
         XFree(vinfo);
         glXMakeCurrent(g_dpy, g_w, g_ctx);
-        gsInject(GSE_RESIZE, w->width, w->height);
-        gsInject(GSE_GLINIT, 0, 0);
+        cvInject(CVE_RESIZE, w->width, w->height);
+        cvInject(CVE_GLINIT, 0, 0);
 }
 
 void osterm(ins * o) {

@@ -29,8 +29,8 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#include "gs.c"
-#include "gsgl.h"
+#include "cv.c"
+#include "cvgl.h"
 #include <OpenGLES/ES2/glext.h>
 
 #import <Foundation/Foundation.h>
@@ -67,54 +67,54 @@ Delegate * getDelegate() {
 }
 
 static void fakekeyuni(unsigned key, unsigned unicode) {
-        gsInject(GSE_DOWN, key, 0);
-        gsInject(GSE_UNICODE, unicode, 0);
-        gsInject(GSE_UP, key, 0);
+        cvInject(CVE_DOWN, key, 0);
+        cvInject(CVE_UNICODE, unicode, 0);
+        cvInject(CVE_UP, key, 0);
 }
 
 static unsigned mapkey(unsigned k) {
         unsigned ret;
         switch (k) {
-        case 'A': ret = GSK_A; break;
-        case 'B': ret = GSK_B; break;
-        case 'C': ret = GSK_C; break;
-        case 'D': ret = GSK_D; break;
-        case 'E': ret = GSK_E; break;
-        case 'F': ret = GSK_F; break;
-        case 'G': ret = GSK_G; break;
-        case 'H': ret = GSK_H; break;
-        case 'I': ret = GSK_I; break;
-        case 'J': ret = GSK_J; break;
-        case 'K': ret = GSK_K; break;
-        case 'L': ret = GSK_L; break;
-        case 'M': ret = GSK_M; break;
-        case 'N': ret = GSK_N; break;
-        case 'O': ret = GSK_O; break;
-        case 'P': ret = GSK_P; break;
-        case 'Q': ret = GSK_Q; break;
-        case 'R': ret = GSK_R; break;
-        case 'S': ret = GSK_S; break;
-        case 'T': ret = GSK_T; break;
-        case 'U': ret = GSK_U; break;
-        case 'V': ret = GSK_V; break;
-        case 'W': ret = GSK_W; break;
-        case 'X': ret = GSK_X; break;
-        case 'Y': ret = GSK_Y; break;
-        case 'Z': ret = GSK_Z; break;
-        case '0': ret = GSK_0; break;
-        case '1': ret = GSK_1; break;
-        case '2': ret = GSK_2; break;
-        case '3': ret = GSK_3; break;
-        case '4': ret = GSK_4; break;
-        case '5': ret = GSK_5; break;
-        case '6': ret = GSK_6; break;
-        case '7': ret = GSK_7; break;
-        case '8': ret = GSK_8; break;
-        case '9': ret = GSK_9; break;
-        case '=': ret = GSK_EQUAL; break;
-        case '\b': ret = GSK_DELETE; break;
-        case '\n': ret = GSK_RETURN; break;
-        default: ret = GSK_NONE;
+        case 'A': ret = CVK_A; break;
+        case 'B': ret = CVK_B; break;
+        case 'C': ret = CVK_C; break;
+        case 'D': ret = CVK_D; break;
+        case 'E': ret = CVK_E; break;
+        case 'F': ret = CVK_F; break;
+        case 'G': ret = CVK_G; break;
+        case 'H': ret = CVK_H; break;
+        case 'I': ret = CVK_I; break;
+        case 'J': ret = CVK_J; break;
+        case 'K': ret = CVK_K; break;
+        case 'L': ret = CVK_L; break;
+        case 'M': ret = CVK_M; break;
+        case 'N': ret = CVK_N; break;
+        case 'O': ret = CVK_O; break;
+        case 'P': ret = CVK_P; break;
+        case 'Q': ret = CVK_Q; break;
+        case 'R': ret = CVK_R; break;
+        case 'S': ret = CVK_S; break;
+        case 'T': ret = CVK_T; break;
+        case 'U': ret = CVK_U; break;
+        case 'V': ret = CVK_V; break;
+        case 'W': ret = CVK_W; break;
+        case 'X': ret = CVK_X; break;
+        case 'Y': ret = CVK_Y; break;
+        case 'Z': ret = CVK_Z; break;
+        case '0': ret = CVK_0; break;
+        case '1': ret = CVK_1; break;
+        case '2': ret = CVK_2; break;
+        case '3': ret = CVK_3; break;
+        case '4': ret = CVK_4; break;
+        case '5': ret = CVK_5; break;
+        case '6': ret = CVK_6; break;
+        case '7': ret = CVK_7; break;
+        case '8': ret = CVK_8; break;
+        case '9': ret = CVK_9; break;
+        case '=': ret = CVK_EQUAL; break;
+        case '\b': ret = CVK_DELETE; break;
+        case '\n': ret = CVK_RETURN; break;
+        default: ret = CVK_NONE;
         }
         return ret;
 }
@@ -123,10 +123,10 @@ static void fakekey(unsigned unicode) {
         int upper = isupper(unicode);
         int luni = toupper(unicode);
         if (upper)
-                gsInject(GSE_DOWN, GSK_SHIFT, 0);
+                cvInject(CVE_DOWN, CVK_SHIFT, 0);
         fakekeyuni(mapkey(luni), unicode);
         if (upper)
-                gsInject(GSE_UP, GSK_SHIFT, 0);
+                cvInject(CVE_UP, CVK_SHIFT, 0);
 }
 
 @implementation GLView
@@ -138,16 +138,16 @@ static void fakekey(unsigned unicode) {
 {
         UITouch* touch = [touches anyObject];
         CGPoint loc = [touch locationInView: self];
-        gsInject(GSE_MOTION, loc.x, loc.y);
-        gsInject(GSE_DOWN, GSK_MOUSELEFT, 0);
+        cvInject(CVE_MOTION, loc.x, loc.y);
+        cvInject(CVE_DOWN, CVK_MOUSELEFT, 0);
 }
 
 - (void) touchesEnded: (NSSet*) touches withEvent: (UIEvent*) e
 {
         UITouch* touch = [touches anyObject];
         CGPoint loc = [touch locationInView: self];
-        gsInject(GSE_MOTION, loc.x, loc.y);
-        gsInject(GSE_UP, GSK_MOUSELEFT, 0);
+        cvInject(CVE_MOTION, loc.x, loc.y);
+        cvInject(CVE_UP, CVK_MOUSELEFT, 0);
 }
 
 
@@ -155,7 +155,7 @@ static void fakekey(unsigned unicode) {
 {
         UITouch* touch = [touches anyObject];
         CGPoint loc = [touch previousLocationInView: self];
-        gsInject(GSE_MOTION, loc.x, loc.y);
+        cvInject(CVE_MOTION, loc.x, loc.y);
 }
 
 @end
@@ -163,7 +163,7 @@ static void fakekey(unsigned unicode) {
 @implementation Delegate
 
 - (void) applicationWillTerminate: (UIApplication*) a {
-        gsInject(GSE_CLOSE, 0, 0);
+        cvInject(CVE_CLOSE, 0, 0);
         [self update];
 }
 
@@ -195,7 +195,7 @@ shouldChangeCharactersInRange: (NSRange)range
 }
 
 - (void)update {
-        gsInject(GSE_UPDATE, 0, 0);
+        cvInject(CVE_UPDATE, 0, 0);
         [ctx presentRenderbuffer: GL_RENDERBUFFER];
 }
 
@@ -231,8 +231,8 @@ shouldChangeCharactersInRange: (NSRange)range
         [win addSubview: tf];
 
         [self initContext];
-        gsInject(GSE_RESIZE, r.size.width, r.size.height);
-        gsInject(GSE_GLINIT, 0, 0);
+        cvInject(CVE_RESIZE, r.size.width, r.size.height);
+        cvInject(CVE_GLINIT, 0, 0);
 }
 
 - (void) applicationDidFinishLaunching: (UIApplication*) application 
@@ -257,22 +257,22 @@ shouldChangeCharactersInRange: (NSRange)range
 
 @end
 
-int gsShowKeyboard() {
+int cvShowKeyboard() {
         [getDelegate() showKeyboard];
         return 1;
 }
 
-int gsHideKeyboard() {
+int cvHideKeyboard() {
         [getDelegate() hideKeyboard];
         return 1;
 }
 
-int gsrun(int argc, char ** argv) {
+int cvrun(int argc, char ** argv) {
         NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
         int ret = 42;
-        if (gsInject(GSE_INIT, argc, (intptr_t)argv)) {
+        if (cvInject(CVE_INIT, argc, (intptr_t)argv)) {
                 UIApplicationMain(argc, argv, nil, @"Delegate");
-                ret = gsInject(GSE_TERM, 0, 0);
+                ret = cvInject(CVE_TERM, 0, 0);
         }
         [pool release];
         return ret;

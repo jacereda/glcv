@@ -29,23 +29,23 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#include "gs.h"
+#include "cv.h"
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
 
-extern int gsrun(int, char**);
+extern int cvrun(int, char**);
 
-#if defined GS_EXPLICIT_ENTRY
+#if defined CV_EXPLICIT_ENTRY
 intptr_t (*event)(const ev * e);
-int gsRun(intptr_t (*handler)(const ev *)) {
+int cvRun(intptr_t (*handler)(const ev *)) {
         event = handler;
-        return gsrun(0, 0);
+        return cvrun(0, 0);
 }
 #endif
-#if !defined GS_NO_MAIN
+#if !defined CV_NO_MAIN
 int main(int argc, char ** argv) {
-        return gsrun(argc, argv);
+        return cvrun(argc, argv);
 }
 #endif
 
@@ -86,48 +86,48 @@ static void mysnprintf(char * buf, size_t sz, const char * fmt, ...) {
         buf[sz-1] = 0;
 }
 
-unsigned gsWidth() {
+unsigned cvWidth() {
         return s_w;
 }
 
-unsigned gsHeight() {
+unsigned cvHeight() {
         return s_h;
 }
 
-int gsMouseX() {
+int cvMouseX() {
         return s_mx;
 }
 
-int gsMouseY() {
+int cvMouseY() {
         return s_my;
 }
 
-static unsigned char * bitarrayFor(unsigned char * p, gskey * k) {
-        int good = *k >= GSK_NONE && *k < GSK_MAX;
+static unsigned char * bitarrayFor(unsigned char * p, cvkey * k) {
+        int good = *k >= CVK_NONE && *k < CVK_MAX;
         assert(good);
-        *k -= GSK_NONE;
+        *k -= CVK_NONE;
         return good? p : 0;
 }
 
-static void press(gskey k) {
+static void press(cvkey k) {
         unsigned char * ba = bitarrayFor(s_pressed, &k);
         if (ba)
                 bitset(ba, k);
 }
 
-static void release(gskey k) {
+static void release(cvkey k) {
         unsigned char * ba = bitarrayFor(s_pressed, &k);
         if (ba)
                 bitclear(ba, k);
 }
 
-int gsPressed(gskey k) {
+int cvPressed(cvkey k) {
         const unsigned char * ba = bitarrayFor(s_pressed, &k);
         return ba && bittest(ba, k);
 }
 
-int gsReleased(gskey k) {
-        gskey pk = k;
+int cvReleased(cvkey k) {
+        cvkey pk = k;
         const unsigned char * ba = bitarrayFor(s_pressed, &k);
         const unsigned char * pba = bitarrayFor(s_ppressed, &pk);
         return ba && !bittest(ba, k) && bittest(pba, k);
@@ -141,15 +141,15 @@ const char * evName(const ev * e) {
         const char * n;
         static char buf[32];
         switch (evType(e)) {
-        default: // Falls to GSE_NONE
-#define Q(x) case GSQ_##x: n = #x; break;
-#include "gsqueries.h"
+        default: // Falls to CVE_NONE
+#define Q(x) case CVQ_##x: n = #x; break;
+#include "cvqueries.h"
 #undef Q
-#define C(x) case GSE_##x: n = #x; break;
-#include "gsevents.h"
+#define C(x) case CVE_##x: n = #x; break;
+#include "cvevents.h"
 #undef C
         }
-        mysnprintf(buf, sizeof(buf), "GSE_%s", n);
+        mysnprintf(buf, sizeof(buf), "CVE_%s", n);
         return buf;
 }
 
@@ -169,7 +169,7 @@ int evHeight(const ev * e) {
         return evArg1(e);
 }
 
-gskey evWhich(const ev * e) {
+cvkey evWhich(const ev * e) {
         return evArg0(e);
 }
 
@@ -197,12 +197,12 @@ const char * evMethod(const ev * e) {
         return (char*)evArg0(e);
 }
 
-const char * keyName(gskey k) {
+const char * keyName(cvkey k) {
         const char * n = 0;
         static char buf[32];
         switch (k) {
-#define K(x) case GSK_##x: n = #x; break;
-#include "gskeys.h"
+#define K(x) case CVK_##x: n = #x; break;
+#include "cvkeys.h"
 #undef K
         default: n = 0; break;
         }
@@ -232,7 +232,7 @@ static void defaultlog(const char * name, const char * s) {
         }
 }
 
-intptr_t gsInject(gseventtype type, intptr_t p1, intptr_t p2) {
+intptr_t cvInject(cveventtype type, intptr_t p1, intptr_t p2) {
         extern intptr_t osEvent(ev *);
         ev e;
         intptr_t ret;
@@ -240,18 +240,18 @@ intptr_t gsInject(gseventtype type, intptr_t p1, intptr_t p2) {
         e.p[0] = p1;
         e.p[1] = p2;
         switch (evType(&e)) {   
-        case GSE_RESIZE:
+        case CVE_RESIZE:
                 s_w = evWidth(&e);
                 s_h = evHeight(&e);
                 break;
-        case GSE_MOTION:
+        case CVE_MOTION:
                 s_mx = evX(&e);
                 s_my = evY(&e);
                 break;
-        case GSE_DOWN:
+        case CVE_DOWN:
                 press(evWhich(&e));
                 break;
-        case GSE_UP:
+        case CVE_UP:
                 release(evWhich(&e));
                 break;
         };
@@ -260,49 +260,49 @@ intptr_t gsInject(gseventtype type, intptr_t p1, intptr_t p2) {
                 ret = osEvent(&e);
         if (!ret) 
                 switch (evType(&e)) {
-                case GSQ_NAME:
+                case CVQ_NAME:
                         ret = (intptr_t)"Unknown"; 
                         break;
-                case GSQ_LOGGER:
+                case CVQ_LOGGER:
                         ret = (intptr_t)defaultlog;
                         break;
-                case GSQ_XPOS:
-                case GSQ_YPOS:
+                case CVQ_XPOS:
+                case CVQ_YPOS:
                         ret = 0;
                         break;
-                case GSQ_WIDTH:
-                case GSQ_HEIGHT:
+                case CVQ_WIDTH:
+                case CVQ_HEIGHT:
                         ret = -1;
                         break;
-                case GSE_DOWN:
-                        if (evWhich(&e) == GSK_ESCAPE)
-                                gsQuit();
+                case CVE_DOWN:
+                        if (evWhich(&e) == CVK_ESCAPE)
+                                cvQuit();
                         break;
-                case GSE_CLOSE:
-                        gsQuit();
+                case CVE_CLOSE:
+                        cvQuit();
                         break;
                 }
         return ret;
 }
 
-void gsReport(const char * fmt, ...) {
+void cvReport(const char * fmt, ...) {
         va_list ap;
         va_start(ap, fmt);
-        gsReportV(fmt, ap);
+        cvReportV(fmt, ap);
         va_end(ap);
 }
 
 
 typedef void (*logger_t)(const char *, const char *);
 
-void gsReportV(const char *fmt, va_list ap) {
+void cvReportV(const char *fmt, va_list ap) {
         static logger_t logger = 0;
         static const char * name = 0;
         int good = logger != (logger_t)1;
         if (!logger && good) {
                 logger = (logger_t)1;
-                name = (const char *)gsInject(GSQ_NAME, 0, 0);
-                logger = (logger_t)gsInject(GSQ_LOGGER, 0, 0);
+                name = (const char *)cvInject(CVQ_NAME, 0, 0);
+                logger = (logger_t)cvInject(CVQ_LOGGER, 0, 0);
         }
         if (good) {
                 char b[1024];
@@ -313,8 +313,8 @@ void gsReportV(const char *fmt, va_list ap) {
         }
 }
 
-void gsQuit() {
-        gsInject(GSE_QUIT, 0, 0);
+void cvQuit() {
+        cvInject(CVE_QUIT, 0, 0);
 }
 
 /* 
