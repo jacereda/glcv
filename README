@@ -346,6 +346,7 @@ on some platforms.
 Return the desired width. Note that this is a hint and can be ignored
 on some platforms. Your code should use the width reported via
 CVE_RESIZE or ask explicitly with cvWidth().
+If this query isn't handled, the window will cover the whole desktop.
 
 3.3.6 CVQ_HEIGHT 
 ~~~~~~~~~~~~~~~~~
