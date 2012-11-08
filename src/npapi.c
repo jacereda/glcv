@@ -132,6 +132,7 @@ static NPError setwindow(NPP i, NPWindow* w) {
 
 static NPError destroy(NPP i, NPSavedData **save) {
         debug("destroy");
+        cvInject(CVE_GLTERM, 0, 0);
         cvInject(CVE_CLOSE, 0, 0);
         cvInject(CVE_TERM, 0, 0);
         osterm();

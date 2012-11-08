@@ -272,6 +272,7 @@ int cvrun(int argc, char ** argv) {
         int ret = 42;
         if (cvInject(CVE_INIT, argc, (intptr_t)argv)) {
                 UIApplicationMain(argc, argv, nil, @"Delegate");
+                cvInject(CVE_GLINIT, 0, 0);
                 ret = cvInject(CVE_TERM, 0, 0);
         }
         [pool release];

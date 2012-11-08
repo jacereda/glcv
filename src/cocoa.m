@@ -395,6 +395,7 @@ int cvrun(int argc, char ** argv) {
                 [ctx flushBuffer];
         } while (!g_done);
         arp = [[NSAutoreleasePool alloc] init];
+        cvInject(CVE_GLTERM, 0, 0);
         [ctx clearDrawable];
         [ctx release];
         [win makeKeyAndOrderFront: nil];

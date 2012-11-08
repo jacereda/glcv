@@ -243,6 +243,7 @@ void android_main(struct android_app* app) {
         if (app->destroyRequested) 
                 cvInject(CVE_CLOSE, 0, 0);
         dbg("terminated");
+        cvInject(CVE_GLTERM, 0, 0);
         if (!eglMakeCurrent(dpy, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT))
                 err("clearing current");
         if (!eglDestroyContext(dpy, ctx))

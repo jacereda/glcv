@@ -245,7 +245,6 @@ static int onMOUSEMOVE(HWND win, int x, int y, UINT flacv ) {
 
 static int onSIZE(HWND win, UINT state, int w, int h) {
         cvInject(CVE_RESIZE, w, h);
-        cvInject(CVE_GLINIT, 0, 0);
         return 1;
 }
 
@@ -389,6 +388,7 @@ int cvrun(int argc, char ** argv) {
         ctx = wglCreateContext(dc);
         cvInject(CVE_INIT, 1, (intptr_t)argv);
         wglMakeCurrent(dc, ctx);        
+        cvInject(CVE_GLINIT, 0, 0);
         ((int(*)(int))wglGetProcAddress("wglSwapIntervalEXT"))(1);
         SetCursor(0);
         ShowWindow(win, full? SW_MAXIMIZE : SW_SHOWNORMAL);
@@ -401,6 +401,7 @@ int cvrun(int argc, char ** argv) {
                 InvalidateRect(win, 0, 0);
                 UpdateWindow(win);
         }
+        cvInject(CVE_GLTERM, 0, 0);
         ReleaseDC(win, dc);
         return cvInject(CVE_TERM, 0, 0);
 }

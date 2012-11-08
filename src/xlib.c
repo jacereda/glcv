@@ -177,7 +177,6 @@ static void handle(Display * dpy, Window win, XIC xic, XEvent * e) {
                 break;
         case ConfigureNotify:
                 cvInject(CVE_RESIZE, e->xconfigure.width, e->xconfigure.height);
-                cvInject(CVE_GLINIT, 0, 0);
                 break;
         case ButtonPress:
                 cvInject(CVE_DOWN, mapButton(e->xbutton.button), 0);
@@ -283,6 +282,7 @@ int cvrun(int argc, char ** argv) {
         XMapWindow(dpy, win);
         XUndefineCursor(dpy, win);
         glXMakeCurrent(dpy, win, ctx);
+        cvInject(CVE_GLINIT, 0, 0);
         ((int(*)(int))glXGetProcAddress((GLubyte*)"glXSwapIntervalSGI"))(1);
         while (!g_done) {
                 XEvent e;
@@ -292,6 +292,7 @@ int cvrun(int argc, char ** argv) {
                 glXSwapBuffers(dpy, win);
                 cvInject(CVE_UPDATE, 0, 0);
         }
+        cvInject(CVE_GLTERM, 0, 0);
         glXMakeCurrent(dpy, 0, 0);
         XDestroyIC(xic);
         XUnmapWindow(dpy, win);
