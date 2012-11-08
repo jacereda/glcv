@@ -239,7 +239,7 @@ intptr_t cvInject(cveventtype type, intptr_t p1, intptr_t p2) {
         e.type = type;
         e.p[0] = p1;
         e.p[1] = p2;
-        switch (evType(&e)) {   
+        switch (type) {
         case CVE_RESIZE:
                 s_w = evWidth(&e);
                 s_h = evHeight(&e);
@@ -254,8 +254,11 @@ intptr_t cvInject(cveventtype type, intptr_t p1, intptr_t p2) {
         case CVE_UP:
                 release(evWhich(&e));
                 break;
-        };
+        default: break;
+        }
         ret = event(&e);
+        if (type == CVE_UPDATE)
+                memcpy(s_ppressed, s_pressed, sizeof(s_pressed));
         if (!ret)
                 ret = osEvent(&e);
         if (!ret) 
@@ -281,6 +284,7 @@ intptr_t cvInject(cveventtype type, intptr_t p1, intptr_t p2) {
                 case CVE_CLOSE:
                         cvQuit();
                         break;
+                default: break;
                 }
         return ret;
 }

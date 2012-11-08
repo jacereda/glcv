@@ -53,6 +53,10 @@ static void update() {
         glClearColor(((2*i) & 0xff) / 255.0f, 0.f, 1.f, (i & 0xff) / 255.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glFlush();
+        if (cvPressed(CVK_A))
+                cvReport("A pressed");
+        if (cvReleased(CVK_A))
+                cvReport("A released");
 }
 
 intptr_t event(const ev * e) {
