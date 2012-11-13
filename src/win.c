@@ -366,6 +366,7 @@ int cvrun(int argc, char ** argv) {
         wc.hInstance = mod;
         wc.lpszClassName = name;
         RegisterClassW(&wc);
+        cvInject(CVE_INIT, 1, (intptr_t)argv);
         r.left = cvInject(CVQ_XPOS, 0, 0);
         r.top = cvInject(CVQ_YPOS, 0, 0);
         r.right = cvInject(CVQ_WIDTH, 0, 0);
@@ -386,7 +387,6 @@ int cvrun(int argc, char ** argv) {
         dc = GetDC(win);
         SetPixelFormat(dc, ChoosePixelFormat(dc, &pfd), &pfd); 
         ctx = wglCreateContext(dc);
-        cvInject(CVE_INIT, 1, (intptr_t)argv);
         wglMakeCurrent(dc, ctx);        
         cvInject(CVE_GLINIT, 0, 0);
         ((int(*)(int))wglGetProcAddress("wglSwapIntervalEXT"))(1);

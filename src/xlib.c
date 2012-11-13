@@ -240,6 +240,7 @@ int cvrun(int argc, char ** argv) {
         swa.event_mask = EVMASK;
         swamask = CWEventMask;
         scr = XDefaultScreen(dpy);
+        cvInject(CVE_INIT, 0, 0);
         hints.x = cvInject(CVQ_XPOS, 0, 0);
         hints.y = cvInject(CVQ_YPOS, 0, 0);
         hints.width = cvInject(CVQ_WIDTH, 0, 0);
@@ -282,8 +283,8 @@ int cvrun(int argc, char ** argv) {
         XMapWindow(dpy, win);
         XUndefineCursor(dpy, win);
         glXMakeCurrent(dpy, win, ctx);
-        cvInject(CVE_GLINIT, 0, 0);
         ((int(*)(int))glXGetProcAddress((GLubyte*)"glXSwapIntervalSGI"))(1);
+        cvInject(CVE_GLINIT, 0, 0);
         while (!g_done) {
                 XEvent e;
                 if (XCheckWindowEvent(dpy, win, EVMASK, &e)

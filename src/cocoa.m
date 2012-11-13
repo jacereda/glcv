@@ -348,6 +348,7 @@ int cvrun(int argc, char ** argv) {
 
         scrs = [NSScreen screens];
         scr = [scrs objectAtIndex: 0];
+        cvInject(CVE_INIT, argc, (intptr_t)argv);
         rect.origin.x = cvInject(CVQ_XPOS, 0, 0);
         rect.origin.y = cvInject(CVQ_YPOS, 0, 0);
         rect.size.width = cvInject(CVQ_WIDTH, 0, 0);
@@ -375,7 +376,6 @@ int cvrun(int argc, char ** argv) {
         [fmt release];
         [ctx setView: view];
         [ctx setValues: &param forParameter: NSOpenGLCPSwapInterval];
-        cvInject(CVE_INIT, argc, (intptr_t)argv);
         [ctx makeCurrentContext];
         cvInject(CVE_GLINIT, 0, 0);
 //      [NSCursor hide];
