@@ -81,7 +81,7 @@ intptr_t event(const ev * e) {
         case CVE_MOTION: motion(evX(e), evY(e)); break;
         case CVE_CLOSE: close(); break;
         case CVE_INVOKE: invoke(evMethod(e)); break;
-        case CVE_RESIZE: resize(cvWidth(e), cvHeight(e)); break;
+        case CVE_RESIZE: resize(evWidth(e), evHeight(e)); break;
         case CVE_UPDATE: update(); break;
         default: ret = 0; break;
         }
