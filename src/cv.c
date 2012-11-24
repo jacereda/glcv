@@ -36,6 +36,11 @@
 
 extern int cvrun(int, char**);
 
+#ifdef _WIN32
+#define snprintf _snprintf
+#define vsnprintf _vsnprintf
+#endif
+
 #if defined CV_EXPLICIT_ENTRY
 intptr_t (*event)(const ev * e);
 int cvRun(intptr_t (*handler)(const ev *)) {
