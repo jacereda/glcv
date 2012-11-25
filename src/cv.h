@@ -73,8 +73,12 @@ int cvMouseX();
 int cvMouseY();
 int cvPressed(cvkey key);
 int cvReleased(cvkey key);
-int cvShowKeyboard();
-int cvHideKeyboard();
+
+void cvShowCursor();
+void cvHideCursor();
+void cvShowKeyboard();
+void cvHideKeyboard();
+
 
 void cvReportV(const char * fmt, va_list ap);
 void cvReport(const char * fmt, ...);

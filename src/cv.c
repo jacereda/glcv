@@ -326,6 +326,22 @@ void cvQuit() {
         cvInject(CVE_QUIT, 0, 0);
 }
 
+void cvShowCursor() {
+        cvInject(CVE_SHOWCURSOR, 0, 0);
+}
+
+void cvHideCursor() {
+        cvInject(CVE_HIDECURSOR, 0, 0);
+}
+
+void cvShowKeyboard() {
+        cvInject(CVE_SHOWKEYBOARD, 0, 0);
+}
+
+void cvHideKeyboard() {
+        cvInject(CVE_HIDEKEYBOARD, 0, 0);
+}
+
 /* 
    Local variables: **
    c-file-style: "bsd" **

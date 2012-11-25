@@ -239,14 +239,6 @@ EXPORTED NPError OSCALL NP_GetValue(
         return getvalue(npp, variable, val);
 }
 
-int cvShowKeyboard() {
-        return 1;
-}
-
-int cvHideKeyboard() {
-        return 1;
-}
-
 /* 
    Local variables: **
    c-file-style: "bsd" **

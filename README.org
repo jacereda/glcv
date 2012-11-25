@@ -111,13 +111,21 @@ int cvReleased(cvkey key);
 #+end_src
 True if key has just been released
 #+begin_src c
-int cvShowKeyboard();
+void cvShowKeyboard();
 #+end_src
 On platforms that support it, show the on-screen keyboard
 #+begin_src c
-int cvHideKeyboard();
+void cvHideKeyboard();
 #+end_src
 On platforms that support it, hide the on-screen keyboard
+#+begin_src c
+void cvShowCursor();
+#+end_src
+On platforms that support it, show the mouse cursor.
+#+begin_src c
+void cvHideCursor();
+#+end_src
+On platforms that support it, hide the mouse cursor.
 *** Logging
 #+begin_src c
 void cvReportV(const char * fmt, va_list ap);

@@ -13,11 +13,14 @@
 #define err cvReport
 
 static int g_done = 0;
+static int g_shown = 1;
 
 intptr_t osEvent(ev * e) {
         intptr_t ret = 1;
         switch (evType(e)) {
         case CVE_QUIT: g_done = 1; break;               
+        case CVE_HIDECURSOR: if (g_shown) ShowCursor(0); g_shown = 0; break;
+        case CVE_SHOWCURSOR: if (!g_shown) ShowCursor(1); g_shown = 1; break;
         default: ret = 0;
         }
         return ret;
@@ -275,10 +278,10 @@ static int onPAINT(HWND win) {
         return 1;
 }
 
-static int onSETCURSOR(HWND win, HWND cur, UINT l, UINT h) {
-        SetCursor(0);
-        return 1;
-}
+//static int onSETCURSOR(HWND win, HWND cur, UINT l, UINT h) {
+//        SetCursor(0);
+//        return 1;
+//}
 
 static int onMOUSEWHEEL(HWND win, int x, int y, int z, UINT keys) {
         int which = z >= 0? CVK_MOUSEWHEELUP : CVK_MOUSEWHEELDOWN;
@@ -307,7 +310,7 @@ static LRESULT WINAPI handle(HWND win, UINT msg, WPARAM w, LPARAM l)  {
                 HANDLE(MBUTTONUP);
                 HANDLE(MOUSEWHEEL);
                 HANDLE(PAINT);
-                HANDLE(SETCURSOR);
+//                HANDLE(SETCURSOR);
 #undef HANDLE
         default: r = 0;
         }
@@ -390,7 +393,6 @@ int cvrun(int argc, char ** argv) {
         wglMakeCurrent(dc, ctx);        
         cvInject(CVE_GLINIT, 0, 0);
         ((int(*)(int))wglGetProcAddress("wglSwapIntervalEXT"))(1);
-        SetCursor(0);
         ShowWindow(win, full? SW_MAXIMIZE : SW_SHOWNORMAL);
         while (!g_done) {
                 MSG msg;
