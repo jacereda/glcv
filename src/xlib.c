@@ -1,27 +1,178 @@
 #include "cv.c"
 #include <GL/glx.h>
 #include <X11/keysym.h>
+#include <X11/Xcursor/Xcursor.h>
 
 static int g_done = 0;
-
 static Display * g_dpy;
-static Window g_win;
-
-intptr_t osEvent(ev * e) {
-        intptr_t ret = 1;
-        switch (evType(e)) {
-        case CVE_QUIT: g_done = 1; break;               
-        case CVE_HIDECURSOR: XUndefineCursor(g_dpy, g_win); break;
-        case CVE_SHOWCURSOR: break; // XXX
-        default: ret = 0;
-        }
-        return ret;
-}
+static Window g_win = 0;
+static XIM g_xim;
+static XIC g_xic;
+static GLXContext g_ctx;
+static Cursor g_cursor;
+static int g_nx, g_ny;
+static unsigned g_nw, g_nh;
 
 #define EVMASK  KeyPressMask | KeyReleaseMask | \
         ButtonPressMask | ButtonReleaseMask |   \
         PointerMotionMask | StructureNotifyMask
 
+static int scr() {
+        return XDefaultScreen(g_dpy);
+}
+
+static void borders(int show) {
+        Atom hatom = XInternAtom(g_dpy, "_MOTIF_WM_HINTS", 1);
+        long flags[5];
+        flags[0] = 2; //MWM_HINTS_DECORATIONS
+        flags[2] = show;
+        flags[1] = flags[3] = flags[4] = 0;
+        XChangeProperty(g_dpy, g_win, hatom, hatom, 
+                        32, PropModeReplace,
+                        (unsigned char*)flags, sizeof(flags) / 4);
+        XFlush(g_dpy);
+}
+
+static void openwin(int x, int y, unsigned w, unsigned h, int b) {
+        XSizeHints hints;
+        XSetWindowAttributes swa; 
+        unsigned long swamask;
+        Atom datom;
+        swa.event_mask = EVMASK;
+        swamask = CWEventMask;
+        hints.x = x;
+        hints.y = y;
+        hints.width = w;
+        hints.height = h;
+        assert(!g_win);
+        g_win = XCreateWindow(g_dpy, XRootWindow(g_dpy, scr()),
+                            hints.x, hints.y, hints.width, hints.height,
+                            0, CopyFromParent,
+                            InputOutput, 
+                            CopyFromParent,
+                            swamask, &swa);
+        borders(b);
+        hints.flags = USSize | USPosition;
+        XSetWMNormalHints(g_dpy, g_win, &hints);
+        datom = XInternAtom(g_dpy, "WM_DELETE_WINDOW", False);
+        XSetWMProtocols(g_dpy, g_win, &datom, 1);
+        XSelectInput(g_dpy, g_win, EVMASK);
+        g_xic = XCreateIC(g_xim,
+                        XNInputStyle, XIMPreeditNothing | XIMStatusNothing,
+                        XNClientWindow, g_win,
+                        XNFocusWindow, g_win,
+                        NULL);
+}
+
+static void unmap() {
+        glXMakeCurrent(g_dpy, 0, 0);
+        XUnmapWindow(g_dpy, g_win);
+}
+
+
+static void closewin() {
+        unmap();
+        XDestroyIC(g_xic); g_xic = 0;
+        XDestroyWindow(g_dpy, g_win); g_win = 0;
+}
+
+static void map() {
+        XMapWindow(g_dpy, g_win);
+        glXMakeCurrent(g_dpy, g_win, g_ctx);
+}
+
+static void savegeom() {
+        Window root;
+        Window child;
+        int nx, ny;
+        unsigned border;
+        unsigned depth;
+        XGetGeometry(g_dpy, g_win, &root, 
+                     &nx, &ny, &g_nw, &g_nh, 
+                     &border, &depth);
+        XTranslateCoordinates(g_dpy, g_win, root,
+                              -nx, -ny, &g_nx, &g_ny, &child);
+}
+
+static void defaultcursor() {
+        XUndefineCursor(g_dpy, g_win);
+        if (g_cursor)
+                XFreeCursor(g_dpy, g_cursor);
+        g_cursor = 0;
+}
+
+static void setcursor(uint8_t * rgba, int16_t hotx, int16_t hoty) {
+        XcursorImage * ci = XcursorImageCreate(32, 32);
+        unsigned i;
+        uint32_t * dst = (uint32_t*)ci->pixels;
+        defaultcursor();
+        ci->xhot = hotx;
+        ci->yhot = hoty;
+        for (i = 0; i < 32*32; i++)
+                dst[i] = 0
+                        + (rgba[i*4+3] << 24)
+                        + (rgba[i*4+0] << 16)
+                        + (rgba[i*4+1] << 8)
+                        + (rgba[i*4+2] << 0)
+                        ;
+        g_cursor = XcursorImageLoadCursor(g_dpy, ci);
+        XDefineCursor(g_dpy, g_win, g_cursor);
+        XcursorImageDestroy(ci);
+}
+
+intptr_t osEvent(ev * e) {
+        intptr_t ret = 1;
+        static int fullscreen = 0;
+        switch (evType(e)) {
+        case CVE_QUIT: g_done = 1; break;               
+        case CVE_SETCURSOR: 
+                setcursor((uint8_t*)evArg0(e), 
+                        evArg1(e) >> 16, evArg1(e) & 0xffff); 
+                break;
+        case CVE_DEFAULTCURSOR: defaultcursor(); break;
+        case CVE_WINDOWED:
+                if (fullscreen) {
+                        closewin();
+                        openwin(g_nx, g_ny, g_nw, g_nh, 1);
+                        map();
+                        fullscreen = 0;
+                }
+                break;
+        case CVE_FULLSCREEN: 
+                if (!fullscreen) {
+                        savegeom();
+                        closewin();
+                        openwin(0, 0, 
+                                DisplayWidth(g_dpy, scr()), 
+                                DisplayHeight(g_dpy, scr()), 0);
+                        map();
+                        fullscreen = 1;
+                }
+                break;
+        default: ret = 0;
+        }
+        return ret;
+}
+
+#ifdef __APPLE__
+static cvkey mapkeycode(unsigned k) {
+        cvkey ret;
+        switch (k) {
+        case 61: ret = CVK_ESCAPE; break;
+        case 9: ret = CVK_S; break;
+        case 11: ret = CVK_F; break;
+        case 12: ret = CVK_H; break;
+        case 16: ret = CVK_C; break;
+        case 21: ret = CVK_W; break;
+        case 53: ret = CVK_N; break;
+        default: 
+                printf("%d\n", k);
+                ret = CVK_NONE;
+        }
+        return ret;
+}
+
+#else
 cvkey mapkeycode(unsigned k) {
         cvkey ret;
         switch (k) {
@@ -153,6 +304,7 @@ case XK_Help: ret = CVK_HELP; break;
         }
         return ret;
 }
+#endif
 
 static int mapButton(int button) {
         int which;
@@ -221,15 +373,6 @@ static void handle(Display * dpy, Window win, XIC xic, XEvent * e) {
 }
 
 int cvrun(int argc, char ** argv) {
-        Display * dpy;
-        Window win;
-        int scr;
-        GLXContext ctx;
-        XIM xim;
-        XIC xic;
-        XSetWindowAttributes swa; 
-        unsigned long swamask;
-        Atom datom;
         int attr[] = {
                 GLX_RGBA,
                 GLX_DOUBLEBUFFER,
@@ -239,74 +382,33 @@ int cvrun(int argc, char ** argv) {
                 GLX_DEPTH_SIZE, 1,
                 None};
         XVisualInfo * vi;
-        XSizeHints hints;
-        dpy = XOpenDisplay(0);
-        xim = XOpenIM(dpy, 0, 0, 0);
-        swa.event_mask = EVMASK;
-        swamask = CWEventMask;
-        scr = XDefaultScreen(dpy);
+        g_dpy = XOpenDisplay(0);
+        g_xim = XOpenIM(g_dpy, 0, 0, 0);
         cvInject(CVE_INIT, 0, 0);
-        hints.x = cvInject(CVQ_XPOS, 0, 0);
-        hints.y = cvInject(CVQ_YPOS, 0, 0);
-        hints.width = cvInject(CVQ_WIDTH, 0, 0);
-        hints.height = cvInject(CVQ_HEIGHT, 0, 0);
-        if (hints.width == -1) {
-                hints.x = 0;
-                hints.y = 0;
-                hints.width = DisplayWidth(dpy, scr);
-                hints.height = DisplayHeight(dpy, scr);
-        }
-        win = XCreateWindow(dpy, XRootWindow(dpy, scr),
-                            hints.x, hints.y, hints.width, hints.height,
-                            0, CopyFromParent,
-                            InputOutput, 
-                            CopyFromParent,
-                            swamask, &swa);
-        g_dpy = dpy;
-        g_win = win;
-        hints.flags = USSize | USPosition;
-        XSetWMNormalHints(dpy, win, &hints);
-        if (!cvInject(CVQ_BORDERS, 0, 0)) {
-                Atom hatom = XInternAtom(dpy, "_MOTIF_WM_HINTS", 1);
-                long flags[5] = {0};
-                //mwm.flags = MWM_HINTS_DECORATIONS;
-                flags[0] = 2; flags[1] = 0; flags[2] = 0;
-                flags[3] = 0; flags[4] = 0;
-                XChangeProperty(dpy, win, hatom, hatom, 
-                                32, PropModeReplace,
-                                (unsigned char*)flags, sizeof(flags) / 4);
-        }
-        datom = XInternAtom(dpy, "WM_DELETE_WINDOW", False);
-        XSetWMProtocols(dpy, win, &datom, 1);
-        XSelectInput(dpy, win, EVMASK);
-        xic = XCreateIC(xim,
-                        XNInputStyle, XIMPreeditNothing | XIMStatusNothing,
-                        XNClientWindow, win,
-                        XNFocusWindow, win,
-                        NULL);
-        vi = glXChooseVisual(dpy, scr, attr);
-        ctx = glXCreateContext(dpy, vi, 0, True);
+        openwin(cvInject(CVQ_XPOS, 0, 0),
+                cvInject(CVQ_XPOS, 0, 0),
+                cvInject(CVQ_WIDTH, 0, 0),
+                cvInject(CVQ_HEIGHT, 0, 0), 1);
+        vi = glXChooseVisual(g_dpy, scr(), attr);
+        g_ctx = glXCreateContext(g_dpy, vi, 0, True);
         XFree(vi);
-        XMapWindow(dpy, win);
-        glXMakeCurrent(dpy, win, ctx);
+
+        map();
         ((int(*)(int))glXGetProcAddress((GLubyte*)"glXSwapIntervalSGI"))(1);
         cvInject(CVE_GLINIT, 0, 0);
         while (!g_done) {
                 XEvent e;
-                if (XCheckWindowEvent(dpy, win, EVMASK, &e)
-                    || XCheckTypedWindowEvent(dpy, win, ClientMessage, &e))
-                        handle(dpy, win, xic, &e);
-                glXSwapBuffers(dpy, win);
+                if (XCheckWindowEvent(g_dpy, g_win, EVMASK, &e)
+                    || XCheckTypedWindowEvent(g_dpy, g_win, ClientMessage, &e))
+                        handle(g_dpy, g_win, g_xic, &e);
+                glXSwapBuffers(g_dpy, g_win);
                 cvInject(CVE_UPDATE, 0, 0);
         }
         cvInject(CVE_GLTERM, 0, 0);
-        glXMakeCurrent(dpy, 0, 0);
-        XDestroyIC(xic);
-        XUnmapWindow(dpy, win);
-        glXDestroyContext(dpy, ctx);
-        XDestroyWindow(dpy, win);
-        XCloseIM(xim);
-        XCloseDisplay(dpy);
+                closewin();
+                glXDestroyContext(g_dpy, g_ctx);
+        XCloseIM(g_xim);
+        XCloseDisplay(g_dpy);
         return cvInject(CVE_TERM, 0, 0);
 }
 

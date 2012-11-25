@@ -13,21 +13,40 @@ static void glinit() {
         cvReport("glinit");
 }
 
-static void down(cvkey k) {
+static int down(cvkey k) {
+        int handled = 0;;
         cvReport("down %s", keyName(k));
-        if (k == CVK_MOUSELEFT && cvMouseY() < 10) 
-                cvShowKeyboard();
+        switch (k) {
+        case CVK_MOUSELEFT:
+                if (cvMouseY() < 10)
+                        cvShowKeyboard();
+        default:
+                handled = 0;
+        }
+        return handled;
 }
 
-static void up(cvkey k) {
+static uint8_t cur[32*32*4] = {
+        0xff,0x00,0x00,0xff, 
+        0x00,0xff,0x00,0xff, 
+        0x00,0x00,0xff,0xff, 
+        0xff,0xff,0xff,0xff,
+};
+
+static int up(cvkey k) {
+        int handled = 0;
         cvReport("up %s", keyName(k));
         switch (k) {
         case CVK_ESCAPE: cvQuit(); break;
         case CVK_H: cvHideCursor(); break;
-        case CVK_S: cvShowCursor(); break;
-        case CVK_RETURN: cvHideKeyboard(); break;
-        default: break;
+        case CVK_S: cvDefaultCursor(); break;
+        case CVK_F: cvFullscreen(); break;
+        case CVK_C: cvSetCursor(cur, 16, 16);
+        case CVK_W: cvWindowed(); break;
+//        case CVK_RETURN: cvHideKeyboard(); break;
+        default: handled = 0; break;
         }
+        return handled;
 }
 
 static void unicode(uint32_t c) {
@@ -76,12 +95,11 @@ intptr_t event(const ev * e) {
         case CVQ_YPOS: ret = 50; break;
         case CVQ_WIDTH: ret = 640; break;
         case CVQ_HEIGHT: ret = 480; break;
-        case CVQ_BORDERS: ret = 1; break;
         case CVE_INIT: init(); break;
         case CVE_TERM: term(); break;
         case CVE_GLINIT: glinit(); break;
-        case CVE_DOWN: down(evWhich(e)); break;
-        case CVE_UP: up(evWhich(e)); break;
+        case CVE_DOWN: ret = down(evWhich(e)); break;
+        case CVE_UP: ret = up(evWhich(e)); break;
         case CVE_UNICODE: unicode(evUnicode(e)); break;
         case CVE_MOTION: motion(evX(e), evY(e)); break;
         case CVE_CLOSE: close(); break;

@@ -14,13 +14,64 @@
 
 static int g_done = 0;
 static int g_shown = 1;
+static HWND g_win;
+static void delcursor() {
+        HCURSOR cur = GetCursor();
+        if (cur) 
+                DestroyIcon(cur);
+}
+
+static void setcursor(uint8_t * rgba, int hotx, int hoty) {
+        HDC dc;
+        HBITMAP bm;
+        int x, y;
+        ICONINFO ii;
+        BITMAPV5HEADER bh;
+        int w = 32;
+        int h = 32;
+        delcursor();
+        ZeroMemory(&bh, sizeof(BITMAPV5HEADER));
+        bh.bV5Size = sizeof(bh);
+        bh.bV5Width = w;
+        bh.bV5Height = -h;
+        bh.bV5Planes = 1;
+        bh.bV5BitCount = 32;
+        bh.bV5Compression = BI_RGB;
+        bh.bV5AlphaMask = 0xff000000;
+        bh.bV5BlueMask = 0x00ff0000;
+        bh.bV5GreenMask = 0x0000ff00;
+        bh.bV5RedMask = 0x000000ff;
+        dc = GetDC(0);
+        bm = CreateDIBSection(dc, (BITMAPINFO*)&bh, DIB_RGB_COLORS, (void **)&rgba, 0, 0);
+        ReleaseDC(0, dc);
+        ii.fIcon = FALSE;
+        ii.xHotspot = hotx;
+        ii.yHotspot = hoty;
+        ii.hbmColor = bm;
+        ii.hbmMask = CreateBitmap(w, h, 1, 1, NULL);
+        SetCursor(CreateIconIndirect(&ii));
+        DeleteObject(bm);
+        DeleteObject(ii.hbmMask);
+}
 
 intptr_t osEvent(ev * e) {
         intptr_t ret = 1;
         switch (evType(e)) {
         case CVE_QUIT: g_done = 1; break;               
-        case CVE_HIDECURSOR: if (g_shown) ShowCursor(0); g_shown = 0; break;
-        case CVE_SHOWCURSOR: if (!g_shown) ShowCursor(1); g_shown = 1; break;
+        case CVE_SETCURSOR: 
+                setcursor((uint8_t*)evArg0(e), 
+                          evArg1(e) >> 16, evArg1(e) & 0xffff); 
+                break;
+        case CVE_DEFAULTCURSOR: 
+                SetCursor(LoadCursor(0, IDC_ARROW));
+                break;
+        case CVE_FULLSCREEN: 
+                ShowWindow(g_win, SW_MAXIMIZE);
+                break;
+        case CVE_WINDOWED:
+                ShowWindow(g_win, SW_SHOWNORMAL);
+//                GetWindowRect(GetDesktopWindow(), &r);
+                break;
         default: ret = 0;
         }
         return ret;
@@ -316,22 +367,12 @@ static LRESULT WINAPI handle(HWND win, UINT msg, WPARAM w, LPARAM l)  {
 int cvrun(int argc, char ** argv) {
         HANDLE mod = GetModuleHandle(0);
         WNDCLASSW  wc;
-        RECT r;
         HGLRC ctx;
         HWND win;
         HDC dc;
         WCHAR name[256];
         int done = 0;
-        int full = 0;
-        int borders = cvInject(CVQ_BORDERS, 0, 0);
-        DWORD exstyle = borders? WS_EX_APPWINDOW : WS_EX_TOPMOST;
-        DWORD style = WS_CLIPSIBLINGS | WS_CLIPCHILDREN | 
-                (borders? 0
-                 | WS_OVERLAPPED
-                 | WS_CAPTION 
-                 | WS_SYSMENU 
-                 | WS_MINIMIZEBOX
-                 : WS_POPUP);
+        RECT r;
         PIXELFORMATDESCRIPTOR pfd = { 
                 sizeof(PIXELFORMATDESCRIPTOR),   // size of this pfd 
                 1,                     // version number 
@@ -352,7 +393,9 @@ int cvrun(int argc, char ** argv) {
                 0,                     // reserved 
                 0, 0, 0                // layer masks ignored 
         };
-        
+        DWORD exstyle = WS_EX_APPWINDOW;
+        DWORD style = WS_CLIPSIBLINGS | WS_CLIPCHILDREN
+                 | WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
         MultiByteToWideChar(CP_UTF8, 0, 
                             (const char *)cvInject(CVQ_NAME, 0, 0),
                             -1, name, sizeof(name));
@@ -367,28 +410,21 @@ int cvrun(int argc, char ** argv) {
         cvInject(CVE_INIT, 1, (intptr_t)argv);
         r.left = cvInject(CVQ_XPOS, 0, 0);
         r.top = cvInject(CVQ_YPOS, 0, 0);
-        r.right = cvInject(CVQ_WIDTH, 0, 0);
-        r.bottom = cvInject(CVQ_HEIGHT, 0, 0);
-        if (r.right == -1) {
-                GetWindowRect(GetDesktopWindow(), &r);
-                full = 1;
-        }
-        else {
-                r.right += r.left;
-                r.bottom += r.top;
-        }
+        r.right = r.left + cvInject(CVQ_WIDTH, 0, 0);
+        r.bottom = r.top + cvInject(CVQ_HEIGHT, 0, 0);
         AdjustWindowRect(&r, style, FALSE);
         win = CreateWindowExW(exstyle, name, name, style, 
                               r.left, r.top,
                               r.right - r.left, r.bottom - r.top,
                               0, 0, mod, 0);
+        g_win = win;
         dc = GetDC(win);
         SetPixelFormat(dc, ChoosePixelFormat(dc, &pfd), &pfd); 
         ctx = wglCreateContext(dc);
         wglMakeCurrent(dc, ctx);        
         cvInject(CVE_GLINIT, 0, 0);
         ((int(*)(int))wglGetProcAddress("wglSwapIntervalEXT"))(1);
-        ShowWindow(win, full? SW_MAXIMIZE : SW_SHOWNORMAL);
+        ShowWindow(win, SW_SHOWNORMAL);
         while (!g_done) {
                 MSG msg;
                 if (PeekMessageW(&msg, 0, 0, 0, PM_REMOVE)) {

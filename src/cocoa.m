@@ -6,6 +6,7 @@
 #include <AppKit/NSEvent.h>
 #include <AppKit/NSOpenGL.h>
 #include <AppKit/NSTextView.h>
+#include <AppKit/NSImage.h>
 #undef evType
 
 #include <Carbon/Carbon.h> // For keycodes
@@ -15,12 +16,82 @@ static int g_done = 0;
 #define dbg cvReport
 #define err cvReport
 
+#define WINDOWED_MASK NSTitledWindowMask | NSClosableWindowMask |\
+        NSMiniaturizableWindowMask | NSResizableWindowMask
+#define FULLSCREEN_MASK NSBorderlessWindowMask
+
+
+@interface Window : NSWindow {
+}
+@end 
+
+@interface View : NSTextView<NSWindowDelegate> {
+        unsigned _prevflags;
+}
+- (NSPoint)toAbs: (NSPoint)p;
+@end
+
+
+static Window * g_win;
+static View * g_view;
+static NSRect g_rect;
+
+static void setWindowMode(int style, NSRect rect) {
+        [g_win setStyleMask: style];
+        [g_win setFrame: rect display: TRUE];
+        [g_win setLevel: style == FULLSCREEN_MASK?
+               NSPopUpMenuWindowLevel : NSNormalWindowLevel];
+        [g_win makeFirstResponder: g_view];
+}
+
+static void setcursor(uint8_t * rgba, int16_t hotx, int16_t hoty) {
+        NSBitmapImageRep * b;
+        NSImage * img;
+        NSCursor * cur;
+        b = [[NSBitmapImageRep alloc]
+                             initWithBitmapDataPlanes: &rgba
+                                           pixelsWide: 32
+                                           pixelsHigh: 32
+                                        bitsPerSample: 8
+                                      samplesPerPixel: 4
+                                             hasAlpha: YES
+                                             isPlanar: NO
+                                       colorSpaceName: NSDeviceRGBColorSpace
+                                          bytesPerRow: 32*4
+                                         bitsPerPixel: 32];
+        img = [[NSImage alloc] initWithSize: NSMakeSize(32, 32)];
+        [img addRepresentation: b];
+        [b release];
+        cur = [[NSCursor alloc] initWithImage: img 
+                                      hotSpot: NSMakePoint(hotx, hoty)];
+        [img release];
+        [cur set];
+}
+
 intptr_t osEvent(ev * e) {
+        static int fullscreen = 0;
         intptr_t ret = 1;
         switch (evType(e)) {
         case CVE_QUIT: g_done = 1; break;
-        case CVE_SHOWCURSOR: [NSCursor unhide]; break;
-        case CVE_HIDECURSOR: [NSCursor hide]; break;
+        case CVE_SETCURSOR: 
+                setcursor((uint8_t*)evArg0(e), 
+                          evArg1(e) >> 16, evArg1(e) & 0xffff); 
+                break;
+        case CVE_DEFAULTCURSOR: [[NSCursor arrowCursor] set]; break;
+        case CVE_FULLSCREEN:
+                if (!fullscreen) {
+                        g_rect = [g_win frame];
+                        setWindowMode(FULLSCREEN_MASK, 
+                                      [[[NSScreen screens] objectAtIndex: 0] frame]);
+                        fullscreen = 1;
+                }
+                break;
+        case CVE_WINDOWED: 
+                if (fullscreen) {
+                        setWindowMode(WINDOWED_MASK, g_rect);
+                        fullscreen = 0;
+                }
+                break;
         default: ret = 0;
         }
         return ret;
@@ -145,16 +216,6 @@ static cvkey mapkeycode(unsigned k) {
         }
         return ret;
 }
-
-@interface Window : NSWindow {
-}
-@end 
-
-@interface View : NSTextView<NSWindowDelegate> {
-        unsigned _prevflags;
-}
-- (NSPoint)toAbs: (NSPoint)p;
-@end
 
 @implementation View
 
@@ -318,13 +379,7 @@ int cvrun(int argc, char ** argv) {
         NSScreen * scr;
         NSRect frm;
         View * view;
-        int style = cvInject(CVQ_BORDERS, 0, 0)? 
-                0 
-                | NSTitledWindowMask
-                | NSClosableWindowMask
-                | NSMiniaturizableWindowMask 
-                | NSResizableWindowMask
-                : NSBorderlessWindowMask;
+        int style = WINDOWED_MASK;
         GLint param = 1;
         NSOpenGLContext *ctx = 0;
         CGDirectDisplayID dpy = kCGDirectMainDisplay;
@@ -357,8 +412,6 @@ int cvrun(int argc, char ** argv) {
         rect.size.height = cvInject(CVQ_HEIGHT, 0, 0);
         rect.origin.y = [scr frame].size.height - 1 - 
                 rect.origin.y - rect.size.height;
-        if (rect.size.width == -1)
-                rect = [scr frame];
         win = [[Window alloc] initWithContentRect: rect
                                         styleMask: style
                                           backing: NSBackingStoreBuffered
@@ -366,6 +419,8 @@ int cvrun(int argc, char ** argv) {
         [win setLevel: NSPopUpMenuWindowLevel];
         frm = [Window contentRectForFrameRect: [win frame] styleMask: style];
         view = [[View alloc] initWithFrame: frm];
+        g_win = win;
+        g_view = view;
         [win makeFirstResponder: view];
         [win setDelegate: view];
         [win setContentView: view];

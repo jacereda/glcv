@@ -126,6 +126,14 @@ On platforms that support it, show the mouse cursor.
 void cvHideCursor();
 #+end_src
 On platforms that support it, hide the mouse cursor.
+#+begin_src c
+void cvFullscreen();
+#+end_src
+On platforms that support it, set the window in fullscreen mode.
+#+begin_src c
+void cvWindowed();
+#+end_src
+On platforms that support it, set the window in windowed mode.
 *** Logging
 #+begin_src c
 void cvReportV(const char * fmt, va_list ap);
@@ -239,9 +247,6 @@ If this query isn't handled, the window will cover the whole desktop.
 Return the desired height. Note that this is a hint and can be ignored
 on some platforms. Your code should use the height reported via
 CVE_RESIZE or ask explicitly with cvHeight().
-*** CVQ_BORDERS
-Should the window have borders?
-
 * Examples
 ** Simple example that just draws
 #+INCLUDE: "test/simple.c" src c

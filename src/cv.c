@@ -239,6 +239,7 @@ static void defaultlog(const char * name, const char * s) {
 
 intptr_t cvInject(cveventtype type, intptr_t p1, intptr_t p2) {
         extern intptr_t osEvent(ev *);
+        static int fullscreen = 0;
         ev e;
         intptr_t ret;
         e.type = type;
@@ -283,8 +284,21 @@ intptr_t cvInject(cveventtype type, intptr_t p1, intptr_t p2) {
                         ret = -1;
                         break;
                 case CVE_DOWN:
-                        if (evWhich(&e) == CVK_ESCAPE)
-                                cvQuit();
+                        switch (evWhich(&e)) {
+                        case CVK_ESCAPE: cvQuit(); break;
+                        case CVK_RETURN: 
+                                if (cvPressed(CVK_OPTION) | cvPressed(CVK_COMMAND)) {
+                                        if (fullscreen) {
+                                                cvWindowed();
+                                                fullscreen = 0;
+                                        } else {
+                                                cvFullscreen();
+                                                fullscreen = 1;
+                                        }
+                                }
+                                break;
+                        default: break;
+                        }
                         break;
                 case CVE_CLOSE:
                         cvQuit();
@@ -326,12 +340,18 @@ void cvQuit() {
         cvInject(CVE_QUIT, 0, 0);
 }
 
-void cvShowCursor() {
-        cvInject(CVE_SHOWCURSOR, 0, 0);
+void cvHideCursor() {
+        uint8_t blank[32*32*4];
+        memset(blank, 0, sizeof(blank));
+        cvSetCursor(blank, 0, 0);
 }
 
-void cvHideCursor() {
-        cvInject(CVE_HIDECURSOR, 0, 0);
+void cvSetCursor(const uint8_t * rgba, int hotx, int hoty) {
+        cvInject(CVE_SETCURSOR, (intptr_t)rgba, (hotx << 16) | hoty);
+}
+
+void cvDefaultCursor() {
+        cvInject(CVE_DEFAULTCURSOR, 0, 0);
 }
 
 void cvShowKeyboard() {
@@ -340,6 +360,14 @@ void cvShowKeyboard() {
 
 void cvHideKeyboard() {
         cvInject(CVE_HIDEKEYBOARD, 0, 0);
+}
+
+void cvFullscreen() {
+        cvInject(CVE_FULLSCREEN, 0, 0);
+}
+
+void cvWindowed() {
+        cvInject(CVE_WINDOWED, 0, 0);
 }
 
 /* 
