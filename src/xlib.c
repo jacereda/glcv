@@ -4,10 +4,15 @@
 
 static int g_done = 0;
 
+static Display * g_dpy;
+static Window g_win;
+
 intptr_t osEvent(ev * e) {
         intptr_t ret = 1;
         switch (evType(e)) {
         case CVE_QUIT: g_done = 1; break;               
+        case CVE_HIDECURSOR: XUndefineCursor(g_dpy, g_win); break;
+        case CVE_SHOWCURSOR: break; // XXX
         default: ret = 0;
         }
         return ret;
@@ -257,6 +262,8 @@ int cvrun(int argc, char ** argv) {
                             InputOutput, 
                             CopyFromParent,
                             swamask, &swa);
+        g_dpy = dpy;
+        g_win = win;
         hints.flags = USSize | USPosition;
         XSetWMNormalHints(dpy, win, &hints);
         if (!cvInject(CVQ_BORDERS, 0, 0)) {
@@ -281,7 +288,6 @@ int cvrun(int argc, char ** argv) {
         ctx = glXCreateContext(dpy, vi, 0, True);
         XFree(vi);
         XMapWindow(dpy, win);
-        XUndefineCursor(dpy, win);
         glXMakeCurrent(dpy, win, ctx);
         ((int(*)(int))glXGetProcAddress((GLubyte*)"glXSwapIntervalSGI"))(1);
         cvInject(CVE_GLINIT, 0, 0);
