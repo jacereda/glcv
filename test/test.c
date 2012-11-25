@@ -15,12 +15,17 @@ static void glinit() {
 
 static void down(cvkey k) {
         cvReport("down %s", keyName(k));
+        if (k == CVK_MOUSELEFT && cvMouseY() < 10) 
+                cvShowKeyboard();
 }
 
 static void up(cvkey k) {
         cvReport("up %s", keyName(k));
         switch (k) {
         case CVK_ESCAPE: cvQuit(); break;
+        case CVK_H: cvHideCursor(); break;
+        case CVK_S: cvShowCursor(); break;
+        case CVK_RETURN: cvHideKeyboard(); break;
         default: break;
         }
 }

@@ -2,7 +2,7 @@
 #define evType evTypeC // conflicts
 #include <AppKit/NSScreen.h>
 #include <AppKit/NSWindow.h>
-//#include <AppKit/NSCursor.h>
+#include <AppKit/NSCursor.h>
 #include <AppKit/NSEvent.h>
 #include <AppKit/NSOpenGL.h>
 #include <AppKit/NSTextView.h>
@@ -19,6 +19,8 @@ intptr_t osEvent(ev * e) {
         intptr_t ret = 1;
         switch (evType(e)) {
         case CVE_QUIT: g_done = 1; break;
+        case CVE_HIDECURSOR: [NSCursor hide]; break;
+        case CVE_SHOWCURSOR: [NSCursor unhide]; break;
         default: ret = 0;
         }
         return ret;
@@ -378,7 +380,6 @@ int cvrun(int argc, char ** argv) {
         [ctx setValues: &param forParameter: NSOpenGLCPSwapInterval];
         [ctx makeCurrentContext];
         cvInject(CVE_GLINIT, 0, 0);
-//      [NSCursor hide];
         [win makeKeyAndOrderFront: view];
         cvInject(CVE_RESIZE, rect.size.width, rect.size.height);
 

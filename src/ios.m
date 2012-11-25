@@ -53,17 +53,25 @@
 }
 
 - (void) update;
+- (void) showKeyboard;
+- (void) hideKeyboard;
 @end
 
 static Delegate * s_delegate = 0;
 
-intptr_t osEvent(ev * e) {
-        return 0;
-}
-
 Delegate * getDelegate() {
         assert(s_delegate);
         return s_delegate;
+}
+
+intptr_t osEvent(ev * e) {
+        intptr_t ret = 1;
+        switch (evType(e)) {
+        case CVE_SHOWKEYBOARD: [getDelegate() showKeyboard]; break;
+        case CVE_HIDEKEYBOARD: [getDelegate() hideKeyboard]; break;
+        default: ret = 0;
+        }        
+        return ret;
 }
 
 static void fakekeyuni(unsigned key, unsigned unicode) {
@@ -256,16 +264,6 @@ shouldChangeCharactersInRange: (NSRange)range
 }
 
 @end
-
-int cvShowKeyboard() {
-        [getDelegate() showKeyboard];
-        return 1;
-}
-
-int cvHideKeyboard() {
-        [getDelegate() hideKeyboard];
-        return 1;
-}
 
 int cvrun(int argc, char ** argv) {
         NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
