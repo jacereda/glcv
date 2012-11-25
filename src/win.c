@@ -278,11 +278,6 @@ static int onPAINT(HWND win) {
         return 1;
 }
 
-//static int onSETCURSOR(HWND win, HWND cur, UINT l, UINT h) {
-//        SetCursor(0);
-//        return 1;
-//}
-
 static int onMOUSEWHEEL(HWND win, int x, int y, int z, UINT keys) {
         int which = z >= 0? CVK_MOUSEWHEELUP : CVK_MOUSEWHEELDOWN;
         cvInject(CVE_DOWN, which, 0);
@@ -310,7 +305,6 @@ static LRESULT WINAPI handle(HWND win, UINT msg, WPARAM w, LPARAM l)  {
                 HANDLE(MBUTTONUP);
                 HANDLE(MOUSEWHEEL);
                 HANDLE(PAINT);
-//                HANDLE(SETCURSOR);
 #undef HANDLE
         default: r = 0;
         }
@@ -331,13 +325,13 @@ int cvrun(int argc, char ** argv) {
         int full = 0;
         int borders = cvInject(CVQ_BORDERS, 0, 0);
         DWORD exstyle = borders? WS_EX_APPWINDOW : WS_EX_TOPMOST;
-        DWORD style = borders?
-                0
-                | WS_OVERLAPPED
-                | WS_CAPTION 
-                | WS_SYSMENU 
-                | WS_MINIMIZEBOX
-                : WS_POPUP;
+        DWORD style = WS_CLIPSIBLINGS | WS_CLIPCHILDREN | 
+                (borders? 0
+                 | WS_OVERLAPPED
+                 | WS_CAPTION 
+                 | WS_SYSMENU 
+                 | WS_MINIMIZEBOX
+                 : WS_POPUP);
         PIXELFORMATDESCRIPTOR pfd = { 
                 sizeof(PIXELFORMATDESCRIPTOR),   // size of this pfd 
                 1,                     // version number 
@@ -367,6 +361,7 @@ int cvrun(int argc, char ** argv) {
         wc.style += CS_OWNDC;
         wc.lpfnWndProc = handle;
         wc.hInstance = mod;
+        wc.hCursor = LoadCursor(0, IDC_ARROW);
         wc.lpszClassName = name;
         RegisterClassW(&wc);
         cvInject(CVE_INIT, 1, (intptr_t)argv);
