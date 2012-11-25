@@ -1,0 +1,60 @@
+#!/bin/bash
+
+root="$HOME/mingw-cross-env/usr/bin"
+common="$root/i386-mingw32msvc-gcc"
+rc="$root/i386-mingw32msvc-windres"
+ar="$root/i386-mingw32msvc-ar"
+cc="$common -D_WIN32_WINNT=0x500 -DXULRUNNER_SDK -DWIN32 -D_WINDOWS -DXP_WIN32 -DMOZILLA_STRICT_API -DXPCOM_GLUE -DXP_WIN -D_X86_ -DNPSIMPLE_EXPORTS -Wall"
+
+log() {
+    echo $* 1>&2
+}
+
+builddir() {
+    echo "b"
+}
+
+pkgdir() {
+    echo `builddir`/$1.plugin
+}
+
+condir() {
+    echo `pkgdir $1`
+}
+
+resdir() {
+    echo `condir $1`
+}
+
+bindir() {
+    echo `condir $1`
+}
+
+obj() {
+    log "compiling $*"
+    dst=`builddir`/$1.o
+    shift
+    $cc -c -I src -o $dst $*
+    echo $dst
+}
+
+plg() {
+    log "linking $*"
+    name=$1
+    dst=`builddir`/np$name.dll
+    shift
+    obj=$1
+    shift
+    sed s/NAME/$name/g templates/npapi/webtemplate.rc > `builddir`/$name.rc
+    $rc -Ocoff -i `builddir`/$name.rc -o `builddir`/$name.res -I templates/npapi
+    $cc -shared -o $dst $obj -L `builddir` $* `builddir`/$name.res -lopengl32 -lgdi32 -lglu32 -luser32 -limm32 -lshell32
+    echo $dst
+}
+
+
+rm -fR `builddir`
+install -d `builddir`
+cvobj="`obj npapint src/npapint.c`"
+testobj=`obj test test/test.c`
+testplg=`plg testplugin $testobj $cvobj src/npapi.def`
+cp b/nptestplugin.dll /tmp

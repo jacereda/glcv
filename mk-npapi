@@ -1,0 +1,71 @@
+#!/bin/bash
+
+log() {
+    echo $* 1>&2
+}
+
+builddir() {
+    echo "b"
+}
+
+pkgdir() {
+    echo `builddir`/$1.plugin
+}
+
+condir() {
+    echo `pkgdir $1`/Contents
+}
+
+resdir() {
+    echo `condir $1`/Resources
+}
+
+bindir() {
+    echo `condir $1`/MacOS
+}
+
+obj() {
+    log "compiling $*"
+    dst=`builddir`/$1.o
+    shift
+    cc -m32 -fvisibility=hidden -fPIC -Wall -O2 -c -I src -o $dst $*
+    echo $dst
+}
+
+plg() {
+    log "linking $*"
+    dst=`builddir`/$1
+    shift
+    obj=$1
+    shift
+    cc -m32 -fvisibility=hidden -fPIC -bundle -flat_namespace -framework OpenGL -framework AppKit -framework WebKit -framework QuartzCore -o $dst $obj -L `builddir` $*
+    echo $dst
+}
+
+pkg() {
+    log "packaging $*"
+    install -d `resdir $1`
+    install -d `bindir $1`
+    sed s/NAME/$1/g templates/npapi/webtemplate.r > `builddir`/$1.r
+    /Developer/Tools/Rez -o `resdir $1`/$1.rsrc -useDF `builddir`/$1.r
+    sed s/NAME/$1/g templates/npapi/webtemplate.plist > `condir $1`/Info.plist
+    cp $2 `bindir $1`
+    echo `pkgdir $1`
+}
+
+ins() {
+    log "installing $*"
+    dst="$HOME/Library/Internet Plug-Ins"
+    cp -R $1 "$dst/"
+    echo "$dst/`basename $1`"
+}
+
+rm -fR `builddir`
+install -d `builddir`
+cvobj="`obj npapicocoa src/npapicocoa.m`"
+testobj=`obj test test/test.c`
+testplg=`plg testplugin $testobj $cvobj`
+testpkg=`pkg testplugin $testplg`
+itestpkg=`ins $testpkg`
+echo "installed $itestpkg"
+

@@ -1,0 +1,970 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+               "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>GLCV</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<meta name="title" content="GLCV"/>
+<meta name="generator" content="Org-mode"/>
+<meta name="generated" content="2011-10-02 Sun"/>
+<meta name="author" content="Jorge Acereda"/>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  html { font-family: Times, serif; font-size: 12pt; }
+  .title  { text-align: center; }
+  .todo   { color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #add8e6; font-weight:normal }
+  .target { }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  {margin-left:auto; margin-right:0px;  text-align:right;}
+  .left   {margin-left:0px;  margin-right:auto; text-align:left;}
+  .center {margin-left:auto; margin-right:auto; text-align:center;}
+  p.verse { margin-left: 3% }
+  pre {
+	border: 1pt solid #AEBDCC;
+	background-color: #F3F5F7;
+	padding: 5pt;
+	font-family: courier, monospace;
+        font-size: 90%;
+        overflow:auto;
+  }
+  table { border-collapse: collapse; }
+  td, th { vertical-align: top;  }
+  th.right  { text-align:center;  }
+  th.left   { text-align:center;   }
+  th.center { text-align:center; }
+  td.right  { text-align:right;  }
+  td.left   { text-align:left;   }
+  td.center { text-align:center; }
+  dt { font-weight: bold; }
+  div.figure { padding: 0.5em; }
+  div.figure p { text-align: center; }
+  div.inlinetask {
+    padding:10px;
+    border:2px solid gray;
+    margin:10px;
+    background: #ffffcc;
+  }
+  textarea { overflow-x: auto; }
+  .linenr { font-size:smaller }
+  .code-highlighted {background-color:#ffff00;}
+  .org-info-js_info-navigation { border-style:none; }
+  #org-info-js_console-label { font-size:10px; font-weight:bold;
+                               white-space:nowrap; }
+  .org-info-js_search-highlight {background-color:#ffff00; color:#000000;
+                                 font-weight:bold; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+
+</head>
+<body>
+
+<div id="preamble">
+
+</div>
+
+<div id="content">
+<h1 class="title">GLCV</h1>
+
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1 Purpose</a></li>
+<li><a href="#sec-2">2 Building</a>
+<ul>
+<li><a href="#sec-2-1">2.1 IOS</a></li>
+<li><a href="#sec-2-2">2.2 Android</a></li>
+<li><a href="#sec-2-3">2.3 NPAPI</a></li>
+<li><a href="#sec-2-4">2.4 Xlib</a></li>
+<li><a href="#sec-2-5">2.5 Cocoa</a></li>
+<li><a href="#sec-2-6">2.6 Windows</a></li>
+</ul>
+</li>
+<li><a href="#sec-3">3 API</a>
+<ul>
+<li><a href="#sec-3-1">3.1 Functions</a>
+<ul>
+<li><a href="#sec-3-1-1">3.1.1 Application hook</a></li>
+<li><a href="#sec-3-1-2">3.1.2 Application control</a></li>
+<li><a href="#sec-3-1-3">3.1.3 Window properties</a></li>
+<li><a href="#sec-3-1-4">3.1.4 Keyboard</a></li>
+<li><a href="#sec-3-1-5">3.1.5 Logging</a></li>
+<li><a href="#sec-3-1-6">3.1.6 Events</a></li>
+</ul>
+</li>
+<li><a href="#sec-3-2">3.2 Events</a>
+<ul>
+<li><a href="#sec-3-2-1">3.2.1 CVE_NONE</a></li>
+<li><a href="#sec-3-2-2">3.2.2 CVE_INIT</a></li>
+<li><a href="#sec-3-2-3">3.2.3 CVE_TERM</a></li>
+<li><a href="#sec-3-2-4">3.2.4 CVE_GLINIT</a></li>
+<li><a href="#sec-3-2-5">3.2.5 CVE_GLTERM</a></li>
+<li><a href="#sec-3-2-6">3.2.6 CVE_UPDATE</a></li>
+<li><a href="#sec-3-2-7">3.2.7 CVE_RESIZE</a></li>
+<li><a href="#sec-3-2-8">3.2.8 CVE_DOWN</a></li>
+<li><a href="#sec-3-2-9">3.2.9 CVE_UP</a></li>
+<li><a href="#sec-3-2-10">3.2.10 CVE_UNICODE</a></li>
+<li><a href="#sec-3-2-11">3.2.11 CVE_MOTION</a></li>
+<li><a href="#sec-3-2-12">3.2.12 CVE_CLOSE</a></li>
+<li><a href="#sec-3-2-13">3.2.13 CVE_INVOKE</a></li>
+</ul>
+</li>
+<li><a href="#sec-3-3">3.3 Queries</a>
+<ul>
+<li><a href="#sec-3-3-1">3.3.1 CVQ_NAME</a></li>
+<li><a href="#sec-3-3-2">3.3.2 CVQ_LOGGER</a></li>
+<li><a href="#sec-3-3-3">3.3.3 CVQ_XPOS</a></li>
+<li><a href="#sec-3-3-4">3.3.4 CVQ_YPOS</a></li>
+<li><a href="#sec-3-3-5">3.3.5 CVQ_WIDTH</a></li>
+<li><a href="#sec-3-3-6">3.3.6 CVQ_HEIGHT</a></li>
+<li><a href="#sec-3-3-7">3.3.7 CVQ_BORDERS</a></li>
+</ul></li>
+</ul>
+</li>
+<li><a href="#sec-4">4 Examples</a>
+<ul>
+<li><a href="#sec-4-1">4.1 Simple example that just draws</a></li>
+<li><a href="#sec-4-2">4.2 Complete example handling all queries/events</a></li>
+</ul>
+</li>
+<li><a href="#sec-5">5 License</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> Purpose</h2>
+<div class="outline-text-2" id="text-1">
+
+<p>GLCV is a small canvas/event handling library that provides a thin
+layer abstracting the details of configuring the window and handling
+input. Sort of a simple GLUT/SDL. No API is provided for
+sound/fonts/widgets, there are good solutions out there for those and
+freedom of choice is a good thing.
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> Building</h2>
+<div class="outline-text-2" id="text-2">
+
+
+</div>
+
+<div id="outline-container-2-1" class="outline-3">
+<h3 id="sec-2-1"><span class="section-number-3">2.1</span> IOS</h3>
+<div class="outline-text-3" id="text-2-1">
+
+<p>The following command should build the library and the examples and
+install them in the IOS simulator directory.
+</p>
+
+
+<pre class="src src-sh">./mk-ios
+</pre>
+
+</div>
+
+</div>
+
+<div id="outline-container-2-2" class="outline-3">
+<h3 id="sec-2-2"><span class="section-number-3">2.2</span> Android</h3>
+<div class="outline-text-3" id="text-2-2">
+
+<p>The following command should build the library and the examples and
+install them in the Android emulator. The emulator must be running.
+</p>
+
+
+<pre class="src src-sh">./mk-android
+</pre>
+
+</div>
+
+</div>
+
+<div id="outline-container-2-3" class="outline-3">
+<h3 id="sec-2-3"><span class="section-number-3">2.3</span> NPAPI</h3>
+<div class="outline-text-3" id="text-2-3">
+
+<p>The following command should build the library and the examples and
+install them in the user's plugins directory.
+</p>
+
+
+<pre class="src src-sh">./mk-npapi
+</pre>
+
+<p>
+After building, try opening <a href="testplugin.html">testplugin.html</a>
+</p></div>
+
+</div>
+
+<div id="outline-container-2-4" class="outline-3">
+<h3 id="sec-2-4"><span class="section-number-3">2.4</span> Xlib</h3>
+<div class="outline-text-3" id="text-2-4">
+
+<p>To compile the test application, use this command
+</p>
+
+
+<pre class="src src-sh">./mk-xlib
+</pre>
+
+</div>
+
+</div>
+
+<div id="outline-container-2-5" class="outline-3">
+<h3 id="sec-2-5"><span class="section-number-3">2.5</span> Cocoa</h3>
+<div class="outline-text-3" id="text-2-5">
+
+<p>To compile the test application, use this command
+</p>
+
+
+<pre class="src src-sh">./mk-cocoa
+</pre>
+
+</div>
+
+</div>
+
+<div id="outline-container-2-6" class="outline-3">
+<h3 id="sec-2-6"><span class="section-number-3">2.6</span> Windows</h3>
+<div class="outline-text-3" id="text-2-6">
+
+<p>To compile the test application, use this command
+</p>
+
+
+<pre class="src src-sh">mk-win
+</pre>
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> API</h2>
+<div class="outline-text-2" id="text-3">
+
+
+</div>
+
+<div id="outline-container-3-1" class="outline-3">
+<h3 id="sec-3-1"><span class="section-number-3">3.1</span> Functions</h3>
+<div class="outline-text-3" id="text-3-1">
+
+
+</div>
+
+<div id="outline-container-3-1-1" class="outline-4">
+<h4 id="sec-3-1-1"><span class="section-number-4">3.1.1</span> Application hook</h4>
+<div class="outline-text-4" id="text-3-1-1">
+
+
+
+
+<pre class="src src-c"><span style="color: #00cd00;">intptr_t</span> <span style="color: #0000ee; font-weight: bold;">event</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> * <span style="color: #cdcd00;">e</span>);
+</pre>
+
+<p>
+This is the event handling routine implemented by your application.
+</p></div>
+
+</div>
+
+<div id="outline-container-3-1-2" class="outline-4">
+<h4 id="sec-3-1-2"><span class="section-number-4">3.1.2</span> Application control</h4>
+<div class="outline-text-4" id="text-3-1-2">
+
+
+
+
+<pre class="src src-c"><span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">cvQuit</span>();
+</pre>
+
+<p>
+Call this to terminate your application.
+</p></div>
+
+</div>
+
+<div id="outline-container-3-1-3" class="outline-4">
+<h4 id="sec-3-1-3"><span class="section-number-4">3.1.3</span> Window properties</h4>
+<div class="outline-text-4" id="text-3-1-3">
+
+
+
+
+<pre class="src src-c"><span style="color: #00cd00;">unsigned</span> <span style="color: #0000ee; font-weight: bold;">cvWidth</span>();
+</pre>
+
+<p>
+Current window width
+</p>
+
+
+<pre class="src src-c"><span style="color: #00cd00;">unsigned</span> <span style="color: #0000ee; font-weight: bold;">cvHeight</span>();
+</pre>
+
+<p>
+Current window height
+</p>
+
+
+<pre class="src src-c"><span style="color: #00cd00;">Mouse</span> <span style="color: #cdcd00;">location</span>
+</pre>
+
+
+<pre class="src src-c"><span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">cvMouseX</span>();
+</pre>
+
+<p>
+Current X mouse position
+</p>
+
+
+<pre class="src src-c"><span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">cvMouseY</span>();
+</pre>
+
+<p>
+Current Y mouse position
+</p></div>
+
+</div>
+
+<div id="outline-container-3-1-4" class="outline-4">
+<h4 id="sec-3-1-4"><span class="section-number-4">3.1.4</span> Keyboard</h4>
+<div class="outline-text-4" id="text-3-1-4">
+
+
+
+
+<pre class="src src-c"><span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">cvPressed</span>(<span style="color: #00cd00;">cvkey</span> <span style="color: #cdcd00;">key</span>);
+</pre>
+
+<p>
+True if key is currently pressed
+</p>
+
+
+<pre class="src src-c"><span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">cvReleased</span>(<span style="color: #00cd00;">cvkey</span> <span style="color: #cdcd00;">key</span>);
+</pre>
+
+<p>
+True if key has just been released
+</p>
+
+
+<pre class="src src-c"><span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">cvShowKeyboard</span>();
+</pre>
+
+<p>
+On platforms that support it, show the on-screen keyboard
+</p>
+
+
+<pre class="src src-c"><span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">cvHideKeyboard</span>();
+</pre>
+
+<p>
+On platforms that support it, hide the on-screen keyboard
+</p></div>
+
+</div>
+
+<div id="outline-container-3-1-5" class="outline-4">
+<h4 id="sec-3-1-5"><span class="section-number-4">3.1.5</span> Logging</h4>
+<div class="outline-text-4" id="text-3-1-5">
+
+
+
+
+<pre class="src src-c"><span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">cvReportV</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">char</span> * <span style="color: #cdcd00;">fmt</span>, <span style="color: #00cd00;">va_list</span> <span style="color: #cdcd00;">ap</span>);
+</pre>
+
+<p>
+Report a message (depending on the platform, it might go to a file).
+</p>
+
+
+<pre class="src src-c"><span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">cvReport</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">char</span> * <span style="color: #cdcd00;">fmt</span>, ...);
+</pre>
+
+<p>
+Report a message (depending on the platform, it might go to a file).
+</p></div>
+
+</div>
+
+<div id="outline-container-3-1-6" class="outline-4">
+<h4 id="sec-3-1-6"><span class="section-number-4">3.1.6</span> Events</h4>
+<div class="outline-text-4" id="text-3-1-6">
+
+
+
+
+<pre class="src src-c"><span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">evType</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> *);
+</pre>
+
+<p>
+Event type.
+</p>
+
+
+<pre class="src src-c"><span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">char</span> * <span style="color: #0000ee; font-weight: bold;">evName</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> *);
+</pre>
+
+<p>
+Event name.
+</p>
+
+
+<pre class="src src-c"><span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">evWidth</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> *);
+</pre>
+
+<p>
+Width for CVE_RESIZE events.
+</p>
+
+
+<pre class="src src-c"><span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">evHeight</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> *);
+</pre>
+
+<p>
+Width for CVE_RESIZE events.
+</p>
+
+
+<pre class="src src-c"><span style="color: #00cd00;">cvkey</span> <span style="color: #0000ee; font-weight: bold;">evWhich</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> *);
+</pre>
+
+<p>
+Keycode associated to CVE_DOWN/CVE_UP events.
+</p>
+
+
+<pre class="src src-c"><span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">evX</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> *);
+</pre>
+
+<p>
+Mouse X position for CVE_DOWN/CVE_UP events.
+</p>
+
+
+<pre class="src src-c"><span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">evY</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> *);
+</pre>
+
+<p>
+Mouse Y position for CVE_DOWN/CVE_UP events.
+</p>
+
+
+<pre class="src src-c"><span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">evArgC</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> *);
+</pre>
+
+<p>
+Argument count for CVE_INIT events.
+</p>
+
+
+<pre class="src src-c"><span style="color: #00cd00;">char</span> ** <span style="color: #0000ee; font-weight: bold;">evArgV</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> *);
+</pre>
+
+<p>
+Argument array for CVE_INIT events.
+</p>
+
+
+<pre class="src src-c"><span style="color: #00cd00;">intptr_t</span> <span style="color: #0000ee; font-weight: bold;">evArg0</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> *);
+</pre>
+
+<p>
+First event argument, mostly internal.
+</p>
+
+
+<pre class="src src-c"><span style="color: #00cd00;">intptr_t</span> <span style="color: #0000ee; font-weight: bold;">evArg1</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> *);
+</pre>
+
+<p>
+Second event argument, mostly internal.
+</p>
+
+
+<pre class="src src-c"><span style="color: #00cd00;">intptr_t</span> <span style="color: #0000ee; font-weight: bold;">cvInject</span>(cveventtype, <span style="color: #00cd00;">intptr_t</span>, <span style="color: #00cd00;">intptr_t</span>);
+</pre>
+
+<p>
+Inject an event, mostly internal.
+</p>
+
+
+<pre class="src src-c"><span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">char</span> * <span style="color: #0000ee; font-weight: bold;">keyName</span>(cvkey);
+</pre>
+
+<p>
+Key name for CVE_DOWN/CVE_UP events.
+</p>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-3-2" class="outline-3">
+<h3 id="sec-3-2"><span class="section-number-3">3.2</span> Events</h3>
+<div class="outline-text-3" id="text-3-2">
+
+
+</div>
+
+<div id="outline-container-3-2-1" class="outline-4">
+<h4 id="sec-3-2-1"><span class="section-number-4">3.2.1</span> CVE_NONE</h4>
+<div class="outline-text-4" id="text-3-2-1">
+
+<p>Null event, must be ignored.
+</p></div>
+
+</div>
+
+<div id="outline-container-3-2-2" class="outline-4">
+<h4 id="sec-3-2-2"><span class="section-number-4">3.2.2</span> CVE_INIT</h4>
+<div class="outline-text-4" id="text-3-2-2">
+
+<p>Called upon initialization, no GL operations should be performed at this stage.
+</p></div>
+
+</div>
+
+<div id="outline-container-3-2-3" class="outline-4">
+<h4 id="sec-3-2-3"><span class="section-number-4">3.2.3</span> CVE_TERM</h4>
+<div class="outline-text-4" id="text-3-2-3">
+
+<p>Called before terminating the application.
+</p></div>
+
+</div>
+
+<div id="outline-container-3-2-4" class="outline-4">
+<h4 id="sec-3-2-4"><span class="section-number-4">3.2.4</span> CVE_GLINIT</h4>
+<div class="outline-text-4" id="text-3-2-4">
+
+<p>The OpenGL context has been established. Might be called several times.
+</p></div>
+
+</div>
+
+<div id="outline-container-3-2-5" class="outline-4">
+<h4 id="sec-3-2-5"><span class="section-number-4">3.2.5</span> CVE_GLTERM</h4>
+<div class="outline-text-4" id="text-3-2-5">
+
+<p>The OpenGL context is going to be destroyed. Might be called several times.
+</p></div>
+
+</div>
+
+<div id="outline-container-3-2-6" class="outline-4">
+<h4 id="sec-3-2-6"><span class="section-number-4">3.2.6</span> CVE_UPDATE</h4>
+<div class="outline-text-4" id="text-3-2-6">
+
+<p>This is your update routine, should be called at ~60Hz.
+</p></div>
+
+</div>
+
+<div id="outline-container-3-2-7" class="outline-4">
+<h4 id="sec-3-2-7"><span class="section-number-4">3.2.7</span> CVE_RESIZE</h4>
+<div class="outline-text-4" id="text-3-2-7">
+
+<p>Called when the window is resized. Might be called several times.
+</p></div>
+
+</div>
+
+<div id="outline-container-3-2-8" class="outline-4">
+<h4 id="sec-3-2-8"><span class="section-number-4">3.2.8</span> CVE_DOWN</h4>
+<div class="outline-text-4" id="text-3-2-8">
+
+<p>A key/button has been pressed.
+</p></div>
+
+</div>
+
+<div id="outline-container-3-2-9" class="outline-4">
+<h4 id="sec-3-2-9"><span class="section-number-4">3.2.9</span> CVE_UP</h4>
+<div class="outline-text-4" id="text-3-2-9">
+
+<p>A key/button has been released.
+</p></div>
+
+</div>
+
+<div id="outline-container-3-2-10" class="outline-4">
+<h4 id="sec-3-2-10"><span class="section-number-4">3.2.10</span> CVE_UNICODE</h4>
+<div class="outline-text-4" id="text-3-2-10">
+
+<p>Called when the user enters text.
+</p></div>
+
+</div>
+
+<div id="outline-container-3-2-11" class="outline-4">
+<h4 id="sec-3-2-11"><span class="section-number-4">3.2.11</span> CVE_MOTION</h4>
+<div class="outline-text-4" id="text-3-2-11">
+
+<p>The mouse moved.
+</p></div>
+
+</div>
+
+<div id="outline-container-3-2-12" class="outline-4">
+<h4 id="sec-3-2-12"><span class="section-number-4">3.2.12</span> CVE_CLOSE</h4>
+<div class="outline-text-4" id="text-3-2-12">
+
+<p>The application is about to close.
+</p></div>
+
+</div>
+
+<div id="outline-container-3-2-13" class="outline-4">
+<h4 id="sec-3-2-13"><span class="section-number-4">3.2.13</span> CVE_INVOKE</h4>
+<div class="outline-text-4" id="text-3-2-13">
+
+<p>Invoke method. The argument is available as evMethod().
+</p></div>
+</div>
+
+</div>
+
+<div id="outline-container-3-3" class="outline-3">
+<h3 id="sec-3-3"><span class="section-number-3">3.3</span> Queries</h3>
+<div class="outline-text-3" id="text-3-3">
+
+
+</div>
+
+<div id="outline-container-3-3-1" class="outline-4">
+<h4 id="sec-3-3-1"><span class="section-number-4">3.3.1</span> CVQ_NAME</h4>
+<div class="outline-text-4" id="text-3-3-1">
+
+<p>Return the desired application name.
+</p></div>
+
+</div>
+
+<div id="outline-container-3-3-2" class="outline-4">
+<h4 id="sec-3-3-2"><span class="section-number-4">3.3.2</span> CVQ_LOGGER</h4>
+<div class="outline-text-4" id="text-3-3-2">
+
+<p>Function to be used for logging. The returned function prototype should be:
+</p>
+
+
+<pre class="src src-c"><span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">report</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">char</span> * <span style="color: #cdcd00;">appname</span>, <span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">char</span> * <span style="color: #cdcd00;">string</span>);
+</pre>
+
+</div>
+
+</div>
+
+<div id="outline-container-3-3-3" class="outline-4">
+<h4 id="sec-3-3-3"><span class="section-number-4">3.3.3</span> CVQ_XPOS</h4>
+<div class="outline-text-4" id="text-3-3-3">
+
+<p>Return the desired X position. This is just a hint and can be ignored
+on some platforms.
+</p></div>
+
+</div>
+
+<div id="outline-container-3-3-4" class="outline-4">
+<h4 id="sec-3-3-4"><span class="section-number-4">3.3.4</span> CVQ_YPOS</h4>
+<div class="outline-text-4" id="text-3-3-4">
+
+<p>Return the desired Y position. This is just a hint and can be ignored
+on some platforms.
+</p></div>
+
+</div>
+
+<div id="outline-container-3-3-5" class="outline-4">
+<h4 id="sec-3-3-5"><span class="section-number-4">3.3.5</span> CVQ_WIDTH</h4>
+<div class="outline-text-4" id="text-3-3-5">
+
+<p>Return the desired width. Note that this is a hint and can be ignored
+on some platforms. Your code should use the width reported via
+CVE_RESIZE or ask explicitly with cvWidth().
+If this query isn't handled, the window will cover the whole desktop.
+</p></div>
+
+</div>
+
+<div id="outline-container-3-3-6" class="outline-4">
+<h4 id="sec-3-3-6"><span class="section-number-4">3.3.6</span> CVQ_HEIGHT</h4>
+<div class="outline-text-4" id="text-3-3-6">
+
+<p>Return the desired height. Note that this is a hint and can be ignored
+on some platforms. Your code should use the height reported via
+CVE_RESIZE or ask explicitly with cvHeight().
+</p></div>
+
+</div>
+
+<div id="outline-container-3-3-7" class="outline-4">
+<h4 id="sec-3-3-7"><span class="section-number-4">3.3.7</span> CVQ_BORDERS</h4>
+<div class="outline-text-4" id="text-3-3-7">
+
+<p>Should the window have borders?
+</p>
+</div>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-4" class="outline-2">
+<h2 id="sec-4"><span class="section-number-2">4</span> Examples</h2>
+<div class="outline-text-2" id="text-4">
+
+
+</div>
+
+<div id="outline-container-4-1" class="outline-3">
+<h3 id="sec-4-1"><span class="section-number-3">4.1</span> Simple example that just draws</h3>
+<div class="outline-text-3" id="text-4-1">
+
+
+
+
+<pre class="src src-c"><span style="color: #0000ee; font-weight: bold;">#include</span> <span style="color: #00cd00;">"cv.h"</span>
+<span style="color: #0000ee; font-weight: bold;">#include</span> <span style="color: #00cd00;">"cvgl.h"</span>
+
+<span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">update</span>() {
+        <span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">int</span> <span style="color: #cdcd00;">i</span> = 128;
+        i++;
+        glClearColor(((2*i) &amp; 0xff) / 255.0f, 0.f, 1.f, (i &amp; 0xff) / 255.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glFlush();
+}
+
+<span style="color: #00cd00;">intptr_t</span> <span style="color: #0000ee; font-weight: bold;">event</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> * <span style="color: #cdcd00;">e</span>) {
+        <span style="color: #00cd00;">intptr_t</span> <span style="color: #cdcd00;">ret</span> = 1;
+        <span style="color: #00cd00;">cveventtype</span> <span style="color: #cdcd00;">t</span> = evType(e);
+        <span style="color: #00cdcd; font-weight: bold;">switch</span> (t) {
+        <span style="color: #00cdcd; font-weight: bold;">case</span> CVE_UPDATE: update(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">default</span>: ret = 0; <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        }
+        <span style="color: #00cdcd; font-weight: bold;">return</span> ret;
+}
+
+<span style="color: #cd0000;">/* </span>
+<span style="color: #cd0000;">   Local Variables&#58; **</span>
+<span style="color: #cd0000;">   c-file-style: "bsd" **</span>
+<span style="color: #cd0000;">   c-basic-offset: 8 **</span>
+<span style="color: #cd0000;">   indent-tabs-mode: nil **</span>
+<span style="color: #cd0000;">   End: **</span>
+<span style="color: #cd0000;">*/</span>
+</pre>
+
+</div>
+
+</div>
+
+<div id="outline-container-4-2" class="outline-3">
+<h3 id="sec-4-2"><span class="section-number-3">4.2</span> Complete example handling all queries/events</h3>
+<div class="outline-text-3" id="text-4-2">
+
+
+
+
+<pre class="src src-c"><span style="color: #0000ee; font-weight: bold;">#include</span> <span style="color: #00cd00;">"cv.h"</span>
+<span style="color: #0000ee; font-weight: bold;">#include</span> <span style="color: #00cd00;">"cvgl.h"</span>
+
+<span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">init</span>() {
+        cvReport(<span style="color: #00cd00;">"init"</span>);
+}
+
+<span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">term</span>() {
+        cvReport(<span style="color: #00cd00;">"term"</span>);
+}
+
+<span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">glinit</span>() {
+        cvReport(<span style="color: #00cd00;">"glinit"</span>);
+}
+
+<span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">down</span>(<span style="color: #00cd00;">cvkey</span> <span style="color: #cdcd00;">k</span>) {
+        cvReport(<span style="color: #00cd00;">"down %s"</span>, keyName(k));
+}
+
+<span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">up</span>(<span style="color: #00cd00;">cvkey</span> <span style="color: #cdcd00;">k</span>) {
+        cvReport(<span style="color: #00cd00;">"up %s"</span>, keyName(k));
+        <span style="color: #00cdcd; font-weight: bold;">switch</span> (k) {
+        <span style="color: #00cdcd; font-weight: bold;">case</span> CVK_ESCAPE: cvQuit(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">default</span>: <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        }
+}
+
+<span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">unicode</span>(<span style="color: #00cd00;">uint32_t</span> <span style="color: #cdcd00;">c</span>) {
+        cvReport(<span style="color: #00cd00;">"unicode %c"</span>, c);
+}
+
+<span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">motion</span>(<span style="color: #00cd00;">int</span> <span style="color: #cdcd00;">x</span>, <span style="color: #00cd00;">int</span> <span style="color: #cdcd00;">y</span>) {
+        cvReport(<span style="color: #00cd00;">"motion %d %d"</span>, x, y);
+}
+
+<span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">close</span>() {
+        cvReport(<span style="color: #00cd00;">"close"</span>);
+        cvQuit();
+}
+
+<span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">invoke</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">char</span> * <span style="color: #cdcd00;">s</span>) {
+        cvReport(<span style="color: #00cd00;">"invoked method '%s'"</span>, s);
+}
+
+<span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">resize</span>(<span style="color: #00cd00;">unsigned</span> <span style="color: #cdcd00;">w</span>, <span style="color: #00cd00;">unsigned</span> <span style="color: #cdcd00;">h</span>) {
+        cvReport(<span style="color: #00cd00;">"resize %d %d"</span>, w, h);
+        glViewport(0, 0, w, h);
+}
+
+<span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">update</span>() {
+        <span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">int</span> <span style="color: #cdcd00;">i</span> = 128;
+        i++;
+        glClearColor(((2*i) &amp; 0xff) / 255.0f, 0.f, 1.f, (i &amp; 0xff) / 255.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glFlush();
+}
+
+<span style="color: #00cd00;">intptr_t</span> <span style="color: #0000ee; font-weight: bold;">event</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> * <span style="color: #cdcd00;">e</span>) {
+        <span style="color: #00cd00;">intptr_t</span> <span style="color: #cdcd00;">ret</span> = 1;
+        <span style="color: #00cd00;">cveventtype</span> <span style="color: #cdcd00;">t</span> = evType(e);
+        <span style="color: #00cdcd; font-weight: bold;">if</span> (t != CVE_UPDATE)
+                cvReport(<span style="color: #00cd00;">"got event %s, %p %p"</span>, 
+                         evName(e), evArg0(e), evArg1(e));
+        <span style="color: #00cdcd; font-weight: bold;">switch</span> (t) {
+        <span style="color: #00cdcd; font-weight: bold;">case</span> CVQ_NAME: ret = (<span style="color: #00cd00;">intptr_t</span>)<span style="color: #00cd00;">"test"</span>; <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> CVQ_XPOS: ret = 50; <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> CVQ_YPOS: ret = 50; <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> CVQ_WIDTH: ret = 640; <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> CVQ_HEIGHT: ret = 480; <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> CVQ_BORDERS: ret = 1; <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> CVE_INIT: init(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> CVE_TERM: term(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> CVE_GLINIT: glinit(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> CVE_DOWN: down(evWhich(e)); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> CVE_UP: up(evWhich(e)); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> CVE_UNICODE: unicode(evUnicode(e)); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> CVE_MOTION: motion(evX(e), evY(e)); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> CVE_CLOSE: close(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> CVE_INVOKE: invoke(evMethod(e)); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> CVE_RESIZE: resize(cvWidth(e), cvHeight(e)); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> CVE_UPDATE: update(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">default</span>: ret = 0; <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        }
+        <span style="color: #00cdcd; font-weight: bold;">return</span> ret;
+}
+
+<span style="color: #cd0000;">/* </span>
+<span style="color: #cd0000;">   Local Variables&#58; **</span>
+<span style="color: #cd0000;">   c-file-style: "bsd" **</span>
+<span style="color: #cd0000;">   c-basic-offset: 8 **</span>
+<span style="color: #cd0000;">   indent-tabs-mode: nil **</span>
+<span style="color: #cd0000;">   End: **</span>
+<span style="color: #cd0000;">*/</span>
+</pre>
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-5" class="outline-2">
+<h2 id="sec-5"><span class="section-number-2">5</span> License</h2>
+<div class="outline-text-2" id="text-5">
+
+<p>  Copyright (c) 2011-2012, Jorge Acereda Maciá
+  All rights reserved.
+</p>
+<p>
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions are
+  met:
+</p>
+<ol>
+<li>Redistributions of source code must retain the above copyright
+     notice, this list of conditions and the following disclaimer.
+
+</li>
+<li>Redistributions in binary form must reproduce the above copyright
+     notice, this list of conditions and the following disclaimer in
+     the documentation and/or other materials provided with the
+     distribution.
+
+</li>
+<li>Neither the name of the author nor the names of its contributors
+     may be used to endorse or promote products derived from this
+     software without specific prior written permission.
+</li>
+</ol>
+
+
+<p>
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
+  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+</p></div>
+</div>
+</div>
+
+<div id="postamble">
+<p class="date">Date: 2011-10-02 Sun</p>
+<p class="author">Author: Jorge Acereda</p>
+<p class="creator">Org version 7.8.09 with Emacs version 24</p>
+<a href="http://validator.w3.org/check?uri=referer">Validate XHTML 1.0</a>
+
+</div>
+</body>
+</html>

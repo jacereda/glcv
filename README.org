@@ -1,0 +1,288 @@
+#+TITLE:     GLCV
+#+AUTHOR:    Jorge Acereda
+#+EMAIL:     jacereda@gmail.com
+#+DATE:      2011-10-02 Sun
+#+DESCRIPTION: 
+#+KEYWORDS: 
+#+LANGUAGE:  en
+#+OPTIONS:   H:3 num:t toc:t \n:nil @:t ::t |:t ^:{} -:t f:t *:t <:t
+#+OPTIONS:   TeX:t LaTeX:t skip:nil d:nil todo:t pri:nil tags:not-in-toc
+#+INFOJS_OPT: view:nil toc:nil ltoc:t mouse:underline buttons:0 path:http://orgmode.org/org-info.js
+#+EXPORT_SELECT_TAGS: export
+#+EXPORT_EXCLUDE_TAGS: noexport
+#+LINK_UP:   
+#+LINK_HOME: 
+#+XSLT: 
+
+* Export 							   :noexport:
+#+begin_src emacs-lisp :results silent
+(save-excursion 
+  (org-export-as-utf8 3)
+  (rename-file "README.txt" "README" t))
+(save-excursion 
+  (org-export-as-html 3))
+(save-excursion
+  (org-export-generic 3))
+#+end_src
+file:README
+file:README.html
+
+* Purpose
+GLCV is a small canvas/event handling library that provides a thin
+layer abstracting the details of configuring the window and handling
+input. Sort of a simple GLUT/SDL. No API is provided for
+sound/fonts/widgets, there are good solutions out there for those and
+freedom of choice is a good thing.
+
+* Building
+** IOS
+The following command should build the library and the examples and
+install them in the IOS simulator directory.
+#+begin_src sh
+./mk-ios
+#+end_src
+** Android
+The following command should build the library and the examples and
+install them in the Android emulator. The emulator must be running.
+#+begin_src sh
+./mk-android
+#+end_src
+** NPAPI
+The following command should build the library and the examples and
+install them in the user's plugins directory.
+#+begin_src sh
+./mk-npapi
+#+end_src
+After building, try opening file:testplugin.html
+** Xlib
+To compile the test application, use this command
+#+begin_src sh
+./mk-xlib
+#+end_src
+** Cocoa
+To compile the test application, use this command
+#+begin_src sh
+./mk-cocoa
+#+end_src
+** Windows
+To compile the test application, use this command
+#+begin_src sh
+mk-win
+#+end_src
+* API
+** Functions
+*** Application hook
+#+begin_src c
+intptr_t event(const ev * e);
+#+end_src
+This is the event handling routine implemented by your application.
+*** Application control
+#+begin_src c
+void cvQuit();
+#+end_src
+Call this to terminate your application.
+*** Window properties
+#+begin_src c
+unsigned cvWidth();
+#+end_src
+Current window width
+#+begin_src c
+unsigned cvHeight();
+#+end_src
+Current window height
+#+begin_src c
+Mouse location
+#+end_src
+#+begin_src c
+int cvMouseX();
+#+end_src
+Current X mouse position
+#+begin_src c
+int cvMouseY();
+#+end_src
+Current Y mouse position
+*** Keyboard
+#+begin_src c
+int cvPressed(cvkey key);
+#+end_src
+True if key is currently pressed
+#+begin_src c
+int cvReleased(cvkey key);
+#+end_src
+True if key has just been released
+#+begin_src c
+void cvShowKeyboard();
+#+end_src
+On platforms that support it, show the on-screen keyboard
+#+begin_src c
+void cvHideKeyboard();
+#+end_src
+On platforms that support it, hide the on-screen keyboard
+#+begin_src c
+void cvShowCursor();
+#+end_src
+On platforms that support it, show the mouse cursor.
+#+begin_src c
+void cvHideCursor();
+#+end_src
+On platforms that support it, hide the mouse cursor.
+#+begin_src c
+void cvFullscreen();
+#+end_src
+On platforms that support it, set the window in fullscreen mode.
+#+begin_src c
+void cvWindowed();
+#+end_src
+On platforms that support it, set the window in windowed mode.
+*** Logging
+#+begin_src c
+void cvReportV(const char * fmt, va_list ap);
+#+end_src
+Report a message (depending on the platform, it might go to a file).
+#+begin_src c
+void cvReport(const char * fmt, ...);
+#+end_src
+Report a message (depending on the platform, it might go to a file).
+*** Events
+#+begin_src c
+int evType(const ev *);
+#+end_src
+Event type.
+#+begin_src c
+const char * evName(const ev *);
+#+end_src
+Event name.
+#+begin_src c
+int evWidth(const ev *);
+#+end_src
+Width for CVE_RESIZE events.
+#+begin_src c
+int evHeight(const ev *);
+#+end_src
+Width for CVE_RESIZE events.
+#+begin_src c
+cvkey evWhich(const ev *);
+#+end_src
+Keycode associated to CVE_DOWN/CVE_UP events.
+#+begin_src c
+int evX(const ev *);
+#+end_src
+Mouse X position for CVE_DOWN/CVE_UP events.
+#+begin_src c
+int evY(const ev *);
+#+end_src
+Mouse Y position for CVE_DOWN/CVE_UP events.
+#+begin_src c
+int evArgC(const ev *);
+#+end_src
+Argument count for CVE_INIT events.
+#+begin_src c
+char ** evArgV(const ev *);
+#+end_src
+Argument array for CVE_INIT events.
+#+begin_src c
+intptr_t evArg0(const ev *);
+#+end_src
+First event argument, mostly internal.
+#+begin_src c
+intptr_t evArg1(const ev *);
+#+end_src
+Second event argument, mostly internal.
+#+begin_src c
+intptr_t cvInject(cveventtype, intptr_t, intptr_t);
+#+end_src
+Inject an event, mostly internal.
+#+begin_src c
+const char * keyName(cvkey);
+#+end_src
+Key name for CVE_DOWN/CVE_UP events.
+
+** Events
+*** CVE_NONE
+Null event, must be ignored.
+*** CVE_INIT
+Called upon initialization, no GL operations should be performed at this stage.
+*** CVE_TERM
+Called before terminating the application.
+*** CVE_GLINIT
+The OpenGL context has been established. Might be called several times.
+*** CVE_GLTERM
+The OpenGL context is going to be destroyed. Might be called several times.
+*** CVE_UPDATE
+This is your update routine, should be called at ~60Hz.
+*** CVE_RESIZE
+Called when the window is resized. Might be called several times.
+*** CVE_DOWN
+A key/button has been pressed.
+*** CVE_UP
+A key/button has been released.
+*** CVE_UNICODE
+Called when the user enters text.
+*** CVE_MOTION
+The mouse moved.
+*** CVE_CLOSE
+The application is about to close.
+*** CVE_INVOKE
+Invoke method. The argument is available as evMethod().
+** Queries
+*** CVQ_NAME
+Return the desired application name.
+*** CVQ_LOGGER
+Function to be used for logging. The returned function prototype should be:
+#+begin_src c
+void report(const char * appname, const char * string);
+#+end_src
+*** CVQ_XPOS
+Return the desired X position. This is just a hint and can be ignored
+on some platforms.
+*** CVQ_YPOS
+Return the desired Y position. This is just a hint and can be ignored
+on some platforms.
+*** CVQ_WIDTH
+Return the desired width. Note that this is a hint and can be ignored
+on some platforms. Your code should use the width reported via
+CVE_RESIZE or ask explicitly with cvWidth().
+If this query isn't handled, the window will cover the whole desktop.
+*** CVQ_HEIGHT
+Return the desired height. Note that this is a hint and can be ignored
+on some platforms. Your code should use the height reported via
+CVE_RESIZE or ask explicitly with cvHeight().
+* Examples
+** Simple example that just draws
+#+INCLUDE: "test/simple.c" src c
+** Complete example handling all queries/events
+#+INCLUDE: "test/test.c" src c
+
+* License
+  Copyright (c) 2011-2012, Jorge Acereda Maciá
+  All rights reserved.
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions are
+  met:
+        
+  1. Redistributions of source code must retain the above copyright
+     notice, this list of conditions and the following disclaimer.
+        
+  2. Redistributions in binary form must reproduce the above copyright
+     notice, this list of conditions and the following disclaimer in
+     the documentation and/or other materials provided with the
+     distribution.
+
+  3. Neither the name of the author nor the names of its contributors
+     may be used to endorse or promote products derived from this
+     software without specific prior written permission.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
+  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+* ToDo 								   :noexport:
+
