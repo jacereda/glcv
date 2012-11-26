@@ -13,45 +13,46 @@
 #define err cvReport
 
 static int g_done = 0;
-static int g_shown = 1;
 static HWND g_win;
+static HCURSOR g_cursor = 0;
 static void delcursor() {
-        HCURSOR cur = GetCursor();
-        if (cur) 
-                DestroyIcon(cur);
+        if (g_cursor) 
+                DestroyIcon(g_cursor);
+        g_cursor = 0;
 }
 
 static void setcursor(uint8_t * rgba, int hotx, int hoty) {
         HDC dc;
         HBITMAP bm;
-        int x, y;
         ICONINFO ii;
         BITMAPV5HEADER bh;
-        int w = 32;
-        int h = 32;
+        int i;
+        uint8_t * bits;
         delcursor();
-        ZeroMemory(&bh, sizeof(BITMAPV5HEADER));
+        ZeroMemory(&bh, sizeof(bh));
         bh.bV5Size = sizeof(bh);
-        bh.bV5Width = w;
-        bh.bV5Height = -h;
+        bh.bV5Width = 32;
+        bh.bV5Height = -32;
         bh.bV5Planes = 1;
         bh.bV5BitCount = 32;
         bh.bV5Compression = BI_RGB;
-        bh.bV5AlphaMask = 0xff000000;
-        bh.bV5BlueMask = 0x00ff0000;
-        bh.bV5GreenMask = 0x0000ff00;
-        bh.bV5RedMask = 0x000000ff;
-        dc = GetDC(0);
-        bm = CreateDIBSection(dc, (BITMAPINFO*)&bh, DIB_RGB_COLORS, (void **)&rgba, 0, 0);
-        ReleaseDC(0, dc);
+        dc = GetDC(g_win);
+        bm = CreateDIBSection(dc, (BITMAPINFO*)&bh, DIB_RGB_COLORS, (void **)&bits, 0, 0);
+        ReleaseDC(g_win, dc);
+        for (i = 0; i < 32*32; i++) {
+                bits[4*i+0] = rgba[4*i+2];
+                bits[4*i+1] = rgba[4*i+1];
+                bits[4*i+2] = rgba[4*i+0];
+                bits[4*i+3] = rgba[4*i+3];
+        }
         ii.fIcon = FALSE;
         ii.xHotspot = hotx;
         ii.yHotspot = hoty;
         ii.hbmColor = bm;
-        ii.hbmMask = CreateBitmap(w, h, 1, 1, NULL);
-        SetCursor(CreateIconIndirect(&ii));
+        ii.hbmMask = bm;
+        g_cursor = CreateIconIndirect(&ii);
         DeleteObject(bm);
-        DeleteObject(ii.hbmMask);
+        SetCursor(g_cursor);
 }
 
 intptr_t osEvent(ev * e) {
@@ -307,6 +308,11 @@ static int onCLOSE(HWND win){
         return 0;
 }
 
+static int onSETCURSOR() {
+        SetCursor(g_cursor? g_cursor : LoadCursor(0, IDC_ARROW));
+        return 1;
+}
+
 static unsigned uc2cv(unsigned uc) {
         unsigned ret = uc;
         switch (uc) {
@@ -355,6 +361,7 @@ static LRESULT WINAPI handle(HWND win, UINT msg, WPARAM w, LPARAM l)  {
                 HANDLE(RBUTTONUP);
                 HANDLE(MBUTTONUP);
                 HANDLE(MOUSEWHEEL);
+                HANDLE(SETCURSOR);
                 HANDLE(PAINT);
 #undef HANDLE
         default: r = 0;
@@ -371,7 +378,6 @@ int cvrun(int argc, char ** argv) {
         HWND win;
         HDC dc;
         WCHAR name[256];
-        int done = 0;
         RECT r;
         PIXELFORMATDESCRIPTOR pfd = { 
                 sizeof(PIXELFORMATDESCRIPTOR),   // size of this pfd 
