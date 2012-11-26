@@ -29,7 +29,7 @@ file:README.html
 
 * Purpose
 GLCV is a small canvas/event handling library that provides a thin
-layer abstracting the details of configuring the window and handling
+layer abstracting the details of configuring the canvas and handling
 input. Sort of a simple GLUT/SDL. No API is provided for
 sound/fonts/widgets, there are good solutions out there for those and
 freedom of choice is a good thing.
@@ -81,18 +81,25 @@ This is the event handling routine implemented by your application.
 void cvQuit();
 #+end_src
 Call this to terminate your application.
-*** Window properties
+*** Canvas queries
 #+begin_src c
 unsigned cvWidth();
 #+end_src
-Current window width
+Current canvas width
 #+begin_src c
 unsigned cvHeight();
 #+end_src
-Current window height
+Current canvas height
+*** Canvas control
 #+begin_src c
-Mouse location
+void cvFullscreen();
 #+end_src
+On platforms that support it, put the canvas in fullscreen mode.
+#+begin_src c
+void cvWindowed();
+#+end_src
+On platforms that support it, put the canvas in windowed mode.
+*** Mouse queries
 #+begin_src c
 int cvMouseX();
 #+end_src
@@ -101,7 +108,22 @@ Current X mouse position
 int cvMouseY();
 #+end_src
 Current Y mouse position
-*** Keyboard
+*** Mouse control
+#+begin_src c
+void cvSetCursor(const uint8_t * rgba, int hotx, int hoty);
+#+end_src
+On platforms that support it, set the mouse cursor bitmap.  The rgba
+argument is a pointer to a 32*32*4 bytes array containing 32x32 RGBA
+pixels.
+#+begin_src c
+void cvHideCursor();
+#+end_src
+On platforms that support it, hide the mouse cursor.
+#+begin_src c
+void cvDefaultCursor();
+#+end_src
+On platforms that support it, establish the default mouse cursor.
+*** Keyboard queries
 #+begin_src c
 int cvPressed(cvkey key);
 #+end_src
@@ -110,6 +132,7 @@ True if key is currently pressed
 int cvReleased(cvkey key);
 #+end_src
 True if key has just been released
+*** Keyboard control
 #+begin_src c
 void cvShowKeyboard();
 #+end_src
@@ -118,22 +141,6 @@ On platforms that support it, show the on-screen keyboard
 void cvHideKeyboard();
 #+end_src
 On platforms that support it, hide the on-screen keyboard
-#+begin_src c
-void cvShowCursor();
-#+end_src
-On platforms that support it, show the mouse cursor.
-#+begin_src c
-void cvHideCursor();
-#+end_src
-On platforms that support it, hide the mouse cursor.
-#+begin_src c
-void cvFullscreen();
-#+end_src
-On platforms that support it, set the window in fullscreen mode.
-#+begin_src c
-void cvWindowed();
-#+end_src
-On platforms that support it, set the window in windowed mode.
 *** Logging
 #+begin_src c
 void cvReportV(const char * fmt, va_list ap);
@@ -196,7 +203,6 @@ Inject an event, mostly internal.
 const char * keyName(cvkey);
 #+end_src
 Key name for CVE_DOWN/CVE_UP events.
-
 ** Events
 *** CVE_NONE
 Null event, must be ignored.
@@ -211,7 +217,7 @@ The OpenGL context is going to be destroyed. Might be called several times.
 *** CVE_UPDATE
 This is your update routine, should be called at ~60Hz.
 *** CVE_RESIZE
-Called when the window is resized. Might be called several times.
+Called when the canvas is resized. Might be called several times.
 *** CVE_DOWN
 A key/button has been pressed.
 *** CVE_UP
@@ -242,7 +248,6 @@ on some platforms.
 Return the desired width. Note that this is a hint and can be ignored
 on some platforms. Your code should use the width reported via
 CVE_RESIZE or ask explicitly with cvWidth().
-If this query isn't handled, the window will cover the whole desktop.
 *** CVQ_HEIGHT
 Return the desired height. Note that this is a hint and can be ignored
 on some platforms. Your code should use the height reported via

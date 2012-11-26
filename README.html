@@ -115,10 +115,14 @@
 <ul>
 <li><a href="#sec-3-1-1">3.1.1 Application hook</a></li>
 <li><a href="#sec-3-1-2">3.1.2 Application control</a></li>
-<li><a href="#sec-3-1-3">3.1.3 Window properties</a></li>
-<li><a href="#sec-3-1-4">3.1.4 Keyboard</a></li>
-<li><a href="#sec-3-1-5">3.1.5 Logging</a></li>
-<li><a href="#sec-3-1-6">3.1.6 Events</a></li>
+<li><a href="#sec-3-1-3">3.1.3 Canvas queries</a></li>
+<li><a href="#sec-3-1-4">3.1.4 Canvas control</a></li>
+<li><a href="#sec-3-1-5">3.1.5 Mouse queries</a></li>
+<li><a href="#sec-3-1-6">3.1.6 Mouse control</a></li>
+<li><a href="#sec-3-1-7">3.1.7 Keyboard queries</a></li>
+<li><a href="#sec-3-1-8">3.1.8 Keyboard control</a></li>
+<li><a href="#sec-3-1-9">3.1.9 Logging</a></li>
+<li><a href="#sec-3-1-10">3.1.10 Events</a></li>
 </ul>
 </li>
 <li><a href="#sec-3-2">3.2 Events</a>
@@ -146,7 +150,6 @@
 <li><a href="#sec-3-3-4">3.3.4 CVQ_YPOS</a></li>
 <li><a href="#sec-3-3-5">3.3.5 CVQ_WIDTH</a></li>
 <li><a href="#sec-3-3-6">3.3.6 CVQ_HEIGHT</a></li>
-<li><a href="#sec-3-3-7">3.3.7 CVQ_BORDERS</a></li>
 </ul></li>
 </ul>
 </li>
@@ -166,7 +169,7 @@
 <div class="outline-text-2" id="text-1">
 
 <p>GLCV is a small canvas/event handling library that provides a thin
-layer abstracting the details of configuring the window and handling
+layer abstracting the details of configuring the canvas and handling
 input. Sort of a simple GLUT/SDL. No API is provided for
 sound/fonts/widgets, there are good solutions out there for those and
 freedom of choice is a good thing.
@@ -325,7 +328,7 @@ Call this to terminate your application.
 </div>
 
 <div id="outline-container-3-1-3" class="outline-4">
-<h4 id="sec-3-1-3"><span class="section-number-4">3.1.3</span> Window properties</h4>
+<h4 id="sec-3-1-3"><span class="section-number-4">3.1.3</span> Canvas queries</h4>
 <div class="outline-text-4" id="text-3-1-3">
 
 
@@ -335,7 +338,7 @@ Call this to terminate your application.
 </pre>
 
 <p>
-Current window width
+Current canvas width
 </p>
 
 
@@ -343,12 +346,40 @@ Current window width
 </pre>
 
 <p>
-Current window height
+Current canvas height
+</p></div>
+
+</div>
+
+<div id="outline-container-3-1-4" class="outline-4">
+<h4 id="sec-3-1-4"><span class="section-number-4">3.1.4</span> Canvas control</h4>
+<div class="outline-text-4" id="text-3-1-4">
+
+
+
+
+<pre class="src src-c"><span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">cvFullscreen</span>();
+</pre>
+
+<p>
+On platforms that support it, put the canvas in fullscreen mode.
 </p>
 
 
-<pre class="src src-c"><span style="color: #00cd00;">Mouse</span> <span style="color: #cdcd00;">location</span>
+<pre class="src src-c"><span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">cvWindowed</span>();
 </pre>
+
+<p>
+On platforms that support it, put the canvas in windowed mode.
+</p></div>
+
+</div>
+
+<div id="outline-container-3-1-5" class="outline-4">
+<h4 id="sec-3-1-5"><span class="section-number-4">3.1.5</span> Mouse queries</h4>
+<div class="outline-text-4" id="text-3-1-5">
+
+
 
 
 <pre class="src src-c"><span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">cvMouseX</span>();
@@ -368,9 +399,43 @@ Current Y mouse position
 
 </div>
 
-<div id="outline-container-3-1-4" class="outline-4">
-<h4 id="sec-3-1-4"><span class="section-number-4">3.1.4</span> Keyboard</h4>
-<div class="outline-text-4" id="text-3-1-4">
+<div id="outline-container-3-1-6" class="outline-4">
+<h4 id="sec-3-1-6"><span class="section-number-4">3.1.6</span> Mouse control</h4>
+<div class="outline-text-4" id="text-3-1-6">
+
+
+
+
+<pre class="src src-c"><span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">cvSetCursor</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">uint8_t</span> * <span style="color: #cdcd00;">rgba</span>, <span style="color: #00cd00;">int</span> <span style="color: #cdcd00;">hotx</span>, <span style="color: #00cd00;">int</span> <span style="color: #cdcd00;">hoty</span>);
+</pre>
+
+<p>
+On platforms that support it, set the mouse cursor bitmap.  The rgba
+argument is a pointer to a 32*32*4 bytes array containing 32x32 RGBA
+pixels.
+</p>
+
+
+<pre class="src src-c"><span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">cvHideCursor</span>();
+</pre>
+
+<p>
+On platforms that support it, hide the mouse cursor.
+</p>
+
+
+<pre class="src src-c"><span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">cvDefaultCursor</span>();
+</pre>
+
+<p>
+On platforms that support it, establish the default mouse cursor.
+</p></div>
+
+</div>
+
+<div id="outline-container-3-1-7" class="outline-4">
+<h4 id="sec-3-1-7"><span class="section-number-4">3.1.7</span> Keyboard queries</h4>
+<div class="outline-text-4" id="text-3-1-7">
 
 
 
@@ -388,10 +453,18 @@ True if key is currently pressed
 
 <p>
 True if key has just been released
-</p>
+</p></div>
+
+</div>
+
+<div id="outline-container-3-1-8" class="outline-4">
+<h4 id="sec-3-1-8"><span class="section-number-4">3.1.8</span> Keyboard control</h4>
+<div class="outline-text-4" id="text-3-1-8">
 
 
-<pre class="src src-c"><span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">cvShowKeyboard</span>();
+
+
+<pre class="src src-c"><span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">cvShowKeyboard</span>();
 </pre>
 
 <p>
@@ -399,7 +472,7 @@ On platforms that support it, show the on-screen keyboard
 </p>
 
 
-<pre class="src src-c"><span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">cvHideKeyboard</span>();
+<pre class="src src-c"><span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">cvHideKeyboard</span>();
 </pre>
 
 <p>
@@ -408,9 +481,9 @@ On platforms that support it, hide the on-screen keyboard
 
 </div>
 
-<div id="outline-container-3-1-5" class="outline-4">
-<h4 id="sec-3-1-5"><span class="section-number-4">3.1.5</span> Logging</h4>
-<div class="outline-text-4" id="text-3-1-5">
+<div id="outline-container-3-1-9" class="outline-4">
+<h4 id="sec-3-1-9"><span class="section-number-4">3.1.9</span> Logging</h4>
+<div class="outline-text-4" id="text-3-1-9">
 
 
 
@@ -432,9 +505,9 @@ Report a message (depending on the platform, it might go to a file).
 
 </div>
 
-<div id="outline-container-3-1-6" class="outline-4">
-<h4 id="sec-3-1-6"><span class="section-number-4">3.1.6</span> Events</h4>
-<div class="outline-text-4" id="text-3-1-6">
+<div id="outline-container-3-1-10" class="outline-4">
+<h4 id="sec-3-1-10"><span class="section-number-4">3.1.10</span> Events</h4>
+<div class="outline-text-4" id="text-3-1-10">
 
 
 
@@ -540,8 +613,7 @@ Inject an event, mostly internal.
 
 <p>
 Key name for CVE_DOWN/CVE_UP events.
-</p>
-</div>
+</p></div>
 </div>
 
 </div>
@@ -611,7 +683,7 @@ Key name for CVE_DOWN/CVE_UP events.
 <h4 id="sec-3-2-7"><span class="section-number-4">3.2.7</span> CVE_RESIZE</h4>
 <div class="outline-text-4" id="text-3-2-7">
 
-<p>Called when the window is resized. Might be called several times.
+<p>Called when the canvas is resized. Might be called several times.
 </p></div>
 
 </div>
@@ -729,7 +801,6 @@ on some platforms.
 <p>Return the desired width. Note that this is a hint and can be ignored
 on some platforms. Your code should use the width reported via
 CVE_RESIZE or ask explicitly with cvWidth().
-If this query isn't handled, the window will cover the whole desktop.
 </p></div>
 
 </div>
@@ -742,16 +813,6 @@ If this query isn't handled, the window will cover the whole desktop.
 on some platforms. Your code should use the height reported via
 CVE_RESIZE or ask explicitly with cvHeight().
 </p></div>
-
-</div>
-
-<div id="outline-container-3-3-7" class="outline-4">
-<h4 id="sec-3-3-7"><span class="section-number-4">3.3.7</span> CVQ_BORDERS</h4>
-<div class="outline-text-4" id="text-3-3-7">
-
-<p>Should the window have borders?
-</p>
-</div>
 </div>
 </div>
 
@@ -827,16 +888,40 @@ CVE_RESIZE or ask explicitly with cvHeight().
         cvReport(<span style="color: #00cd00;">"glinit"</span>);
 }
 
-<span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">down</span>(<span style="color: #00cd00;">cvkey</span> <span style="color: #cdcd00;">k</span>) {
+<span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">down</span>(<span style="color: #00cd00;">cvkey</span> <span style="color: #cdcd00;">k</span>) {
+        <span style="color: #00cd00;">int</span> <span style="color: #cdcd00;">handled</span> = 0;;
         cvReport(<span style="color: #00cd00;">"down %s"</span>, keyName(k));
+        <span style="color: #00cdcd; font-weight: bold;">switch</span> (k) {
+        <span style="color: #00cdcd; font-weight: bold;">case</span> CVK_MOUSELEFT:
+                <span style="color: #00cdcd; font-weight: bold;">if</span> (cvMouseY() &lt; 10)
+                        cvShowKeyboard();
+        <span style="color: #00cdcd; font-weight: bold;">default</span>:
+                handled = 0;
+        }
+        <span style="color: #00cdcd; font-weight: bold;">return</span> handled;
 }
 
-<span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">up</span>(<span style="color: #00cd00;">cvkey</span> <span style="color: #cdcd00;">k</span>) {
+<span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">uint8_t</span> <span style="color: #cdcd00;">cur</span>[32*32*4] = {
+        0xff,0x00,0x00,0xff, 
+        0x00,0xff,0x00,0xff, 
+        0x00,0x00,0xff,0xff, 
+        0xff,0xff,0xff,0xff,
+};
+
+<span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">up</span>(<span style="color: #00cd00;">cvkey</span> <span style="color: #cdcd00;">k</span>) {
+        <span style="color: #00cd00;">int</span> <span style="color: #cdcd00;">handled</span> = 0;
         cvReport(<span style="color: #00cd00;">"up %s"</span>, keyName(k));
         <span style="color: #00cdcd; font-weight: bold;">switch</span> (k) {
         <span style="color: #00cdcd; font-weight: bold;">case</span> CVK_ESCAPE: cvQuit(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
-        <span style="color: #00cdcd; font-weight: bold;">default</span>: <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> CVK_H: cvHideCursor(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> CVK_S: cvDefaultCursor(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> CVK_F: cvFullscreen(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> CVK_C: cvSetCursor(cur, 16, 16);
+        <span style="color: #00cdcd; font-weight: bold;">case</span> CVK_W: cvWindowed(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+<span style="color: #cd0000;">//        </span><span style="color: #cd0000;">case CVK_RETURN: cvHideKeyboard(); break;</span>
+        <span style="color: #00cdcd; font-weight: bold;">default</span>: handled = 0; <span style="color: #00cdcd; font-weight: bold;">break</span>;
         }
+        <span style="color: #00cdcd; font-weight: bold;">return</span> handled;
 }
 
 <span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">unicode</span>(<span style="color: #00cd00;">uint32_t</span> <span style="color: #cdcd00;">c</span>) {
@@ -867,6 +952,10 @@ CVE_RESIZE or ask explicitly with cvHeight().
         glClearColor(((2*i) &amp; 0xff) / 255.0f, 0.f, 1.f, (i &amp; 0xff) / 255.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glFlush();
+        <span style="color: #00cdcd; font-weight: bold;">if</span> (cvPressed(CVK_A))
+                cvReport(<span style="color: #00cd00;">"A pressed"</span>);
+        <span style="color: #00cdcd; font-weight: bold;">if</span> (cvReleased(CVK_A))
+                cvReport(<span style="color: #00cd00;">"A released"</span>);
 }
 
 <span style="color: #00cd00;">intptr_t</span> <span style="color: #0000ee; font-weight: bold;">event</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> * <span style="color: #cdcd00;">e</span>) {
@@ -881,17 +970,16 @@ CVE_RESIZE or ask explicitly with cvHeight().
         <span style="color: #00cdcd; font-weight: bold;">case</span> CVQ_YPOS: ret = 50; <span style="color: #00cdcd; font-weight: bold;">break</span>;
         <span style="color: #00cdcd; font-weight: bold;">case</span> CVQ_WIDTH: ret = 640; <span style="color: #00cdcd; font-weight: bold;">break</span>;
         <span style="color: #00cdcd; font-weight: bold;">case</span> CVQ_HEIGHT: ret = 480; <span style="color: #00cdcd; font-weight: bold;">break</span>;
-        <span style="color: #00cdcd; font-weight: bold;">case</span> CVQ_BORDERS: ret = 1; <span style="color: #00cdcd; font-weight: bold;">break</span>;
         <span style="color: #00cdcd; font-weight: bold;">case</span> CVE_INIT: init(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
         <span style="color: #00cdcd; font-weight: bold;">case</span> CVE_TERM: term(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
         <span style="color: #00cdcd; font-weight: bold;">case</span> CVE_GLINIT: glinit(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
-        <span style="color: #00cdcd; font-weight: bold;">case</span> CVE_DOWN: down(evWhich(e)); <span style="color: #00cdcd; font-weight: bold;">break</span>;
-        <span style="color: #00cdcd; font-weight: bold;">case</span> CVE_UP: up(evWhich(e)); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> CVE_DOWN: ret = down(evWhich(e)); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> CVE_UP: ret = up(evWhich(e)); <span style="color: #00cdcd; font-weight: bold;">break</span>;
         <span style="color: #00cdcd; font-weight: bold;">case</span> CVE_UNICODE: unicode(evUnicode(e)); <span style="color: #00cdcd; font-weight: bold;">break</span>;
         <span style="color: #00cdcd; font-weight: bold;">case</span> CVE_MOTION: motion(evX(e), evY(e)); <span style="color: #00cdcd; font-weight: bold;">break</span>;
         <span style="color: #00cdcd; font-weight: bold;">case</span> CVE_CLOSE: close(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
         <span style="color: #00cdcd; font-weight: bold;">case</span> CVE_INVOKE: invoke(evMethod(e)); <span style="color: #00cdcd; font-weight: bold;">break</span>;
-        <span style="color: #00cdcd; font-weight: bold;">case</span> CVE_RESIZE: resize(cvWidth(e), cvHeight(e)); <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        <span style="color: #00cdcd; font-weight: bold;">case</span> CVE_RESIZE: resize(evWidth(e), evHeight(e)); <span style="color: #00cdcd; font-weight: bold;">break</span>;
         <span style="color: #00cdcd; font-weight: bold;">case</span> CVE_UPDATE: update(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
         <span style="color: #00cdcd; font-weight: bold;">default</span>: ret = 0; <span style="color: #00cdcd; font-weight: bold;">break</span>;
         }

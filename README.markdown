@@ -3,7 +3,7 @@ GLCV
 
 ## 1) Purpose
   GLCV is a small canvas/event handling library that provides a thin
-  layer abstracting the details of configuring the window and handling
+  layer abstracting the details of configuring the canvas and handling
   input. Sort of a simple GLUT/SDL. No API is provided for
   sound/fonts/widgets, there are good solutions out there for those and
   freedom of choice is a good thing.
@@ -50,34 +50,53 @@ GLCV
     void cvQuit();
   Call this to terminate your application.
 
-#### 3.1.3) Window properties
+#### 3.1.3) Canvas queries
     unsigned cvWidth();
-  Current window width
+  Current canvas width
     unsigned cvHeight();
-  Current window height
-    Mouse location
+  Current canvas height
+
+#### 3.1.4) Canvas control
+    void cvFullscreen();
+  On platforms that support it, put the canvas in fullscreen mode.
+    void cvWindowed();
+  On platforms that support it, put the canvas in windowed mode.
+
+#### 3.1.5) Mouse queries
     int cvMouseX();
   Current X mouse position
     int cvMouseY();
   Current Y mouse position
 
-#### 3.1.4) Keyboard
+#### 3.1.6) Mouse control
+    void cvSetCursor(const uint8_t * rgba, int hotx, int hoty);
+  On platforms that support it, set the mouse cursor bitmap.  The rgba
+  argument is a pointer to a 32*32*4 bytes array containing 32x32 RGBA
+  pixels.
+    void cvHideCursor();
+  On platforms that support it, hide the mouse cursor.
+    void cvDefaultCursor();
+  On platforms that support it, establish the default mouse cursor.
+
+#### 3.1.7) Keyboard queries
     int cvPressed(cvkey key);
   True if key is currently pressed
     int cvReleased(cvkey key);
   True if key has just been released
-    int cvShowKeyboard();
+
+#### 3.1.8) Keyboard control
+    void cvShowKeyboard();
   On platforms that support it, show the on-screen keyboard
-    int cvHideKeyboard();
+    void cvHideKeyboard();
   On platforms that support it, hide the on-screen keyboard
 
-#### 3.1.5) Logging
+#### 3.1.9) Logging
     void cvReportV(const char * fmt, va_list ap);
   Report a message (depending on the platform, it might go to a file).
     void cvReport(const char * fmt, ...);
   Report a message (depending on the platform, it might go to a file).
 
-#### 3.1.6) Events
+#### 3.1.10) Events
     int evType(const ev *);
   Event type.
     const char * evName(const ev *);
@@ -127,7 +146,7 @@ stage.
   This is your update routine, should be called at ~60Hz.
 
 #### 3.2.7) CVE_RESIZE
-  Called when the window is resized. Might be called several times.
+  Called when the canvas is resized. Might be called several times.
 
 #### 3.2.8) CVE_DOWN
   A key/button has been pressed.
@@ -168,15 +187,11 @@ stage.
   Return the desired width. Note that this is a hint and can be ignored
   on some platforms. Your code should use the width reported via
   CVE_RESIZE or ask explicitly with cvWidth().
-  If this query isn't handled, the window will cover the whole desktop.
 
 #### 3.3.6) CVQ_HEIGHT
   Return the desired height. Note that this is a hint and can be ignored
   on some platforms. Your code should use the height reported via
   CVE_RESIZE or ask explicitly with cvHeight().
-
-#### 3.3.7) CVQ_BORDERS
-  Should the window have borders?
 
 ## 4) Examples
 
@@ -222,15 +237,38 @@ stage.
     static void glinit() {
             cvReport("glinit");
     }
-    static void down(cvkey k) {
+    static int down(cvkey k) {
+            int handled = 0;;
             cvReport("down %s", keyName(k));
+            switch (k) {
+            case CVK_MOUSELEFT:
+                    if (cvMouseY() < 10)
+                            cvShowKeyboard();
+            default:
+                    handled = 0;
+            }
+            return handled;
     }
-    static void up(cvkey k) {
+    static uint8_t cur[32*32*4] = {
+            0xff,0x00,0x00,0xff, 
+            0x00,0xff,0x00,0xff, 
+            0x00,0x00,0xff,0xff, 
+            0xff,0xff,0xff,0xff,
+    };
+    static int up(cvkey k) {
+            int handled = 0;
             cvReport("up %s", keyName(k));
             switch (k) {
             case CVK_ESCAPE: cvQuit(); break;
-            default: break;
+            case CVK_H: cvHideCursor(); break;
+            case CVK_S: cvDefaultCursor(); break;
+            case CVK_F: cvFullscreen(); break;
+            case CVK_C: cvSetCursor(cur, 16, 16);
+            case CVK_W: cvWindowed(); break;
+    //        case CVK_RETURN: cvHideKeyboard(); break;
+            default: handled = 0; break;
             }
+            return handled;
     }
     static void unicode(uint32_t c) {
             cvReport("unicode %c", c);
@@ -256,6 +294,10 @@ stage.
           255.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glFlush();
+            if (cvPressed(CVK_A))
+                    cvReport("A pressed");
+            if (cvReleased(CVK_A))
+                    cvReport("A released");
     }
     intptr_t event(const ev * e) {
             intptr_t ret = 1;
@@ -269,17 +311,16 @@ stage.
             case CVQ_YPOS: ret = 50; break;
             case CVQ_WIDTH: ret = 640; break;
             case CVQ_HEIGHT: ret = 480; break;
-            case CVQ_BORDERS: ret = 1; break;
             case CVE_INIT: init(); break;
             case CVE_TERM: term(); break;
             case CVE_GLINIT: glinit(); break;
-            case CVE_DOWN: down(evWhich(e)); break;
-            case CVE_UP: up(evWhich(e)); break;
+            case CVE_DOWN: ret = down(evWhich(e)); break;
+            case CVE_UP: ret = up(evWhich(e)); break;
             case CVE_UNICODE: unicode(evUnicode(e)); break;
             case CVE_MOTION: motion(evX(e), evY(e)); break;
             case CVE_CLOSE: close(); break;
             case CVE_INVOKE: invoke(evMethod(e)); break;
-            case CVE_RESIZE: resize(cvWidth(e), cvHeight(e)); break;
+            case CVE_RESIZE: resize(evWidth(e), evHeight(e)); break;
             case CVE_UPDATE: update(); break;
             default: ret = 0; break;
             }
