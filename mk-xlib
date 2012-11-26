@@ -1,0 +1,7 @@
+#!/bin/bash
+mk() {
+     gcc $* -Wall -I/usr/X11R6/include -I src src/xlib.c -L/usr/X11R6/lib -lX11 -lXcursor -lGL
+}
+install -d b
+mk test/simple.c -o b/simple
+mk test/test.c -o b/test

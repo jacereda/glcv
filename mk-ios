@@ -1,0 +1,82 @@
+#!/bin/bash
+
+log() {
+    echo $* 1>&2
+}
+
+builddir() {
+    echo "b"
+}
+
+pkgdir() {
+    echo `builddir`/$1.app
+}
+
+condir() {
+    echo `pkgdir $1`
+}
+
+resdir() {
+    echo `condir $1`
+}
+
+bindir() {
+    echo `condir $1`
+}
+
+obj() {
+    log "compiling $*"
+    dst=`builddir`/$1.o
+    shift
+    cmd="/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/gcc -m32 -D__IPHONE_OS_VERSION_MIN_REQUIRED=30200 -arch i386 -m32 -isysroot /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator3.2.sdk -mmacosx-version-min=10.5 -fobjc-abi-version=2 -fobjc-legacy-dispatch -Wall -c -I src -o $dst $1"
+    log $cmd
+    $cmd
+    echo $dst
+}
+
+exe() {
+    log "linking $*"
+    dst=`builddir`/$1
+    shift
+    obj=$1
+    shift
+    cmd="/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/gcc -m32 -isysroot /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator3.2.sdk -mmacosx-version-min=10.5 -framework OpenGLES -framework UIKit -framework QuartzCore -framework Foundation -o $dst $obj -L `builddir` $*"
+    log $cmd
+    $cmd
+    echo $dst
+}
+
+pkg() {
+    log "packaging $*"
+    install -d `resdir $1`
+    install -d `bindir $1`
+    sed s/NAME/$1/g templates/ios/template.plist > `pkgdir $1`/Info.plist
+    cmd="cp $2 `bindir $1`"
+    log $cmd
+    $cmd
+    echo `pkgdir $1`
+}
+
+ins() {
+    log "installing $*"
+    name=$1
+    shift
+    dst="$HOME/Library/Application Support/iPhone Simulator/4.0.2/Applications/$name"
+    install -d "$dst"
+    cp -R $1 "$dst"
+    echo "$dst/$1"
+}
+
+rm -fR `builddir`
+install -d `builddir`
+cvobj="`obj ios src/ios.m`"
+
+testobj=`obj test test/test.c`
+testexe=`exe test $testobj $cvobj`
+testpkg=`pkg test $testexe`
+itestpkg=`ins test $testpkg`
+
+glestestobj=`obj glestest test/glestest.c`
+glestestexe=`exe glestest $glestestobj $cvobj`
+glestestpkg=`pkg glestest $glestestexe`
+iglestestpkg=`ins glestest $glestestpkg`

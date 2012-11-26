@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>NAME</string>
+	<key>CFBundleGetInfoString</key>
+	<string>NAME</string>
+	<key>CFBundleIdentifier</key>
+	<string>NAME</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundlePackageType</key>
+	<string>BRPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>1.0</string>
+	<key>CFPlugInDynamicRegisterFunction</key>
+	<string></string>
+	<key>CFPlugInDynamicRegistration</key>
+	<string>NO</string>
+
+	<key>WebPluginName</key>
+	<string>NAME</string>
+	<key>WebPluginDescription</key>
+	<string>NAME</string>
+	<key>WebPluginMIMETypes</key>
+	<dict>
+		<key>application/NAME</key>
+		<dict>
+			<key>WebPluginTypeDescription</key>
+			<string>NAME</string>
+		</dict>
+	</dict>
+</dict>
+</plist>
