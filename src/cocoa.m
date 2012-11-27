@@ -68,6 +68,10 @@ static void setcursor(uint8_t * rgba, int16_t hotx, int16_t hoty) {
         [cur set];
 }
 
+static void defaultcursor() {
+        [[NSCursor arrowCursor] set]; 
+}
+
 intptr_t osEvent(ev * e) {
         static int fullscreen = 0;
         intptr_t ret = 1;
@@ -77,7 +81,9 @@ intptr_t osEvent(ev * e) {
                 setcursor((uint8_t*)evArg0(e), 
                           evArg1(e) >> 16, evArg1(e) & 0xffff); 
                 break;
-        case CVE_DEFAULTCURSOR: [[NSCursor arrowCursor] set]; break;
+        case CVE_DEFAULTCURSOR: 
+                defaultcursor();
+                break;
         case CVE_FULLSCREEN:
                 if (!fullscreen) {
                         g_rect = [g_win frame];
@@ -425,7 +431,6 @@ int cvrun(int argc, char ** argv) {
         [win setDelegate: view];
         [win setContentView: view];
         [win setReleasedWhenClosed: NO];
-
         fmt = [[NSOpenGLPixelFormat alloc] initWithAttributes: attr];
         ctx = [[NSOpenGLContext alloc] 
                               initWithFormat:fmt  
@@ -437,7 +442,6 @@ int cvrun(int argc, char ** argv) {
         cvInject(CVE_GLINIT, 0, 0);
         [win makeKeyAndOrderFront: view];
         cvInject(CVE_RESIZE, rect.size.width, rect.size.height);
-
         [arp drain];
         do {
                 arp = [[NSAutoreleasePool alloc] init];
