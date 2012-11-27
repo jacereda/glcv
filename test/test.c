@@ -39,9 +39,9 @@ static int up(cvkey k) {
         switch (k) {
         case CVK_ESCAPE: cvQuit(); break;
         case CVK_H: cvHideCursor(); break;
-        case CVK_S: cvDefaultCursor(); break;
+        case CVK_D: cvDefaultCursor(); break;
+        case CVK_C: cvSetCursor(cur, 0, 0); break;
         case CVK_F: cvFullscreen(); break;
-        case CVK_C: cvSetCursor(cur, 16, 16);
         case CVK_W: cvWindowed(); break;
 //        case CVK_RETURN: cvHideKeyboard(); break;
         default: handled = 0; break;
