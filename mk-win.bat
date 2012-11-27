@@ -1,4 +1,4 @@
-set MK=gcc -I src src/win.c 
+set MK=gcc -Wall -I src src/win.c 
 set LIBS=-lgdi32 -lopengl32
 mkdir b
 %MK% test/simple.c -o b/simple.exe %LIBS%

@@ -12,44 +12,51 @@
 #define dbg cvReport
 #define err cvReport
 
+#define WINDOWED_STYLE WS_CLIPSIBLINGS | WS_CLIPCHILDREN \
+                 | WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX
+#define FULLSCREEN_STYLE WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP
+
 static int g_done = 0;
-static int g_shown = 1;
 static HWND g_win;
+static HCURSOR g_cursor = 0;
 static void delcursor() {
-        HCURSOR cur = GetCursor();
-        if (cur) 
-                DestroyIcon(cur);
+        if (g_cursor) 
+                DestroyIcon(g_cursor);
+        g_cursor = 0;
 }
 
-static void setcursor(uint8_t * rgba, int hotx, int hoty) {
+static void setcursor(uint8_t * rgba, int16_t hotx, int16_t hoty) {
         HDC dc;
         HBITMAP bm;
-        int x, y;
         ICONINFO ii;
         BITMAPV5HEADER bh;
-        int w = 32;
-        int h = 32;
-        delcursor();
-        ZeroMemory(&bh, sizeof(BITMAPV5HEADER));
+        int i;
+        uint8_t * bits;
+        ZeroMemory(&bh, sizeof(bh));
         bh.bV5Size = sizeof(bh);
-        bh.bV5Width = w;
-        bh.bV5Height = -h;
+        bh.bV5Width = 32;
+        bh.bV5Height = -32;
         bh.bV5Planes = 1;
         bh.bV5BitCount = 32;
         bh.bV5Compression = BI_RGB;
-        bh.bV5AlphaMask = 0xff000000;
-        bh.bV5BlueMask = 0x00ff0000;
-        bh.bV5GreenMask = 0x0000ff00;
-        bh.bV5RedMask = 0x000000ff;
-        dc = GetDC(0);
-        bm = CreateDIBSection(dc, (BITMAPINFO*)&bh, DIB_RGB_COLORS, (void **)&rgba, 0, 0);
-        ReleaseDC(0, dc);
+        dc = GetDC(g_win);
+        bm = CreateDIBSection(dc, (BITMAPINFO*)&bh, DIB_RGB_COLORS, (void **)&bits, 0, 0);
+        ReleaseDC(g_win, dc);
+        for (i = 0; i < 32*32; i++) {
+                bits[4*i+0] = rgba[4*i+2];
+                bits[4*i+1] = rgba[4*i+1];
+                bits[4*i+2] = rgba[4*i+0];
+                bits[4*i+3] = rgba[4*i+3];
+        }
+        if (bits[3] == 0)
+                bits[3] = 1; // workaround for vbox
         ii.fIcon = FALSE;
         ii.xHotspot = hotx;
         ii.yHotspot = hoty;
         ii.hbmColor = bm;
-        ii.hbmMask = CreateBitmap(w, h, 1, 1, NULL);
-        SetCursor(CreateIconIndirect(&ii));
+        ii.hbmMask = CreateBitmap(32, 32, 1, 1, 0); 
+        g_cursor = CreateIconIndirect(&ii);
+        SetCursor(g_cursor);
         DeleteObject(bm);
         DeleteObject(ii.hbmMask);
 }
@@ -59,18 +66,26 @@ intptr_t osEvent(ev * e) {
         switch (evType(e)) {
         case CVE_QUIT: g_done = 1; break;               
         case CVE_SETCURSOR: 
+                delcursor();
                 setcursor((uint8_t*)evArg0(e), 
                           evArg1(e) >> 16, evArg1(e) & 0xffff); 
                 break;
         case CVE_DEFAULTCURSOR: 
+                delcursor();
                 SetCursor(LoadCursor(0, IDC_ARROW));
                 break;
         case CVE_FULLSCREEN: 
-                ShowWindow(g_win, SW_MAXIMIZE);
+                SetWindowLong(g_win, GWL_STYLE, FULLSCREEN_STYLE);
+                ShowWindow(g_win, SW_SHOWMAXIMIZED);
+                SetWindowPos(g_win, HWND_TOPMOST, 0, 0, 0, 0,
+                             SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_FRAMECHANGED);
                 break;
         case CVE_WINDOWED:
                 ShowWindow(g_win, SW_SHOWNORMAL);
-//                GetWindowRect(GetDesktopWindow(), &r);
+                SetWindowLong(g_win, GWL_STYLE, WINDOWED_STYLE);
+                SetWindowPos(g_win, HWND_TOPMOST, 0, 0, 0, 0,
+                             SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_FRAMECHANGED|SWP_SHOWWINDOW);
+                
                 break;
         default: ret = 0;
         }
@@ -307,6 +322,11 @@ static int onCLOSE(HWND win){
         return 0;
 }
 
+static int onSETCURSOR() {
+        SetCursor(g_cursor? g_cursor : LoadCursor(0, IDC_ARROW));
+        return 1;
+}
+
 static unsigned uc2cv(unsigned uc) {
         unsigned ret = uc;
         switch (uc) {
@@ -355,6 +375,7 @@ static LRESULT WINAPI handle(HWND win, UINT msg, WPARAM w, LPARAM l)  {
                 HANDLE(RBUTTONUP);
                 HANDLE(MBUTTONUP);
                 HANDLE(MOUSEWHEEL);
+                HANDLE(SETCURSOR);
                 HANDLE(PAINT);
 #undef HANDLE
         default: r = 0;
@@ -371,7 +392,6 @@ int cvrun(int argc, char ** argv) {
         HWND win;
         HDC dc;
         WCHAR name[256];
-        int done = 0;
         RECT r;
         PIXELFORMATDESCRIPTOR pfd = { 
                 sizeof(PIXELFORMATDESCRIPTOR),   // size of this pfd 
@@ -394,8 +414,7 @@ int cvrun(int argc, char ** argv) {
                 0, 0, 0                // layer masks ignored 
         };
         DWORD exstyle = WS_EX_APPWINDOW;
-        DWORD style = WS_CLIPSIBLINGS | WS_CLIPCHILDREN
-                 | WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
+        DWORD style = WINDOWED_STYLE;
         MultiByteToWideChar(CP_UTF8, 0, 
                             (const char *)cvInject(CVQ_NAME, 0, 0),
                             -1, name, sizeof(name));
