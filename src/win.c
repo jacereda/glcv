@@ -12,6 +12,10 @@
 #define dbg cvReport
 #define err cvReport
 
+#define WINDOWED_STYLE WS_CLIPSIBLINGS | WS_CLIPCHILDREN \
+                 | WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX
+#define FULLSCREEN_STYLE WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP
+
 static int g_done = 0;
 static HWND g_win;
 static HCURSOR g_cursor = 0;
@@ -67,11 +71,17 @@ intptr_t osEvent(ev * e) {
                 SetCursor(LoadCursor(0, IDC_ARROW));
                 break;
         case CVE_FULLSCREEN: 
-                ShowWindow(g_win, SW_MAXIMIZE);
+                SetWindowLong(g_win, GWL_STYLE, FULLSCREEN_STYLE);
+                ShowWindow(g_win, SW_SHOWMAXIMIZED);
+                SetWindowPos(g_win, HWND_TOPMOST, 0, 0, 0, 0,
+                             SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_FRAMECHANGED);
                 break;
         case CVE_WINDOWED:
                 ShowWindow(g_win, SW_SHOWNORMAL);
-//                GetWindowRect(GetDesktopWindow(), &r);
+                SetWindowLong(g_win, GWL_STYLE, WINDOWED_STYLE);
+                SetWindowPos(g_win, HWND_TOPMOST, 0, 0, 0, 0,
+                             SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_FRAMECHANGED|SWP_SHOWWINDOW);
+                
                 break;
         default: ret = 0;
         }
@@ -400,8 +410,7 @@ int cvrun(int argc, char ** argv) {
                 0, 0, 0                // layer masks ignored 
         };
         DWORD exstyle = WS_EX_APPWINDOW;
-        DWORD style = WS_CLIPSIBLINGS | WS_CLIPCHILDREN
-                 | WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
+        DWORD style = WINDOWED_STYLE;
         MultiByteToWideChar(CP_UTF8, 0, 
                             (const char *)cvInject(CVQ_NAME, 0, 0),
                             -1, name, sizeof(name));
