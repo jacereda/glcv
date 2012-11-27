@@ -25,14 +25,13 @@ static void delcursor() {
         g_cursor = 0;
 }
 
-static void setcursor(uint8_t * rgba, int hotx, int hoty) {
+static void setcursor(uint8_t * rgba, int16_t hotx, int16_t hoty) {
         HDC dc;
         HBITMAP bm;
         ICONINFO ii;
         BITMAPV5HEADER bh;
         int i;
         uint8_t * bits;
-        delcursor();
         ZeroMemory(&bh, sizeof(bh));
         bh.bV5Size = sizeof(bh);
         bh.bV5Width = 32;
@@ -49,14 +48,17 @@ static void setcursor(uint8_t * rgba, int hotx, int hoty) {
                 bits[4*i+2] = rgba[4*i+0];
                 bits[4*i+3] = rgba[4*i+3];
         }
+        if (bits[3] == 0)
+                bits[3] = 1; // workaround for vbox
         ii.fIcon = FALSE;
         ii.xHotspot = hotx;
         ii.yHotspot = hoty;
         ii.hbmColor = bm;
-        ii.hbmMask = bm;
+        ii.hbmMask = CreateBitmap(32, 32, 1, 1, 0); 
         g_cursor = CreateIconIndirect(&ii);
-        DeleteObject(bm);
         SetCursor(g_cursor);
+        DeleteObject(bm);
+        DeleteObject(ii.hbmMask);
 }
 
 intptr_t osEvent(ev * e) {
@@ -64,10 +66,12 @@ intptr_t osEvent(ev * e) {
         switch (evType(e)) {
         case CVE_QUIT: g_done = 1; break;               
         case CVE_SETCURSOR: 
+                delcursor();
                 setcursor((uint8_t*)evArg0(e), 
                           evArg1(e) >> 16, evArg1(e) & 0xffff); 
                 break;
         case CVE_DEFAULTCURSOR: 
+                delcursor();
                 SetCursor(LoadCursor(0, IDC_ARROW));
                 break;
         case CVE_FULLSCREEN: 
