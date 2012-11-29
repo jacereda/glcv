@@ -83,12 +83,20 @@ static __inline int bittest(const unsigned char * b, unsigned bit) {
         return b[bit>>3] & (1 << (bit & 7));
 }
 
-static void mysnprintf(char * buf, size_t sz, const char * fmt, ...) {
+static int myvsnprintf(char * buf, size_t sz, const char * fmt, va_list ap) {
+        int ret = vsnprintf(buf, sz, fmt, ap);
+        buf[sz-1] = 0;
+        assert(ret < sz);
+        return ret;
+}
+
+static int mysnprintf(char * buf, size_t sz, const char * fmt, ...) {
+        int ret;
         va_list ap;
         va_start(ap, fmt);
-        vsnprintf(buf, sz, fmt, ap);
+        ret = myvsnprintf(buf, sz, fmt, ap);
         va_end(ap);
-        buf[sz-1] = 0;
+        return ret;
 }
 
 unsigned cvWidth() {
@@ -223,7 +231,7 @@ const char * keyName(cvkey k) {
 static void defaultlog(const char * name, const char * s) {
         char path[256]; 
         FILE *out;
-        snprintf(path, sizeof(path), 
+        mysnprintf(path, sizeof(path), 
 #if defined _WIN32
                  "%s.log"
 #else
@@ -336,8 +344,8 @@ void cvReportV(const char *fmt, va_list ap) {
         if (good) {
                 char b[1024];
                 size_t s = 0;
-                s += vsnprintf(b + s, sizeof(b) - s, fmt, ap);
-                s += snprintf(b + s, sizeof(b) - s, "\n");
+                s += myvsnprintf(b + s, sizeof(b) - s, fmt, ap);
+                s += mysnprintf(b + s, sizeof(b) - s, "\n");
                 logger(name, b);
         }
 }
