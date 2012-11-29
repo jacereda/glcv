@@ -271,14 +271,8 @@ intptr_t cvInject(cveventtype type, intptr_t p1, intptr_t p2) {
         default: break;
         }
         ret = event(&e);
-        if (type == CVE_UPDATE) {
-                static int first = 1;
-                if (first) {
-                        first = 0;
-                        cvDefaultCursor();
-                }
+        if (type == CVE_UPDATE)
                 memcpy(s_ppressed, s_pressed, sizeof(s_pressed));
-        }
         if (!ret)
                 ret = osEvent(&e);
         if (!ret) 

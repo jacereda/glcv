@@ -66,10 +66,15 @@ static void setcursor(uint8_t * rgba, int16_t hotx, int16_t hoty) {
                                       hotSpot: NSMakePoint(hotx, hoty)];
         [img release];
         [cur set];
+        [cur release];
 }
 
 static void defaultcursor() {
         [[NSCursor arrowCursor] set]; 
+}
+
+static NSRect scrFrame() {
+        return [[[NSScreen screens] objectAtIndex: 0] frame];
 }
 
 intptr_t osEvent(ev * e) {
@@ -87,8 +92,7 @@ intptr_t osEvent(ev * e) {
         case CVE_FULLSCREEN:
                 if (!fullscreen) {
                         g_rect = [g_win frame];
-                        setWindowMode(FULLSCREEN_MASK, 
-                                      [[[NSScreen screens] objectAtIndex: 0] frame]);
+                        setWindowMode(FULLSCREEN_MASK, scrFrame());
                         fullscreen = 1;
                 }
                 break;
@@ -244,7 +248,6 @@ static cvkey mapkeycode(unsigned k) {
         NSRect fr = [self frame];
         NSSize sz = fr.size;
         [[NSOpenGLContext currentContext] update];
-
         cvInject(CVE_RESIZE, sz.width, sz.height);
 }
 
@@ -425,6 +428,7 @@ int cvrun(int argc, char ** argv) {
         [win setLevel: NSPopUpMenuWindowLevel];
         frm = [Window contentRectForFrameRect: [win frame] styleMask: style];
         view = [[View alloc] initWithFrame: frm];
+        [view setSelectable: NO];
         g_win = win;
         g_view = view;
         [win makeFirstResponder: view];
