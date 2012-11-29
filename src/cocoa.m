@@ -441,6 +441,7 @@ int cvrun(int argc, char ** argv) {
         [ctx makeCurrentContext];
         cvInject(CVE_GLINIT, 0, 0);
         [win makeKeyAndOrderFront: view];
+        rect = [view frame];
         cvInject(CVE_RESIZE, rect.size.width, rect.size.height);
         [arp drain];
         do {
