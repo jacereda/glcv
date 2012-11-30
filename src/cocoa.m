@@ -35,6 +35,7 @@ static int g_done = 0;
 static Window * g_win;
 static View * g_view;
 static NSRect g_rect;
+static NSCursor * g_cur;
 
 static void setWindowMode(int style, NSRect rect) {
         [g_win setStyleMask: style];
@@ -44,10 +45,23 @@ static void setWindowMode(int style, NSRect rect) {
         [g_win makeFirstResponder: g_view];
 }
 
-static void setcursor(uint8_t * rgba, int16_t hotx, int16_t hoty) {
+static void relcursor() {
+        [g_cur release];
+        g_cur = 0;
+        [g_win invalidateCursorRectsForView: g_view];
+}
+
+static NSCursor * curcursor() {
+        return g_cur? g_cur : [NSCursor arrowCursor];
+}
+
+static void setcursor(const uint8_t * crgba, int16_t hotx, int16_t hoty) {
+        static uint8_t srgba[32*32*4];
+        uint8_t * rgba = srgba;
         NSBitmapImageRep * b;
         NSImage * img;
-        NSCursor * cur;
+        relcursor();
+        memcpy(srgba, crgba, sizeof(srgba));
         b = [[NSBitmapImageRep alloc]
                              initWithBitmapDataPlanes: &rgba
                                            pixelsWide: 32
@@ -62,15 +76,9 @@ static void setcursor(uint8_t * rgba, int16_t hotx, int16_t hoty) {
         img = [[NSImage alloc] initWithSize: NSMakeSize(32, 32)];
         [img addRepresentation: b];
         [b release];
-        cur = [[NSCursor alloc] initWithImage: img 
+        g_cur = [[NSCursor alloc] initWithImage: img 
                                       hotSpot: NSMakePoint(hotx, hoty)];
         [img release];
-        [cur set];
-        [cur release];
-}
-
-static void defaultcursor() {
-        [[NSCursor arrowCursor] set]; 
 }
 
 static NSRect scrFrame() {
@@ -87,7 +95,7 @@ intptr_t osEvent(ev * e) {
                           evArg1(e) >> 16, evArg1(e) & 0xffff); 
                 break;
         case CVE_DEFAULTCURSOR: 
-                defaultcursor();
+                relcursor();
                 break;
         case CVE_FULLSCREEN:
                 if (!fullscreen) {
@@ -361,6 +369,13 @@ static cvkey mapkeycode(unsigned k) {
         return YES;
 }
 
+- (void) resetCursorRects {
+        NSCursor * cur = curcursor();
+        [self discardCursorRects];
+        [self addCursorRect:[self visibleRect] cursor: cur];
+        [cur set];
+}
+
 @end
 
 @implementation Window
@@ -384,8 +399,6 @@ int cvrun(int argc, char ** argv) {
         NSAutoreleasePool * arp = [[NSAutoreleasePool alloc] init];
         ProcessSerialNumber psn = { 0, kCurrentProcess };
         Window * win;
-        NSArray* scrs;
-        NSScreen * scr;
         NSRect frm;
         View * view;
         int style = WINDOWED_MASK;
@@ -412,29 +425,26 @@ int cvrun(int argc, char ** argv) {
         [app activateIgnoringOtherApps: YES];
         [app finishLaunching];
 
-        scrs = [NSScreen screens];
-        scr = [scrs objectAtIndex: 0];
         cvInject(CVE_INIT, argc, (intptr_t)argv);
         rect.origin.x = cvInject(CVQ_XPOS, 0, 0);
         rect.origin.y = cvInject(CVQ_YPOS, 0, 0);
         rect.size.width = cvInject(CVQ_WIDTH, 0, 0);
         rect.size.height = cvInject(CVQ_HEIGHT, 0, 0);
-        rect.origin.y = [scr frame].size.height - 1 - 
+        rect.origin.y = scrFrame().size.height - 1 - 
                 rect.origin.y - rect.size.height;
         win = [[Window alloc] initWithContentRect: rect
                                         styleMask: style
                                           backing: NSBackingStoreBuffered
                                             defer:NO];
-        [win setLevel: NSPopUpMenuWindowLevel];
         frm = [Window contentRectForFrameRect: [win frame] styleMask: style];
         view = [[View alloc] initWithFrame: frm];
         [view setSelectable: NO];
         g_win = win;
         g_view = view;
-        [win makeFirstResponder: view];
+        [win setReleasedWhenClosed: NO];
         [win setDelegate: view];
         [win setContentView: view];
-        [win setReleasedWhenClosed: NO];
+        [win setAcceptsMouseMovedEvents: YES];
         fmt = [[NSOpenGLPixelFormat alloc] initWithAttributes: attr];
         ctx = [[NSOpenGLContext alloc] 
                               initWithFormat:fmt  
@@ -444,6 +454,7 @@ int cvrun(int argc, char ** argv) {
         [ctx setValues: &param forParameter: NSOpenGLCPSwapInterval];
         [ctx makeCurrentContext];
         cvInject(CVE_GLINIT, 0, 0);
+        setWindowMode(WINDOWED_MASK, rect);
         [win makeKeyAndOrderFront: view];
         rect = [view frame];
         cvInject(CVE_RESIZE, rect.size.width, rect.size.height);
