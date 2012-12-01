@@ -445,6 +445,8 @@ int cvrun(int argc, char ** argv) {
         [win setDelegate: view];
         [win setContentView: view];
         [win setAcceptsMouseMovedEvents: YES];
+        [win makeKeyAndOrderFront: view];
+        [win makeFirstResponder: view];
         fmt = [[NSOpenGLPixelFormat alloc] initWithAttributes: attr];
         ctx = [[NSOpenGLContext alloc] 
                               initWithFormat:fmt  
@@ -454,8 +456,6 @@ int cvrun(int argc, char ** argv) {
         [ctx setValues: &param forParameter: NSOpenGLCPSwapInterval];
         [ctx makeCurrentContext];
         cvInject(CVE_GLINIT, 0, 0);
-        setWindowMode(WINDOWED_MASK, rect);
-        [win makeKeyAndOrderFront: view];
         rect = [view frame];
         cvInject(CVE_RESIZE, rect.size.width, rect.size.height);
         [arp drain];
