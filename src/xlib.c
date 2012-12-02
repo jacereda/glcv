@@ -62,6 +62,8 @@ static void openwin(int x, int y, unsigned w, unsigned h, int b) {
                         XNClientWindow, g_win,
                         XNFocusWindow, g_win,
                         NULL);
+        if (g_cursor)
+                XDefineCursor(g_dpy, g_win, g_cursor);
 }
 
 static void unmap() {
@@ -160,6 +162,7 @@ static cvkey mapkeycode(unsigned k) {
         switch (k) {
         case 61: ret = CVK_ESCAPE; break;
         case 9: ret = CVK_S; break;
+        case 10: ret = CVK_D; break;
         case 11: ret = CVK_F; break;
         case 12: ret = CVK_H; break;
         case 16: ret = CVK_C; break;
