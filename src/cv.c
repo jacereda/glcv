@@ -285,11 +285,11 @@ intptr_t cvInject(cveventtype type, intptr_t p1, intptr_t p2) {
                         break;
                 case CVQ_XPOS:
                 case CVQ_YPOS:
-                        ret = 0;
+                        ret = 20;
                         break;
                 case CVQ_WIDTH:
                 case CVQ_HEIGHT:
-                        ret = -1;
+                        ret = 256;
                         break;
                 case CVE_DOWN:
                         switch (evWhich(&e)) {
