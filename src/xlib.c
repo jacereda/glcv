@@ -64,13 +64,13 @@ static void openwin(int x, int y, unsigned w, unsigned h, int b) {
                         NULL);
         if (g_cursor)
                 XDefineCursor(g_dpy, g_win, g_cursor);
+        XStoreName(g_dpy, g_win, (const char*)cvInject(CVQ_NAME, 0, 0));
 }
 
 static void unmap() {
         glXMakeCurrent(g_dpy, 0, 0);
         XUnmapWindow(g_dpy, g_win);
 }
-
 
 static void closewin() {
         unmap();
@@ -389,7 +389,7 @@ int cvrun(int argc, char ** argv) {
         g_xim = XOpenIM(g_dpy, 0, 0, 0);
         cvInject(CVE_INIT, 0, 0);
         openwin(cvInject(CVQ_XPOS, 0, 0),
-                cvInject(CVQ_XPOS, 0, 0),
+                cvInject(CVQ_YPOS, 0, 0),
                 cvInject(CVQ_WIDTH, 0, 0),
                 cvInject(CVQ_HEIGHT, 0, 0), 1);
         vi = glXChooseVisual(g_dpy, scr(), attr);
