@@ -123,6 +123,10 @@ On platforms that support it, hide the mouse cursor.
 void cvDefaultCursor();
 #+end_src
 On platforms that support it, establish the default mouse cursor.
+#+begin_src c
+void cvCompressMouse();
+#+end_src
+Activate mouse events compression.
 *** Keyboard queries
 #+begin_src c
 int cvPressed(cvkey key);
