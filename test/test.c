@@ -11,6 +11,7 @@ static void term() {
 
 static void glinit() {
         cvReport("glinit");
+        cvCompressMouse();
 }
 
 static int down(cvkey k) {

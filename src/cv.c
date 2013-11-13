@@ -63,6 +63,7 @@ static int s_mx = 0;
 static int s_my = 0;
 static unsigned char s_pressed[MAX_PRESSED/8] = {0};
 static unsigned char s_ppressed[MAX_PRESSED/8] = {0};
+static int s_compmouse = 0;
 
 static __inline void bitset(unsigned char * b, unsigned bit) {
         b[bit>>3] |= 1 << (bit & 7);
@@ -248,6 +249,7 @@ static void defaultlog(const char * name, const char * s) {
 intptr_t cvInject(cveventtype type, intptr_t p1, intptr_t p2) {
         extern intptr_t osEvent(ev *);
         static int fullscreen = 0;
+        static ev last = {CVE_NONE};
         ev e;
         intptr_t ret;
         e.type = type;
@@ -261,6 +263,10 @@ intptr_t cvInject(cveventtype type, intptr_t p1, intptr_t p2) {
         case CVE_MOTION:
                 s_mx = evX(&e);
                 s_my = evY(&e);
+                if (s_compmouse) {
+                        last = e;
+                        return 0;
+                }
                 break;
         case CVE_DOWN:
                 press(evWhich(&e));
@@ -269,6 +275,10 @@ intptr_t cvInject(cveventtype type, intptr_t p1, intptr_t p2) {
                 release(evWhich(&e));
                 break;
         default: break;
+        }
+        if (s_compmouse && last.type == CVE_MOTION) {
+                event(&last);
+                last.type = CVE_NONE;
         }
         ret = event(&e);
         if (type == CVE_UPDATE)
@@ -376,6 +386,10 @@ void cvFullscreen() {
 
 void cvWindowed() {
         cvInject(CVE_WINDOWED, 0, 0);
+}
+
+void cvCompressMouse() {
+        s_compmouse = 1;
 }
 
 /* 
