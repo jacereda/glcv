@@ -64,6 +64,10 @@ To compile the test application, use this command
 #+begin_src sh
 ./mk-cocoa
 #+end_src
+Or if you prefer to test the ARC version
+#+begin_src sh
+./mk-cocoa-arc
+#+end_src
 ** Windows
 To compile the test application, use this command
 #+begin_src sh

@@ -61,6 +61,30 @@
   /*]]>*/-->
 </style>
 <script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
 <!--/*--><![CDATA[/*><!--*/
  function CodeHighlightOn(elem, id)
  {
@@ -194,7 +218,7 @@ install them in the IOS simulator directory.
 </p>
 
 
-<pre class="src src-sh">./mk-ios
+<pre class="example">./mk-ios
 </pre>
 
 </div>
@@ -210,7 +234,7 @@ install them in the Android emulator. The emulator must be running.
 </p>
 
 
-<pre class="src src-sh">./mk-android
+<pre class="example">./mk-android
 </pre>
 
 </div>
@@ -226,7 +250,7 @@ install them in the user's plugins directory.
 </p>
 
 
-<pre class="src src-sh">./mk-npapi
+<pre class="example">./mk-npapi
 </pre>
 
 <p>
@@ -243,7 +267,7 @@ After building, try opening <a href="testplugin.html">testplugin.html</a>
 </p>
 
 
-<pre class="src src-sh">./mk-xlib
+<pre class="example">./mk-xlib
 </pre>
 
 </div>
@@ -258,7 +282,15 @@ After building, try opening <a href="testplugin.html">testplugin.html</a>
 </p>
 
 
-<pre class="src src-sh">./mk-cocoa
+<pre class="example">./mk-cocoa
+</pre>
+
+<p>
+Or if you prefer to test the ARC version
+</p>
+
+
+<pre class="example">./mk-cocoa-arc
 </pre>
 
 </div>
@@ -273,7 +305,7 @@ After building, try opening <a href="testplugin.html">testplugin.html</a>
 </p>
 
 
-<pre class="src src-sh">mk-win
+<pre class="example">mk-win
 </pre>
 
 </div>
@@ -302,7 +334,7 @@ After building, try opening <a href="testplugin.html">testplugin.html</a>
 
 
 
-<pre class="src src-c"><span style="color: #00cd00;">intptr_t</span> <span style="color: #0000ee; font-weight: bold;">event</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> * <span style="color: #cdcd00;">e</span>);
+<pre class="example">intptr_t event(const ev * e);
 </pre>
 
 <p>
@@ -318,7 +350,7 @@ This is the event handling routine implemented by your application.
 
 
 
-<pre class="src src-c"><span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">cvQuit</span>();
+<pre class="example">void cvQuit();
 </pre>
 
 <p>
@@ -334,7 +366,7 @@ Call this to terminate your application.
 
 
 
-<pre class="src src-c"><span style="color: #00cd00;">unsigned</span> <span style="color: #0000ee; font-weight: bold;">cvWidth</span>();
+<pre class="example">unsigned cvWidth();
 </pre>
 
 <p>
@@ -342,7 +374,7 @@ Current canvas width
 </p>
 
 
-<pre class="src src-c"><span style="color: #00cd00;">unsigned</span> <span style="color: #0000ee; font-weight: bold;">cvHeight</span>();
+<pre class="example">unsigned cvHeight();
 </pre>
 
 <p>
@@ -358,7 +390,7 @@ Current canvas height
 
 
 
-<pre class="src src-c"><span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">cvFullscreen</span>();
+<pre class="example">void cvFullscreen();
 </pre>
 
 <p>
@@ -366,7 +398,7 @@ On platforms that support it, put the canvas in fullscreen mode.
 </p>
 
 
-<pre class="src src-c"><span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">cvWindowed</span>();
+<pre class="example">void cvWindowed();
 </pre>
 
 <p>
@@ -382,7 +414,7 @@ On platforms that support it, put the canvas in windowed mode.
 
 
 
-<pre class="src src-c"><span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">cvMouseX</span>();
+<pre class="example">int cvMouseX();
 </pre>
 
 <p>
@@ -390,7 +422,7 @@ Current X mouse position
 </p>
 
 
-<pre class="src src-c"><span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">cvMouseY</span>();
+<pre class="example">int cvMouseY();
 </pre>
 
 <p>
@@ -406,7 +438,7 @@ Current Y mouse position
 
 
 
-<pre class="src src-c"><span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">cvSetCursor</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">uint8_t</span> * <span style="color: #cdcd00;">rgba</span>, <span style="color: #00cd00;">int</span> <span style="color: #cdcd00;">hotx</span>, <span style="color: #00cd00;">int</span> <span style="color: #cdcd00;">hoty</span>);
+<pre class="example">void cvSetCursor(const uint8_t * rgba, int hotx, int hoty);
 </pre>
 
 <p>
@@ -416,7 +448,7 @@ pixels.
 </p>
 
 
-<pre class="src src-c"><span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">cvHideCursor</span>();
+<pre class="example">void cvHideCursor();
 </pre>
 
 <p>
@@ -424,7 +456,7 @@ On platforms that support it, hide the mouse cursor.
 </p>
 
 
-<pre class="src src-c"><span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">cvDefaultCursor</span>();
+<pre class="example">void cvDefaultCursor();
 </pre>
 
 <p>
@@ -440,7 +472,7 @@ On platforms that support it, establish the default mouse cursor.
 
 
 
-<pre class="src src-c"><span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">cvPressed</span>(<span style="color: #00cd00;">cvkey</span> <span style="color: #cdcd00;">key</span>);
+<pre class="example">int cvPressed(cvkey key);
 </pre>
 
 <p>
@@ -448,7 +480,7 @@ True if key is currently pressed
 </p>
 
 
-<pre class="src src-c"><span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">cvReleased</span>(<span style="color: #00cd00;">cvkey</span> <span style="color: #cdcd00;">key</span>);
+<pre class="example">int cvReleased(cvkey key);
 </pre>
 
 <p>
@@ -464,7 +496,7 @@ True if key has just been released
 
 
 
-<pre class="src src-c"><span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">cvShowKeyboard</span>();
+<pre class="example">void cvShowKeyboard();
 </pre>
 
 <p>
@@ -472,7 +504,7 @@ On platforms that support it, show the on-screen keyboard
 </p>
 
 
-<pre class="src src-c"><span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">cvHideKeyboard</span>();
+<pre class="example">void cvHideKeyboard();
 </pre>
 
 <p>
@@ -488,7 +520,7 @@ On platforms that support it, hide the on-screen keyboard
 
 
 
-<pre class="src src-c"><span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">cvReportV</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">char</span> * <span style="color: #cdcd00;">fmt</span>, <span style="color: #00cd00;">va_list</span> <span style="color: #cdcd00;">ap</span>);
+<pre class="example">void cvReportV(const char * fmt, va_list ap);
 </pre>
 
 <p>
@@ -496,7 +528,7 @@ Report a message (depending on the platform, it might go to a file).
 </p>
 
 
-<pre class="src src-c"><span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">cvReport</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">char</span> * <span style="color: #cdcd00;">fmt</span>, ...);
+<pre class="example">void cvReport(const char * fmt, ...);
 </pre>
 
 <p>
@@ -512,7 +544,7 @@ Report a message (depending on the platform, it might go to a file).
 
 
 
-<pre class="src src-c"><span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">evType</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> *);
+<pre class="example">int evType(const ev *);
 </pre>
 
 <p>
@@ -520,7 +552,7 @@ Event type.
 </p>
 
 
-<pre class="src src-c"><span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">char</span> * <span style="color: #0000ee; font-weight: bold;">evName</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> *);
+<pre class="example">const char * evName(const ev *);
 </pre>
 
 <p>
@@ -528,7 +560,7 @@ Event name.
 </p>
 
 
-<pre class="src src-c"><span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">evWidth</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> *);
+<pre class="example">int evWidth(const ev *);
 </pre>
 
 <p>
@@ -536,7 +568,7 @@ Width for CVE_RESIZE events.
 </p>
 
 
-<pre class="src src-c"><span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">evHeight</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> *);
+<pre class="example">int evHeight(const ev *);
 </pre>
 
 <p>
@@ -544,7 +576,7 @@ Width for CVE_RESIZE events.
 </p>
 
 
-<pre class="src src-c"><span style="color: #00cd00;">cvkey</span> <span style="color: #0000ee; font-weight: bold;">evWhich</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> *);
+<pre class="example">cvkey evWhich(const ev *);
 </pre>
 
 <p>
@@ -552,7 +584,7 @@ Keycode associated to CVE_DOWN/CVE_UP events.
 </p>
 
 
-<pre class="src src-c"><span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">evX</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> *);
+<pre class="example">int evX(const ev *);
 </pre>
 
 <p>
@@ -560,7 +592,7 @@ Mouse X position for CVE_DOWN/CVE_UP events.
 </p>
 
 
-<pre class="src src-c"><span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">evY</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> *);
+<pre class="example">int evY(const ev *);
 </pre>
 
 <p>
@@ -568,7 +600,7 @@ Mouse Y position for CVE_DOWN/CVE_UP events.
 </p>
 
 
-<pre class="src src-c"><span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">evArgC</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> *);
+<pre class="example">int evArgC(const ev *);
 </pre>
 
 <p>
@@ -576,7 +608,7 @@ Argument count for CVE_INIT events.
 </p>
 
 
-<pre class="src src-c"><span style="color: #00cd00;">char</span> ** <span style="color: #0000ee; font-weight: bold;">evArgV</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> *);
+<pre class="example">char ** evArgV(const ev *);
 </pre>
 
 <p>
@@ -584,7 +616,7 @@ Argument array for CVE_INIT events.
 </p>
 
 
-<pre class="src src-c"><span style="color: #00cd00;">intptr_t</span> <span style="color: #0000ee; font-weight: bold;">evArg0</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> *);
+<pre class="example">intptr_t evArg0(const ev *);
 </pre>
 
 <p>
@@ -592,7 +624,7 @@ First event argument, mostly internal.
 </p>
 
 
-<pre class="src src-c"><span style="color: #00cd00;">intptr_t</span> <span style="color: #0000ee; font-weight: bold;">evArg1</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> *);
+<pre class="example">intptr_t evArg1(const ev *);
 </pre>
 
 <p>
@@ -600,7 +632,7 @@ Second event argument, mostly internal.
 </p>
 
 
-<pre class="src src-c"><span style="color: #00cd00;">intptr_t</span> <span style="color: #0000ee; font-weight: bold;">cvInject</span>(cveventtype, <span style="color: #00cd00;">intptr_t</span>, <span style="color: #00cd00;">intptr_t</span>);
+<pre class="example">intptr_t cvInject(cveventtype, intptr_t, intptr_t);
 </pre>
 
 <p>
@@ -608,7 +640,7 @@ Inject an event, mostly internal.
 </p>
 
 
-<pre class="src src-c"><span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">char</span> * <span style="color: #0000ee; font-weight: bold;">keyName</span>(cvkey);
+<pre class="example">const char * keyName(cvkey);
 </pre>
 
 <p>
@@ -767,7 +799,7 @@ Key name for CVE_DOWN/CVE_UP events.
 </p>
 
 
-<pre class="src src-c"><span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">report</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">char</span> * <span style="color: #cdcd00;">appname</span>, <span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">char</span> * <span style="color: #cdcd00;">string</span>);
+<pre class="example">void report(const char * appname, const char * string);
 </pre>
 
 </div>
@@ -832,34 +864,34 @@ CVE_RESIZE or ask explicitly with cvHeight().
 
 
 
-<pre class="src src-c"><span style="color: #0000ee; font-weight: bold;">#include</span> <span style="color: #00cd00;">"cv.h"</span>
-<span style="color: #0000ee; font-weight: bold;">#include</span> <span style="color: #00cd00;">"cvgl.h"</span>
+<pre class="example">#include "cv.h"
+#include "cvgl.h"
 
-<span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">update</span>() {
-        <span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">int</span> <span style="color: #cdcd00;">i</span> = 128;
+static void update() {
+        static int i = 128;
         i++;
         glClearColor(((2*i) &amp; 0xff) / 255.0f, 0.f, 1.f, (i &amp; 0xff) / 255.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glFlush();
 }
 
-<span style="color: #00cd00;">intptr_t</span> <span style="color: #0000ee; font-weight: bold;">event</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> * <span style="color: #cdcd00;">e</span>) {
-        <span style="color: #00cd00;">intptr_t</span> <span style="color: #cdcd00;">ret</span> = 1;
-        <span style="color: #00cd00;">cveventtype</span> <span style="color: #cdcd00;">t</span> = evType(e);
-        <span style="color: #00cdcd; font-weight: bold;">switch</span> (t) {
-        <span style="color: #00cdcd; font-weight: bold;">case</span> CVE_UPDATE: update(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
-        <span style="color: #00cdcd; font-weight: bold;">default</span>: ret = 0; <span style="color: #00cdcd; font-weight: bold;">break</span>;
+intptr_t event(const ev * e) {
+        intptr_t ret = 1;
+        cveventtype t = evType(e);
+        switch (t) {
+        case CVE_UPDATE: update(); break;
+        default: ret = 0; break;
         }
-        <span style="color: #00cdcd; font-weight: bold;">return</span> ret;
+        return ret;
 }
 
-<span style="color: #cd0000;">/* </span>
-<span style="color: #cd0000;">   Local Variables&#58; **</span>
-<span style="color: #cd0000;">   c-file-style: "bsd" **</span>
-<span style="color: #cd0000;">   c-basic-offset: 8 **</span>
-<span style="color: #cd0000;">   indent-tabs-mode: nil **</span>
-<span style="color: #cd0000;">   End: **</span>
-<span style="color: #cd0000;">*/</span>
+/* 
+   Local variables: **
+   c-file-style: "bsd" **
+   c-basic-offset: 8 **
+   indent-tabs-mode: nil **
+   End: **
+*/
 </pre>
 
 </div>
@@ -873,126 +905,137 @@ CVE_RESIZE or ask explicitly with cvHeight().
 
 
 
-<pre class="src src-c"><span style="color: #0000ee; font-weight: bold;">#include</span> <span style="color: #00cd00;">"cv.h"</span>
-<span style="color: #0000ee; font-weight: bold;">#include</span> <span style="color: #00cd00;">"cvgl.h"</span>
+<pre class="example">#include "cv.h"
+#include "cvgl.h"
 
-<span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">init</span>() {
-        cvReport(<span style="color: #00cd00;">"init"</span>);
+#if !defined NPAPI
+#include &lt;stdio.h&gt;
+
+static void report(const char * name, const char * s) {
+        fprintf(stderr, "%s:%s", name, s);
+}
+#endif
+
+static void init() {
+        cvReport("init");
 }
 
-<span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">term</span>() {
-        cvReport(<span style="color: #00cd00;">"term"</span>);
+static void term() {
+        cvReport("term");
 }
 
-<span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">glinit</span>() {
-        cvReport(<span style="color: #00cd00;">"glinit"</span>);
+static void glinit() {
+        cvReport("glinit");
 }
 
-<span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">down</span>(<span style="color: #00cd00;">cvkey</span> <span style="color: #cdcd00;">k</span>) {
-        <span style="color: #00cd00;">int</span> <span style="color: #cdcd00;">handled</span> = 0;;
-        cvReport(<span style="color: #00cd00;">"down %s"</span>, keyName(k));
-        <span style="color: #00cdcd; font-weight: bold;">switch</span> (k) {
-        <span style="color: #00cdcd; font-weight: bold;">case</span> CVK_MOUSELEFT:
-                <span style="color: #00cdcd; font-weight: bold;">if</span> (cvMouseY() &lt; 10)
+static int down(cvkey k) {
+        int handled = 0;;
+        cvReport("down %s", keyName(k));
+        switch (k) {
+        case CVK_MOUSELEFT:
+                if (cvMouseY() &lt; 10)
                         cvShowKeyboard();
-        <span style="color: #00cdcd; font-weight: bold;">default</span>:
+        default:
                 handled = 0;
         }
-        <span style="color: #00cdcd; font-weight: bold;">return</span> handled;
+        return handled;
 }
 
-<span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">uint8_t</span> <span style="color: #cdcd00;">cur</span>[32*32*4] = {
+static uint8_t cur[32*32*4] = {
         0xff,0x00,0x00,0xff, 
         0x00,0xff,0x00,0xff, 
         0x00,0x00,0xff,0xff, 
         0xff,0xff,0xff,0xff,
 };
 
-<span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">int</span> <span style="color: #0000ee; font-weight: bold;">up</span>(<span style="color: #00cd00;">cvkey</span> <span style="color: #cdcd00;">k</span>) {
-        <span style="color: #00cd00;">int</span> <span style="color: #cdcd00;">handled</span> = 0;
-        cvReport(<span style="color: #00cd00;">"up %s"</span>, keyName(k));
-        <span style="color: #00cdcd; font-weight: bold;">switch</span> (k) {
-        <span style="color: #00cdcd; font-weight: bold;">case</span> CVK_ESCAPE: cvQuit(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
-        <span style="color: #00cdcd; font-weight: bold;">case</span> CVK_H: cvHideCursor(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
-        <span style="color: #00cdcd; font-weight: bold;">case</span> CVK_S: cvDefaultCursor(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
-        <span style="color: #00cdcd; font-weight: bold;">case</span> CVK_F: cvFullscreen(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
-        <span style="color: #00cdcd; font-weight: bold;">case</span> CVK_C: cvSetCursor(cur, 16, 16);
-        <span style="color: #00cdcd; font-weight: bold;">case</span> CVK_W: cvWindowed(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
-<span style="color: #cd0000;">//        </span><span style="color: #cd0000;">case CVK_RETURN: cvHideKeyboard(); break;</span>
-        <span style="color: #00cdcd; font-weight: bold;">default</span>: handled = 0; <span style="color: #00cdcd; font-weight: bold;">break</span>;
+static int up(cvkey k) {
+        int handled = 0;
+        cvReport("up %s", keyName(k));
+        switch (k) {
+        case CVK_ESCAPE: cvQuit(); break;
+        case CVK_H: cvHideCursor(); break;
+        case CVK_D: cvDefaultCursor(); break;
+        case CVK_C: cvSetCursor(cur, 0, 0); break;
+        case CVK_F: cvFullscreen(); break;
+        case CVK_W: cvWindowed(); break;
+//        case CVK_RETURN: cvHideKeyboard(); break;
+        default: handled = 0; break;
         }
-        <span style="color: #00cdcd; font-weight: bold;">return</span> handled;
+        return handled;
 }
 
-<span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">unicode</span>(<span style="color: #00cd00;">uint32_t</span> <span style="color: #cdcd00;">c</span>) {
-        cvReport(<span style="color: #00cd00;">"unicode %c"</span>, c);
+static void unicode(uint32_t c) {
+        cvReport("unicode %c", c);
 }
 
-<span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">motion</span>(<span style="color: #00cd00;">int</span> <span style="color: #cdcd00;">x</span>, <span style="color: #00cd00;">int</span> <span style="color: #cdcd00;">y</span>) {
-        cvReport(<span style="color: #00cd00;">"motion %d %d"</span>, x, y);
+static void motion(int x, int y) {
+        cvReport("motion %d %d", x, y);
 }
 
-<span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">close</span>() {
-        cvReport(<span style="color: #00cd00;">"close"</span>);
+static void close() {
+        cvReport("close");
         cvQuit();
 }
 
-<span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">invoke</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">char</span> * <span style="color: #cdcd00;">s</span>) {
-        cvReport(<span style="color: #00cd00;">"invoked method '%s'"</span>, s);
+static void invoke(const char * s) {
+        cvReport("invoked method '%s'", s);
 }
 
-<span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">resize</span>(<span style="color: #00cd00;">unsigned</span> <span style="color: #cdcd00;">w</span>, <span style="color: #00cd00;">unsigned</span> <span style="color: #cdcd00;">h</span>) {
-        cvReport(<span style="color: #00cd00;">"resize %d %d"</span>, w, h);
+static void resize(unsigned w, unsigned h) {
+        cvReport("resize %d %d", w, h);
         glViewport(0, 0, w, h);
 }
 
-<span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">void</span> <span style="color: #0000ee; font-weight: bold;">update</span>() {
-        <span style="color: #00cdcd; font-weight: bold;">static</span> <span style="color: #00cd00;">int</span> <span style="color: #cdcd00;">i</span> = 128;
+static void update() {
+        static int i = 128;
         i++;
         glClearColor(((2*i) &amp; 0xff) / 255.0f, 0.f, 1.f, (i &amp; 0xff) / 255.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glFlush();
-        <span style="color: #00cdcd; font-weight: bold;">if</span> (cvPressed(CVK_A))
-                cvReport(<span style="color: #00cd00;">"A pressed"</span>);
-        <span style="color: #00cdcd; font-weight: bold;">if</span> (cvReleased(CVK_A))
-                cvReport(<span style="color: #00cd00;">"A released"</span>);
+        if (cvPressed(CVK_A))
+                cvReport("A pressed");
+        if (cvReleased(CVK_A))
+                cvReport("A released");
 }
 
-<span style="color: #00cd00;">intptr_t</span> <span style="color: #0000ee; font-weight: bold;">event</span>(<span style="color: #00cdcd; font-weight: bold;">const</span> <span style="color: #00cd00;">ev</span> * <span style="color: #cdcd00;">e</span>) {
-        <span style="color: #00cd00;">intptr_t</span> <span style="color: #cdcd00;">ret</span> = 1;
-        <span style="color: #00cd00;">cveventtype</span> <span style="color: #cdcd00;">t</span> = evType(e);
-        <span style="color: #00cdcd; font-weight: bold;">if</span> (t != CVE_UPDATE)
-                cvReport(<span style="color: #00cd00;">"got event %s, %p %p"</span>, 
+intptr_t event(const ev * e) {
+        intptr_t ret = 1;
+        cveventtype t = evType(e);
+        if (t != CVE_UPDATE)
+                cvReport("got event %s, %p %p", 
                          evName(e), evArg0(e), evArg1(e));
-        <span style="color: #00cdcd; font-weight: bold;">switch</span> (t) {
-        <span style="color: #00cdcd; font-weight: bold;">case</span> CVQ_NAME: ret = (<span style="color: #00cd00;">intptr_t</span>)<span style="color: #00cd00;">"test"</span>; <span style="color: #00cdcd; font-weight: bold;">break</span>;
-        <span style="color: #00cdcd; font-weight: bold;">case</span> CVQ_XPOS: ret = 50; <span style="color: #00cdcd; font-weight: bold;">break</span>;
-        <span style="color: #00cdcd; font-weight: bold;">case</span> CVQ_YPOS: ret = 50; <span style="color: #00cdcd; font-weight: bold;">break</span>;
-        <span style="color: #00cdcd; font-weight: bold;">case</span> CVQ_WIDTH: ret = 640; <span style="color: #00cdcd; font-weight: bold;">break</span>;
-        <span style="color: #00cdcd; font-weight: bold;">case</span> CVQ_HEIGHT: ret = 480; <span style="color: #00cdcd; font-weight: bold;">break</span>;
-        <span style="color: #00cdcd; font-weight: bold;">case</span> CVE_INIT: init(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
-        <span style="color: #00cdcd; font-weight: bold;">case</span> CVE_TERM: term(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
-        <span style="color: #00cdcd; font-weight: bold;">case</span> CVE_GLINIT: glinit(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
-        <span style="color: #00cdcd; font-weight: bold;">case</span> CVE_DOWN: ret = down(evWhich(e)); <span style="color: #00cdcd; font-weight: bold;">break</span>;
-        <span style="color: #00cdcd; font-weight: bold;">case</span> CVE_UP: ret = up(evWhich(e)); <span style="color: #00cdcd; font-weight: bold;">break</span>;
-        <span style="color: #00cdcd; font-weight: bold;">case</span> CVE_UNICODE: unicode(evUnicode(e)); <span style="color: #00cdcd; font-weight: bold;">break</span>;
-        <span style="color: #00cdcd; font-weight: bold;">case</span> CVE_MOTION: motion(evX(e), evY(e)); <span style="color: #00cdcd; font-weight: bold;">break</span>;
-        <span style="color: #00cdcd; font-weight: bold;">case</span> CVE_CLOSE: close(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
-        <span style="color: #00cdcd; font-weight: bold;">case</span> CVE_INVOKE: invoke(evMethod(e)); <span style="color: #00cdcd; font-weight: bold;">break</span>;
-        <span style="color: #00cdcd; font-weight: bold;">case</span> CVE_RESIZE: resize(evWidth(e), evHeight(e)); <span style="color: #00cdcd; font-weight: bold;">break</span>;
-        <span style="color: #00cdcd; font-weight: bold;">case</span> CVE_UPDATE: update(); <span style="color: #00cdcd; font-weight: bold;">break</span>;
-        <span style="color: #00cdcd; font-weight: bold;">default</span>: ret = 0; <span style="color: #00cdcd; font-weight: bold;">break</span>;
+        switch (t) {
+#if !defined NPAPI
+        case CVQ_LOGGER: ret = (intptr_t)report; break;
+#endif
+        case CVQ_NAME: ret = (intptr_t)"test"; break;
+        case CVQ_XPOS: ret = 50; break;
+        case CVQ_YPOS: ret = 50; break;
+        case CVQ_WIDTH: ret = 640; break;
+        case CVQ_HEIGHT: ret = 480; break;
+        case CVE_INIT: init(); break;
+        case CVE_TERM: term(); break;
+        case CVE_GLINIT: glinit(); break;
+        case CVE_DOWN: ret = down(evWhich(e)); break;
+        case CVE_UP: ret = up(evWhich(e)); break;
+        case CVE_UNICODE: unicode(evUnicode(e)); break;
+        case CVE_MOTION: motion(evX(e), evY(e)); break;
+        case CVE_CLOSE: close(); break;
+        case CVE_INVOKE: invoke(evMethod(e)); break;
+        case CVE_RESIZE: resize(evWidth(e), evHeight(e)); break;
+        case CVE_UPDATE: update(); break;
+        default: ret = 0; break;
         }
-        <span style="color: #00cdcd; font-weight: bold;">return</span> ret;
+        return ret;
 }
 
-<span style="color: #cd0000;">/* </span>
-<span style="color: #cd0000;">   Local Variables&#58; **</span>
-<span style="color: #cd0000;">   c-file-style: "bsd" **</span>
-<span style="color: #cd0000;">   c-basic-offset: 8 **</span>
-<span style="color: #cd0000;">   indent-tabs-mode: nil **</span>
-<span style="color: #cd0000;">   End: **</span>
-<span style="color: #cd0000;">*/</span>
+/* 
+   Local variables: **
+   c-file-style: "bsd" **
+   c-basic-offset: 8 **
+   indent-tabs-mode: nil **
+   End: **
+*/
 </pre>
 
 
@@ -1050,7 +1093,7 @@ CVE_RESIZE or ask explicitly with cvHeight().
 <div id="postamble">
 <p class="date">Date: 2011-10-02 Sun</p>
 <p class="author">Author: Jorge Acereda</p>
-<p class="creator">Org version 7.8.09 with Emacs version 24</p>
+<p class="creator"><a href="http://orgmode.org">Org</a> version 7.9.3f with <a href="http://www.gnu.org/software/emacs/">Emacs</a> version 24</p>
 <a href="http://validator.w3.org/check?uri=referer">Validate XHTML 1.0</a>
 
 </div>
