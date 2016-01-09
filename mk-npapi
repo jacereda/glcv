@@ -28,7 +28,7 @@ obj() {
     log "compiling $*"
     dst=`builddir`/$1.o
     shift
-    cc -m32 -fvisibility=hidden -fPIC -Wall -O2 -c -I src -o $dst $*
+    cc -DNPAPI -m32 -fvisibility=hidden -fPIC -Wall -O2 -c -I src -o $dst $*
     echo $dst
 }
 
@@ -47,7 +47,7 @@ pkg() {
     install -d `resdir $1`
     install -d `bindir $1`
     sed s/NAME/$1/g templates/npapi/webtemplate.r > `builddir`/$1.r
-    /Developer/Tools/Rez -o `resdir $1`/$1.rsrc -useDF `builddir`/$1.r
+    xcrun Rez -isysroot `xcrun --show-sdk-path` -o `resdir $1`/$1.rsrc -useDF `builddir`/$1.r
     sed s/NAME/$1/g templates/npapi/webtemplate.plist > `condir $1`/Info.plist
     cp $2 `bindir $1`
     echo `pkgdir $1`

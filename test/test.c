@@ -1,6 +1,14 @@
 #include "cv.h"
 #include "cvgl.h"
 
+#if !defined NPAPI
+#include <stdio.h>
+
+static void report(const char * name, const char * s) {
+        fprintf(stderr, "%s:%s", name, s);
+}
+#endif
+
 static void init() {
         cvReport("init");
 }
@@ -90,6 +98,9 @@ intptr_t event(const ev * e) {
                 cvReport("got event %s, %p %p", 
                          evName(e), evArg0(e), evArg1(e));
         switch (t) {
+#if !defined NPAPI
+        case CVQ_LOGGER: ret = (intptr_t)report; break;
+#endif
         case CVQ_NAME: ret = (intptr_t)"test"; break;
         case CVQ_XPOS: ret = 50; break;
         case CVQ_YPOS: ret = 50; break;

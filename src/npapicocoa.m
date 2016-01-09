@@ -24,7 +24,7 @@ static Layer * s_l = 0;
 static void osinit(NPNetscapeFuncs * browser, NPP i) {
         browser->setvalue(i, NPPVpluginEventModel, 
                           (void *)NPEventModelCocoa);
-        browser->setvalue(i, NPNVpluginDrawingModel, 
+        browser->setvalue(i, NPPVpluginDrawingModel, 
                           (void *)NPDrawingModelCoreAnimation);
 }
 
@@ -236,7 +236,7 @@ static NPError osgetval(NPP i, NPPVariable var, void * v) {
         NPError ret = NPERR_NO_ERROR;
         debug("os getvalue %d", var); 
         switch(var) {
-        case NPNVpluginDrawingModel:
+        case NPPVpluginDrawingModel:
                 debug("getval drawingmodel");
                 *(int*)v = NPDrawingModelOpenGL;
                 break;
