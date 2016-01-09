@@ -5,7 +5,7 @@
 #include <AppKit/NSCursor.h>
 #include <AppKit/NSEvent.h>
 #include <AppKit/NSOpenGL.h>
-#include <AppKit/NSTextView.h>
+#include <AppKit/NSTextInputClient.h>
 #include <AppKit/NSImage.h>
 #undef evType
 
@@ -25,7 +25,7 @@ static int g_done = 0;
 }
 @end 
 
-@interface View : NSTextView<NSWindowDelegate> {
+@interface View : NSView<NSWindowDelegate, NSTextInputClient> {
         unsigned _prevflags;
 }
 - (NSPoint)toAbs: (NSPoint)p;
@@ -47,7 +47,7 @@ static void setWindowMode(int style, NSRect rect) {
 
 static void relcursor() {
         [g_cur release];
-        g_cur = 0;
+        g_cur = nil;
         [g_win invalidateCursorRectsForView: g_view];
 }
 
@@ -237,12 +237,8 @@ static cvkey mapkeycode(unsigned k) {
 
 @implementation View
 
-- (void) dealloc {
-        [super dealloc];
-}
-
 - (NSPoint)toAbs: (NSPoint)p {
-        return [[self window] convertBaseToScreen: p];
+        return [[self window] convertRectToScreen:NSMakeRect(p.x, p.y, 0,0)].origin;
 }
 
 - (void)setConstrainedFrameSize:(NSSize)desiredSize{}
@@ -279,13 +275,6 @@ static cvkey mapkeycode(unsigned k) {
 
 - (void)deleteBackward:(id)sender {
         cvInject(CVE_UNICODE, CVK_DELETE, 0);
-}
-
-- (void)insertText:(id)s {
-        int sl = [s length];
-        int i;
-        for (i = 0; i < sl; i++)
-                cvInject(CVE_UNICODE, [s characterAtIndex: i], 0);
 }
 
 - (unsigned) keyFor: (unsigned)mask {
@@ -376,13 +365,35 @@ static cvkey mapkeycode(unsigned k) {
         [cur set];
 }
 
+- (BOOL) hasMarkedText { return FALSE; }
+- (NSRange) markedRange { return NSMakeRange(NSNotFound, 0); }
+- (NSRange) selectedRange { return NSMakeRange(NSNotFound, 0); }
+- (void) setMarkedText:(id)s selectedRange:(NSRange)sr replacementRange:(NSRange)rr {}
+- (void) unmarkText {}
+- (NSArray<NSString *> *) validAttributesForMarkedText { return [NSArray array]; }
+- (NSAttributedString *) attributedSubstringForProposedRange:(NSRange)p actualRange:(NSRangePointer)a {
+        return nil;
+}
+- (void) insertText:(id)s replacementRange:(NSRange)r {
+        int sl = [s length];
+        int i;
+        for (i = 0; i < sl; i++)
+                cvInject(CVE_UNICODE, [s characterAtIndex: i], 0);
+}
+
+- (NSUInteger) characterIndexForPoint:(NSPoint)p {
+        return NSNotFound;
+}
+
+- (NSRect) firstRectForCharacterRange:(NSRange)r
+                         actualRange:(NSRangePointer)ar{
+        return NSMakeRect(0,0,0,0);
+}
+
+- (void) doCommandBySelector:(SEL)s{}
 @end
 
 @implementation Window
-
-- (void) dealloc {
-        [super dealloc];
-}
 
 - (BOOL) canBecomeKeyWindow
 {
@@ -403,10 +414,9 @@ int cvrun(int argc, char ** argv) {
         View * view;
         int style = WINDOWED_MASK;
         GLint param = 1;
-        NSOpenGLContext *ctx = 0;
+        NSOpenGLContext *ctx;
         CGDirectDisplayID dpy = kCGDirectMainDisplay;
         NSOpenGLPixelFormatAttribute attr[] = {
-                NSOpenGLPFAFullScreen,
                 NSOpenGLPFAScreenMask, CGDisplayIDToOpenGLDisplayMask(dpy),
                 NSOpenGLPFAColorSize, 24,
                 NSOpenGLPFADepthSize, 32,
@@ -420,7 +430,6 @@ int cvrun(int argc, char ** argv) {
         NSRect rect;
         NSApplication * app;
         TransformProcessType(&psn, kProcessTransformToForegroundApplication);
-        SetFrontProcess(&psn);
         app = [NSApplication sharedApplication];
         [app activateIgnoringOtherApps: YES];
         [app finishLaunching];
@@ -438,7 +447,6 @@ int cvrun(int argc, char ** argv) {
                                             defer:NO];
         frm = [Window contentRectForFrameRect: [win frame] styleMask: style];
         view = [[View alloc] initWithFrame: frm];
-        [view setSelectable: NO];
         g_win = win;
         g_view = view;
         [win setReleasedWhenClosed: NO];
