@@ -100,8 +100,11 @@ To compile the test application, use this command
 
 2.5 Cocoa 
 ==========
-To compile the test application, use this command
+To compile the test application in ARC mode, use this command
 
+  ./mk-cocoa-arc
+
+Or if you prefer to test the manual reference counting version
 
   ./mk-cocoa
 
