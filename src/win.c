@@ -13,7 +13,7 @@
 #define err cvReport
 
 #define WINDOWED_STYLE WS_CLIPSIBLINGS | WS_CLIPCHILDREN \
-                 | WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX
+                 | WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_THICKFRAME
 #define FULLSCREEN_STYLE WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP
 
 static int g_done = 0;
@@ -85,7 +85,6 @@ intptr_t osEvent(ev * e) {
                 SetWindowLong(g_win, GWL_STYLE, WINDOWED_STYLE);
                 SetWindowPos(g_win, HWND_TOPMOST, 0, 0, 0, 0,
                              SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_FRAMECHANGED|SWP_SHOWWINDOW);
-                
                 break;
         default: ret = 0;
         }
@@ -323,8 +322,9 @@ static int onCLOSE(HWND win){
 }
 
 static int onSETCURSOR() {
-        SetCursor(g_cursor? g_cursor : LoadCursor(0, IDC_ARROW));
-        return 1;
+        if (g_cursor)
+                SetCursor(g_cursor);
+        return g_cursor != 0;
 }
 
 static unsigned uc2cv(unsigned uc) {
