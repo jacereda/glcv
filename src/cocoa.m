@@ -449,6 +449,8 @@ int cvrun(int argc, char ** argv) {
         view = [[View alloc] initWithFrame: frm];
         g_win = win;
         g_view = view;
+        NSString * t = [NSString stringWithUTF8String: (const char *)cvInject(CVQ_NAME, 0, 0)];
+        [win setTitle: t];
         [win setReleasedWhenClosed: NO];
         [win setDelegate: view];
         [win setContentView: view];
