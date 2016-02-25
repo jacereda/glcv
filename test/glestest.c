@@ -60,7 +60,7 @@ intptr_t event(const ev * e) {
         switch (evType(e)) {
         case CVE_GLINIT: glinit(); break;
         case CVE_UPDATE: draw(); break;
-        default: break;
+        default: ret = 0; break;
         }
         return ret;
 }

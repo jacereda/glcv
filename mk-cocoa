@@ -5,4 +5,5 @@ mk() {
 install -d b
 mk test/simple.c -o b/simple
 mk test/test.c -o b/test
+mk test/glestest.c -o b/glestest
 
