@@ -351,6 +351,18 @@ static cvkey mapkeycode(unsigned k) {
         [self handleMotion: ev];
 }
 
+- (void) mouseDragged: (NSEvent *)ev {
+        [self handleMotion: ev];
+}
+
+- (void) rightMouseDragged: (NSEvent *) ev {
+        [self handleMotion: ev];
+}
+
+- (void) otherMouseDragged: (NSEvent *) ev {
+        [self handleMotion: ev];
+}
+
 - (BOOL) isOpaque {
         return YES;
 }
