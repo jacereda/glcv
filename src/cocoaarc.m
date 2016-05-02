@@ -432,6 +432,7 @@ int cvrun(int argc, char ** argv) {
                 NSOpenGLPFADoubleBuffer,
                 NSOpenGLPFAAccelerated,
                 NSOpenGLPFANoRecovery,
+                NSOpenGLPFAOpenGLProfile, NSOpenGLProfileVersion3_2Core,
                 0, 0, 0, 0, 0, 0, 0, 0,
         };
         NSOpenGLPixelFormat * fmt;
