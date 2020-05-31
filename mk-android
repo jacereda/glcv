@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 domain=com.example
 ndk="$HOME/android/android-ndk-r5b"
 sdk="$HOME/android/android-sdk-mac_x86"
@@ -51,7 +51,7 @@ exe() {
     obj=$1
     shift
     dst=`builddir`/lib$name.so
-    log $ld -shared -o $dst $obj -Wl,-soname,lib$name.so -L `builddir` $* -llog -landroid -lEGL -lGLESv1_CM -lGLESv2 -lc -lm -lsupc++ 
+    log $ld -shared -o $dst $obj -Wl,-soname,lib$name.so -L `builddir` $* -llog -landroid -lEGL -lGLESv1_CM -lGLESv2 -lc -lm -lsupc++
     $ld -shared -o $dst $obj -Wl,-soname,lib$name.so -L `builddir` $* -llog -landroid -lEGL -lGLESv1_CM -lGLESv2 -lc -lm -ldl -lsupc++
     echo $dst
 }
@@ -78,7 +78,7 @@ ins() {
     name=$1
     apk=$2
     $sdk/platform-tools/adb uninstall $domain.$name
-    $sdk/platform-tools/adb install $apk    
+    $sdk/platform-tools/adb install $apk
 }
 
 rm -fR `builddir`

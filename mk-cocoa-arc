@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 mk() {
      gcc $* -fobjc-arc -Wall -I src src/cocoaarc.m -framework OpenGL -framework AppKit
 }

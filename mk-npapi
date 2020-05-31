@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 log() {
     echo $* 1>&2
@@ -68,4 +68,3 @@ testplg=`plg testplugin $testobj $cvobj`
 testpkg=`pkg testplugin $testplg`
 itestpkg=`ins $testpkg`
 echo "installed $itestpkg"
-

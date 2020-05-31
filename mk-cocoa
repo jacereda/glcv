@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 mk() {
      gcc $* -fno-objc-arc -Wall -I src src/cocoa.m -framework OpenGL -framework AppKit
 }
@@ -6,4 +6,3 @@ install -d b
 mk test/simple.c -o b/simple
 mk test/test.c -o b/test
 mk test/glestest.c -o b/glestest
-

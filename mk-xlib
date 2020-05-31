@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 mk() {
      gcc $* -Wall -I/usr/X11R6/include -I src src/xlib.c -L/usr/X11R6/lib -lX11 -lXcursor -lGL
 }

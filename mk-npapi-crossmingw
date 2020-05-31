@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 root="$HOME/mingw-cross-env/usr/bin"
 common="$root/i386-mingw32msvc-gcc"

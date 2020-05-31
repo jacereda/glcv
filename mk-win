@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 mk() {
      $HOME/mingw-cross-env/usr/bin/i386-mingw32msvc-gcc $* -I src src/win.c -lgdi32 -lopengl32
 }
