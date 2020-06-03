@@ -5,10 +5,10 @@
   Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are
   met:
-        
+
   1. Redistributions of source code must retain the above copyright
   notice, this list of conditions and the following disclaimer.
-        
+
   2. Redistributions in binary form must reproduce the above copyright
   notice, this list of conditions and the following disclaimer in the
   documentation and/or other materials provided with the distribution.
@@ -38,14 +38,14 @@
 #endif
 
 typedef enum {
-	CVE_NONE,
+        CVE_NONE,
 #define Q(x) CVQ_##x,
 #include "cvqueries.h"
 #undef Q
 #define C(x) CVE_##x,
 #include "cvevents.h"
 #undef C
-	CVE_MAX,
+        CVE_MAX,
 } cveventtype;
 
 typedef enum {
@@ -82,7 +82,6 @@ void cvHideKeyboard();
 void cvFullscreen();
 void cvWindowed();
 
-
 void cvReportV(const char * fmt, va_list ap);
 void cvReport(const char * fmt, ...);
 
@@ -105,4 +104,3 @@ const char * evMethod(const ev *);
 intptr_t cvInject(cveventtype, intptr_t, intptr_t);
 
 const char * keyName(cvkey k);
-

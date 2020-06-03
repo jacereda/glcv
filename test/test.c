@@ -35,9 +35,9 @@ static int down(cvkey k) {
 }
 
 static uint8_t cur[32*32*4] = {
-        0xff,0x00,0x00,0xff, 
-        0x00,0xff,0x00,0xff, 
-        0x00,0x00,0xff,0xff, 
+        0xff,0x00,0x00,0xff,
+        0x00,0xff,0x00,0xff,
+        0x00,0x00,0xff,0xff,
         0xff,0xff,0xff,0xff,
 };
 
@@ -95,7 +95,7 @@ intptr_t event(const ev * e) {
         intptr_t ret = 1;
         cveventtype t = evType(e);
         if (t != CVE_UPDATE)
-                cvReport("got event %s, %p %p", 
+                cvReport("got event %s, %p %p",
                          evName(e), evArg0(e), evArg1(e));
         switch (t) {
 #if !defined NPAPI
@@ -122,7 +122,7 @@ intptr_t event(const ev * e) {
         return ret;
 }
 
-/* 
+/*
    Local variables: **
    c-file-style: "bsd" **
    c-basic-offset: 8 **

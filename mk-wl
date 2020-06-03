@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+wayland-scanner client-header $XDGSHELL src/xdg-shell.h
+wayland-scanner public-code $XDGSHELL src/xdg-shell.c
+mk() {
+     cc -Wall -O1 -U_FORTIFY_SOURCE -g $* `pkg-config wayland-client xkbcommon wayland-egl egl gl --cflags --libs` -I src src/wl.c
+}
+install -d b
+mk test/simple.c -o b/simple
+mk test/test.c -o b/test

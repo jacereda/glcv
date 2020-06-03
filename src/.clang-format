@@ -1,0 +1,12 @@
+AlignTrailingComments: true
+AlignConsecutiveMacros: true
+ColumnLimit: 80
+ContinuationIndentWidth: 4
+Cpp11BracedListStyle: false
+FixNamespaceComments: true
+IndentCaseLabels: false
+SortIncludes: true
+IndentWidth: 8
+TabWidth: 8
+SpacesBeforeTrailingComments: 4
+PointerAlignment: Middle
