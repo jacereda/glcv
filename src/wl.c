@@ -410,6 +410,7 @@ static void key(void * d, struct wl_keyboard * k, uint32_t sn, uint32_t t,
                 uint32_t kc, uint32_t st) {
         cvkey ck = mapkeycode(kc);
         cveventtype et;
+        uint32_t u;
         switch (st) {
         case WL_KEYBOARD_KEY_STATE_PRESSED:
                 et = CVE_DOWN;
@@ -421,10 +422,10 @@ static void key(void * d, struct wl_keyboard * k, uint32_t sn, uint32_t t,
                 et = CVE_NONE;
         }
         cvInject(et, ck, 0);
-        cvInject(CVE_UNICODE,
-                 xkb_state_key_get_utf32(
-                     g_xkbst, st == WL_KEYBOARD_KEY_STATE_PRESSED ? kc + 8 : 0),
-                 0);
+        u = xkb_state_key_get_utf32(
+            g_xkbst, st == WL_KEYBOARD_KEY_STATE_PRESSED ? kc + 8 : 0);
+        if (u)
+                cvInject(CVE_UNICODE, u, 0);
 }
 
 static void keymap(void * d, struct wl_keyboard * wk, uint32_t fmt, int32_t fd,
