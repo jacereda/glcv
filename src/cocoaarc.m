@@ -1,5 +1,6 @@
 #include "cv.c"
 #define evType evTypeC // conflicts
+#include <AppKit/NSColor.h>
 #include <AppKit/NSScreen.h>
 #include <AppKit/NSWindow.h>
 #include <AppKit/NSCursor.h>
@@ -23,7 +24,7 @@ static int g_done = 0;
 
 @interface Window : NSWindow {
 }
-@end 
+@end
 
 @interface View : NSView<NSWindowDelegate, NSTextInputClient> {
         unsigned _prevflags;
@@ -74,7 +75,7 @@ static void setcursor(const uint8_t * crgba, int16_t hotx, int16_t hoty) {
                                          bitsPerPixel: 32];
         img = [[NSImage alloc] initWithSize: NSMakeSize(32, 32)];
         [img addRepresentation: b];
-        g_cur = [[NSCursor alloc] initWithImage: img 
+        g_cur = [[NSCursor alloc] initWithImage: img
                                       hotSpot: NSMakePoint(hotx, hoty)];
 }
 
@@ -87,11 +88,11 @@ intptr_t osEvent(ev * e) {
         intptr_t ret = 1;
         switch (evType(e)) {
         case CVE_QUIT: g_done = 1; break;
-        case CVE_SETCURSOR: 
-                setcursor((uint8_t*)evArg0(e), 
-                          evArg1(e) >> 16, evArg1(e) & 0xffff); 
+        case CVE_SETCURSOR:
+                setcursor((uint8_t*)evArg0(e),
+                          evArg1(e) >> 16, evArg1(e) & 0xffff);
                 break;
-        case CVE_DEFAULTCURSOR: 
+        case CVE_DEFAULTCURSOR:
                 relcursor();
                 break;
         case CVE_FULLSCREEN:
@@ -101,7 +102,7 @@ intptr_t osEvent(ev * e) {
                         fullscreen = 1;
                 }
                 break;
-        case CVE_WINDOWED: 
+        case CVE_WINDOWED:
                 if (fullscreen) {
                         setWindowMode(WINDOWED_MASK, g_rect);
                         fullscreen = 0;
@@ -286,7 +287,7 @@ static cvkey mapkeycode(unsigned k) {
         return ret;
 }
 
-- (void) handleMod: (unsigned)mask 
+- (void) handleMod: (unsigned)mask
              flags: (unsigned)flags {
         unsigned delta = flags ^ _prevflags;
         unsigned pressed = delta & flags;
@@ -336,7 +337,7 @@ static cvkey mapkeycode(unsigned k) {
 }
 
 - (void)scrollWheel:(NSEvent *)ev {
-        unsigned k = [ev deltaY] > 0? 
+        unsigned k = [ev deltaY] > 0?
                 CVK_MOUSEWHEELUP : CVK_MOUSEWHEELDOWN;
         cvInject(CVE_DOWN, k, 0);
         cvInject(CVE_UP, k, 0);
@@ -364,7 +365,7 @@ static cvkey mapkeycode(unsigned k) {
 }
 
 - (BOOL) isOpaque {
-        return YES;
+        return NO;
 }
 
 - (void) resetCursorRects {
@@ -422,11 +423,12 @@ int cvrun(int argc, char ** argv) {
         View * view;
         int style = WINDOWED_MASK;
         GLint param = 1;
+        GLint opaque = 0;
         NSOpenGLContext *ctx;
         CGDirectDisplayID dpy = kCGDirectMainDisplay;
         NSOpenGLPixelFormatAttribute attr[] = {
                 NSOpenGLPFAScreenMask, CGDisplayIDToOpenGLDisplayMask(dpy),
-                NSOpenGLPFAColorSize, 24,
+                NSOpenGLPFAColorSize, 32,
                 NSOpenGLPFADepthSize, 32,
                 NSOpenGLPFAAlphaSize, 8,
                 NSOpenGLPFADoubleBuffer,
@@ -443,13 +445,13 @@ int cvrun(int argc, char ** argv) {
                 app = [NSApplication sharedApplication];
                 [app activateIgnoringOtherApps: YES];
                 [app finishLaunching];
-                
+
                 cvInject(CVE_INIT, argc, (intptr_t)argv);
                 rect.origin.x = cvInject(CVQ_XPOS, 0, 0);
                 rect.origin.y = cvInject(CVQ_YPOS, 0, 0);
                 rect.size.width = cvInject(CVQ_WIDTH, 0, 0);
                 rect.size.height = cvInject(CVQ_HEIGHT, 0, 0);
-                rect.origin.y = scrFrame().size.height - 1 - 
+                rect.origin.y = scrFrame().size.height - 1 -
                         rect.origin.y - rect.size.height;
                 win = [[Window alloc] initWithContentRect: rect
                                                 styleMask: style
@@ -461,6 +463,8 @@ int cvrun(int argc, char ** argv) {
                 g_view = view;
                 const char * ct = (const char *)cvInject(CVQ_NAME, 0, 0);
                 NSString * t = [NSString stringWithUTF8String: ct? ct : "default"];
+                [win setOpaque:NO];
+                [win setBackgroundColor:[NSColor clearColor]];
                 [win setTitle: t];
                 [win setReleasedWhenClosed: NO];
                 [win setDelegate: view];
@@ -470,11 +474,12 @@ int cvrun(int argc, char ** argv) {
                 [win makeFirstResponder: view];
 
                 fmt = [[NSOpenGLPixelFormat alloc] initWithAttributes: attr];
-                ctx = [[NSOpenGLContext alloc] 
-                              initWithFormat:fmt  
+                ctx = [[NSOpenGLContext alloc]
+                              initWithFormat:fmt
                                 shareContext: 0];
                 [ctx setView: view];
                 [ctx setValues: &param forParameter: NSOpenGLCPSwapInterval];
+                [ctx setValues:&opaque forParameter:NSOpenGLCPSurfaceOpacity];
                 [ctx makeCurrentContext];
                 cvInject(CVE_GLINIT, 0, 0);
                 rect = [view frame];
@@ -502,7 +507,7 @@ int cvrun(int argc, char ** argv) {
         return cvInject(CVE_TERM, 0, 0);
 }
 
-/* 
+/*
    Local variables: **
    c-file-style: "bsd" **
    c-basic-offset: 8 **
