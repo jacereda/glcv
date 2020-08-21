@@ -1,4 +1,5 @@
 #include "cv.c"
+#include <assert.h>
 #define evType evTypeC // conflicts
 #include <AppKit/NSColor.h>
 #include <AppKit/NSScreen.h>

@@ -1,4 +1,5 @@
 #include "npapi.c"
+#include <assert.h>
 #include <windows.h>
 #include <windowsx.h>
 
