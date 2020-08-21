@@ -321,7 +321,7 @@ static int onCLOSE(HWND win){
         return 0;
 }
 
-static int onSETCURSOR() {
+static int onSETCURSOR(HWND win, HWND wcur, UINT ht, UINT msg) {
         if (g_cursor)
                 SetCursor(g_cursor);
         return g_cursor != 0;
