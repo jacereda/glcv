@@ -1,6 +1,6 @@
 #if defined _WIN32
-#include <GL/gl.h>
 #include <windows.h>
+#include <GL/gl.h>
 #elif defined __ANDROID__
 #include <GLES2/gl2.h>
 #elif defined __IPHONE_OS_VERSION_MIN_REQUIRED
