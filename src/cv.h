@@ -37,7 +37,7 @@
 #include <inttypes.h>
 #endif
 
-typedef enum {
+enum _cveventtype {
         CVE_NONE,
 #define Q(x) CVQ_##x,
 #include "cvqueries.h"
@@ -46,13 +46,15 @@ typedef enum {
 #include "cvevents.h"
 #undef C
         CVE_MAX,
-} cveventtype;
+};
+typedef enum _cveventtype cveventtype;
 
-typedef enum {
+enum _cvkey {
 #define K(x) CVK_##x,
 #include "cvkeys.h"
 #undef K
-} cvkey;
+};
+typedef enum _cvkey cvkey;
 
 // Don't access this struct directly, use ev*() functions
 typedef struct _ev {
