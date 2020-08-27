@@ -31,11 +31,7 @@
 */
 
 #include <stdarg.h>
-#if defined _MSC_VER
-#include <assert.h>
-#else
-#include <inttypes.h>
-#endif
+#include <stdint.h>
 
 enum _cveventtype {
         CVE_NONE,

@@ -1,4 +1,5 @@
 #include "cv.c"
+#include <assert.h>
 #include <GL/glx.h>
 #include <X11/keysym.h>
 #include <X11/Xcursor/Xcursor.h>

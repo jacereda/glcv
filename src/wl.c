@@ -1,4 +1,5 @@
 #include "cv.c"
+#include <assert.h>
 #include "xdg-shell.c"
 #include "xdg-shell.h"
 #include <EGL/egl.h>

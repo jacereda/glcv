@@ -1,4 +1,5 @@
 #include "npapi.c"
+#include <assert.h>
 #include <QuartzCore/QuartzCore.h>
 #include <Carbon/Carbon.h> // For keycodes
 

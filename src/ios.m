@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2008-2010, Jorge Acereda Maci√°
+  Copyright (c) 2008-2010, Jorge Acereda Maci·
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -31,6 +31,7 @@
 */
 #include "cv.c"
 #include "cvgl.h"
+#include <assert.h>
 #include <OpenGLES/ES2/glext.h>
 
 #import <Foundation/Foundation.h>
