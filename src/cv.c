@@ -245,9 +245,19 @@ static void defaultlog(const char * name, const char * s) {
         }
 }
 
+static void toggleFullscreen() {
+        static int fullscreen = 0;
+        if (fullscreen) {
+                cvWindowed();
+                fullscreen = 0;
+        } else {
+                cvFullscreen();
+                fullscreen = 1;
+        }
+}
+
 intptr_t cvInject(cveventtype type, intptr_t p1, intptr_t p2) {
         extern intptr_t osEvent(ev *);
-        static int fullscreen = 0;
         ev e;
         intptr_t ret;
         e.type = type;
@@ -291,19 +301,13 @@ intptr_t cvInject(cveventtype type, intptr_t p1, intptr_t p2) {
                 case CVQ_HEIGHT:
                         ret = 256;
                         break;
-                case CVE_DOWN:
+                case CVE_UP:
                         switch (evWhich(&e)) {
                         case CVK_ESCAPE: cvQuit(); break;
+                        case CVK_F11: toggleFullscreen(); break;
                         case CVK_RETURN: 
-                                if (cvPressed(CVK_OPTION) | cvPressed(CVK_COMMAND)) {
-                                        if (fullscreen) {
-                                                cvWindowed();
-                                                fullscreen = 0;
-                                        } else {
-                                                cvFullscreen();
-                                                fullscreen = 1;
-                                        }
-                                }
+                                if (cvPressed(CVK_OPTION) | cvPressed(CVK_COMMAND))
+                                        toggleFullscreen();
                                 break;
                         default: break;
                         }
