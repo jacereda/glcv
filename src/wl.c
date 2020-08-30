@@ -1,8 +1,8 @@
 #include "cv.c"
-#include <assert.h>
 #include "xdg-shell.c"
 #include "xdg-shell.h"
 #include <EGL/egl.h>
+#include <assert.h>
 #include <sys/mman.h>
 #include <unistd.h>
 #include <wayland-egl.h>
@@ -584,6 +584,8 @@ int cvrun(int argc, char ** argv) {
                 8,
                 EGL_ALPHA_SIZE,
                 8,
+                EGL_DEPTH_SIZE,
+                24,
                 /* EGL_RENDERABLE_TYPE, */
                 /* EGL_OPENGL_ES2_BIT, */
                 EGL_NONE,
