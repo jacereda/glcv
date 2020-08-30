@@ -2,7 +2,7 @@ with import <nixpkgs> {};
 {
   shellEnv =
     let
-      mylibs = [ wayland egl-wayland libGL xorg.libX11 xorg.libXcursor libxkbcommon ];
+      mylibs = [ wayland egl-wayland libGL xorg.libX11 xorg.libXcursor xorg.libXrender libxkbcommon ];
     in
       stdenv.mkDerivation {
         name = "shell-environment";

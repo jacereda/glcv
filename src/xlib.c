@@ -1,12 +1,16 @@
 #include "cv.c"
 #include <GL/glx.h>
 #include <X11/Xcursor/Xcursor.h>
+#include <X11/extensions/Xrender.h>
 #include <X11/keysym.h>
 #include <assert.h>
 
 static int g_done = 0;
 static Display * g_dpy;
-static Window g_win = 0;
+static XVisualInfo * g_vi;
+static GLXFBConfig g_cfg;
+static Window g_win;
+static GLXWindow g_gwin;
 static XIM g_xim;
 static XIC g_xic;
 static GLXContext g_ctx;
@@ -18,6 +22,7 @@ static unsigned g_nw, g_nh;
         KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask |  \
             PointerMotionMask | StructureNotifyMask
 
+static Window rootWin() { return XRootWindow(g_dpy, g_vi->screen); }
 static int scr() { return XDefaultScreen(g_dpy); }
 
 static void borders(int show) {
@@ -36,17 +41,20 @@ static void openwin(int x, int y, unsigned w, unsigned h, int b) {
         XSetWindowAttributes swa;
         unsigned long swamask;
         Atom datom;
+        Window root = rootWin();
         swa.event_mask = EVMASK;
-        swamask = CWEventMask;
+        swa.colormap = XCreateColormap(g_dpy, root, g_vi->visual, AllocNone);
+        swa.border_pixel = 0;
+        swamask = CWEventMask | CWColormap | CWBorderPixel;
         hints.x = x;
         hints.y = y;
         hints.width = w;
         hints.height = h;
         assert(!g_win);
-        g_win =
-            XCreateWindow(g_dpy, XRootWindow(g_dpy, scr()), hints.x, hints.y,
-                          hints.width, hints.height, 0, CopyFromParent,
-                          InputOutput, CopyFromParent, swamask, &swa);
+        g_win = XCreateWindow(g_dpy, root, hints.x, hints.y, hints.width,
+                              hints.height, 0, g_vi->depth, InputOutput,
+                              g_vi->visual, swamask, &swa);
+        g_gwin = glXCreateWindow(g_dpy, g_cfg, g_win, 0);
         borders(b);
         hints.flags = USSize | USPosition;
         XSetWMNormalHints(g_dpy, g_win, &hints);
@@ -62,7 +70,7 @@ static void openwin(int x, int y, unsigned w, unsigned h, int b) {
 }
 
 static void unmap() {
-        glXMakeCurrent(g_dpy, 0, 0);
+        glXMakeContextCurrent(g_dpy, 0, 0, 0);
         XUnmapWindow(g_dpy, g_win);
 }
 
@@ -75,8 +83,9 @@ static void closewin() {
 }
 
 static void map() {
+        XEvent ev;
         XMapWindow(g_dpy, g_win);
-        glXMakeCurrent(g_dpy, g_win, g_ctx);
+        glXMakeContextCurrent(g_dpy, g_gwin, g_gwin, g_ctx);
 }
 
 static void savegeom() {
@@ -576,28 +585,46 @@ static void handle(Display * dpy, Window win, XIC xic, XEvent * e) {
         }
 }
 
+static void chooseConfig() {
+        int attr[] = { /* GLX_TRANSPARENT_TYPE, */
+                       /* GLX_TRANSPARENT_RGB, */
+                       GLX_X_RENDERABLE, True,
+                       /* GLX_X_VISUAL_TYPE, */
+                       /* GLX_DIRECT_COLOR, */
+                       /* GLX_CONFIG_CAVEAT, GLX_NONE, */
+                       GLX_DOUBLEBUFFER, True, GLX_RED_SIZE, 8, GLX_GREEN_SIZE,
+                       8, GLX_BLUE_SIZE, 8, GLX_ALPHA_SIZE, 8, GLX_DEPTH_SIZE,
+                       16, None
+        };
+        int n;
+        int i;
+        int found = 0;
+        GLXFBConfig * cfgs = glXChooseFBConfig(g_dpy, scr(), attr, &n);
+        for (int i = 0; i < n; i++) {
+                XVisualInfo * vi = glXGetVisualFromFBConfig(g_dpy, cfgs[i]);
+                XRenderPictFormat * pf =
+                    XRenderFindVisualFormat(g_dpy, vi->visual);
+                int alpha = pf->direct.alphaMask > 0;
+                XFree(vi);
+                if (alpha) {
+                        found = i;
+                        break;
+                }
+        }
+        g_cfg = cfgs[found];
+}
+
 int cvrun(int argc, char ** argv) {
-        int attr[] = { GLX_RGBA,
-                       GLX_DOUBLEBUFFER,
-                       GLX_RED_SIZE,
-                       1,
-                       GLX_GREEN_SIZE,
-                       1,
-                       GLX_BLUE_SIZE,
-                       1,
-                       GLX_DEPTH_SIZE,
-                       1,
-                       None };
-        XVisualInfo * vi;
+        (void)argc;
+        (void)argv;
+        cvInject(CVE_INIT, 0, 0);
         g_dpy = XOpenDisplay(0);
         g_xim = XOpenIM(g_dpy, 0, 0, 0);
-        cvInject(CVE_INIT, 0, 0);
+        chooseConfig();
+        g_vi = glXGetVisualFromFBConfig(g_dpy, g_cfg);
         openwin(cvInject(CVQ_XPOS, 0, 0), cvInject(CVQ_YPOS, 0, 0),
                 cvInject(CVQ_WIDTH, 0, 0), cvInject(CVQ_HEIGHT, 0, 0), 1);
-        vi = glXChooseVisual(g_dpy, scr(), attr);
-        g_ctx = glXCreateContext(g_dpy, vi, 0, True);
-        XFree(vi);
-
+        g_ctx = glXCreateNewContext(g_dpy, g_cfg, GLX_RGBA_TYPE, 0, True);
         map();
         ((int (*)(int))glXGetProcAddress((GLubyte *)"glXSwapIntervalSGI"))(1);
         cvInject(CVE_GLINIT, 0, 0);
@@ -606,11 +633,12 @@ int cvrun(int argc, char ** argv) {
                 while (XCheckWindowEvent(g_dpy, g_win, EVMASK, &e) ||
                        XCheckTypedWindowEvent(g_dpy, g_win, ClientMessage, &e))
                         handle(g_dpy, g_win, g_xic, &e);
-                glXSwapBuffers(g_dpy, g_win);
+                glXSwapBuffers(g_dpy, g_gwin);
                 cvInject(CVE_UPDATE, 0, 0);
         }
         cvInject(CVE_GLTERM, 0, 0);
         closewin();
+        XFree(g_vi);
         glXDestroyContext(g_dpy, g_ctx);
         XCloseIM(g_xim);
         XCloseDisplay(g_dpy);
