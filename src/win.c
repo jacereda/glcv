@@ -92,10 +92,6 @@ intptr_t osEvent(ev * e) {
         return ret;
 }
 
-#if !defined MAPVK_VK_TO_CHAR
-#define MAPVK_VK_TO_CHAR 2
-#endif
-
 #if !defined VK_OEM_PLUS
 #define VK_OEM_PLUS 0xbb
 #endif
@@ -127,53 +123,16 @@ intptr_t osEvent(ev * e) {
 static cvkey mapkey(int vk) {
         cvkey ret;
         switch (vk) {
-        case 'A': ret = CVK_A; break;
-        case 'S': ret = CVK_S; break;
-        case 'D': ret = CVK_D; break;
-        case 'F': ret = CVK_F; break;
-        case 'H': ret = CVK_H; break;
-        case 'G': ret = CVK_G; break;
-        case 'Z': ret = CVK_Z; break;
-        case 'X': ret = CVK_X; break;
-        case 'C': ret = CVK_C; break;
-        case 'V': ret = CVK_V; break;
-        case 'B': ret = CVK_B; break;
-        case 'Q': ret = CVK_Q; break;
-        case 'W': ret = CVK_W; break;
-        case 'E': ret = CVK_E; break;
-        case 'R': ret = CVK_R; break;
-        case 'Y': ret = CVK_Y; break;
-        case 'T': ret = CVK_T; break;
         case '1': ret = CVK_1; break;
         case '2': ret = CVK_2; break;
         case '3': ret = CVK_3; break;
         case '4': ret = CVK_4; break;
         case '6': ret = CVK_6; break;
         case '5': ret = CVK_5; break;
-        case VK_OEM_PLUS: ret = CVK_EQUAL; break;
         case '9': ret = CVK_9; break;
         case '7': ret = CVK_7; break;
-        case VK_OEM_MINUS: ret = CVK_MINUS; break;
         case '8': ret = CVK_8; break;
         case '0': ret = CVK_0; break;
-        case VK_OEM_6: ret = CVK_RIGHTBRACKET; break;
-        case 'O': ret = CVK_O; break;
-        case 'U': ret = CVK_U; break;
-        case VK_OEM_4: ret = CVK_LEFTBRACKET; break;
-        case 'I': ret = CVK_I; break;
-        case 'P': ret = CVK_P; break;
-        case 'L': ret = CVK_L; break;
-        case 'J': ret = CVK_J; break;
-        case VK_OEM_7: ret = CVK_QUOTE; break;
-        case 'K': ret = CVK_K; break;
-        case VK_OEM_1: ret = CVK_SEMICOLON; break;
-        case VK_OEM_5: ret = CVK_BACKSLASH; break;
-        case VK_OEM_COMMA: ret = CVK_COMMA; break;
-        case VK_OEM_2: ret = CVK_SLASH; break;
-        case 'N': ret = CVK_N; break;
-        case 'M': ret = CVK_M; break;
-        case VK_OEM_PERIOD: ret = CVK_PERIOD; break;
-        case VK_OEM_3: ret = CVK_GRAVE; break;
         case VK_DECIMAL: ret = CVK_KEYPADDECIMAL; break;
         case VK_MULTIPLY: ret = CVK_KEYPADMULTIPLY; break;
         case VK_ADD: ret = CVK_KEYPADPLUS; break;
@@ -247,7 +206,48 @@ static cvkey mapkey(int vk) {
         case VK_CLEAR: ret = CVK_CLEAR; break;
         case VK_SNAPSHOT: ret = CVK_SYSREQ; break;
         case VK_PAUSE: ret = CVK_PAUSE; break;
-        default: ret = CVK_NONE; break;
+        default:
+                switch (MapVirtualKeyExA(vk, MAPVK_VK_TO_VSC_EX, GetKeyboardLayout(0))) {
+                case 0x0c: ret = CVK_MINUS; break;
+                case 0x0d: ret = CVK_EQUAL; break;
+                case 0x10: ret = CVK_Q; break;
+                case 0x11: ret = CVK_W; break;
+                case 0x12: ret = CVK_E; break;
+                case 0x13: ret = CVK_R; break;
+                case 0x14: ret = CVK_T; break;
+                case 0x15: ret = CVK_Y; break;
+                case 0x16: ret = CVK_U; break;
+                case 0x17: ret = CVK_I; break;
+                case 0x18: ret = CVK_O; break;
+                case 0x19: ret = CVK_P; break;
+                case 0x1a: ret = CVK_LEFTBRACKET; break;
+                case 0x1b: ret = CVK_RIGHTBRACKET; break;
+                case 0x1e: ret = CVK_A; break;
+                case 0x1f: ret = CVK_S; break;
+                case 0x20: ret = CVK_D; break;
+                case 0x21: ret = CVK_F; break;
+                case 0x22: ret = CVK_G; break;
+                case 0x23: ret = CVK_H; break;
+                case 0x24: ret = CVK_J; break;
+                case 0x25: ret = CVK_K; break;
+                case 0x26: ret = CVK_L; break;
+                case 0x27: ret = CVK_SEMICOLON; break;
+                case 0x28: ret = CVK_QUOTE; break; 
+                case 0x2b: ret = CVK_BACKSLASH; break;
+                case 0x2c: ret = CVK_Z; break;
+                case 0x2d: ret = CVK_X; break;
+                case 0x2e: ret = CVK_C; break;
+                case 0x2f: ret = CVK_V; break;
+                case 0x30: ret = CVK_B; break;
+                case 0x31: ret = CVK_N; break;
+                case 0x32: ret = CVK_M; break;
+                case 0x33: ret = CVK_COMMA; break;
+                case 0x34: ret = CVK_PERIOD; break;
+                case 0x35: ret = CVK_SLASH; break;
+                default: ret = CVK_NONE;
+// printf("%x -> %x\n", vk, MapVirtualKeyExA(vk, MAPVK_VK_TO_VSC_EX, GetKeyboardLayout(0)));
+                        break;
+                }
         }
         return ret;
 }
@@ -345,6 +345,7 @@ static int onPAINT(HWND win) {
         HDC dc;
         cvInject(CVE_UPDATE, 0, 0);
         dc = GetDC(win);
+        DwmFlush();
         SwapBuffers(dc);
         ReleaseDC(win, dc);
         return 1;
