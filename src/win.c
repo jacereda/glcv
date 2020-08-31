@@ -3,6 +3,7 @@
 #include <windows.h>
 #include <wingdi.h>
 #include <windowsx.h>
+#include <dwmapi.h>
 
 
 #if !defined HANDLE_WM_MOUSEWHEEL
@@ -397,18 +398,18 @@ int cvrun(int argc, char ** argv) {
                 sizeof(PIXELFORMATDESCRIPTOR),   // size of this pfd 
                 1,                     // version number 
                 PFD_DRAW_TO_WINDOW |   // support window 
-                PFD_SUPPORT_OPENGL |   // support OpenGL 
+                PFD_SUPPORT_OPENGL |   // support OpenGL
                 PFD_DOUBLEBUFFER,      // double buffered 
                 PFD_TYPE_RGBA,         // RGBA type 
-                24,                    // 24-bit color depth 
+                32,                    // 32-bit color depth 
                 0, 0, 0, 0, 0, 0,      // color bits ignored 
-                0,                     // no alpha buffer 
+                8,                     // 8-bit alpha buffer 
                 0,                     // shift bit ignored 
                 0,                     // no accumulation buffer 
                 0, 0, 0, 0,            // accum bits ignored 
-                32,                    // 32-bit z-buffer 
+                24,                    // 24-bit z-buffer 
                 0,                     // no stencil buffer 
-                0,                     // no auxiliary buffer 
+                0,                     // not auxiliary buffer 
                 PFD_MAIN_PLANE,        // main layer 
                 0,                     // reserved 
                 0, 0, 0                // layer masks ignored 
@@ -436,11 +437,18 @@ int cvrun(int argc, char ** argv) {
                               r.left, r.top,
                               r.right - r.left, r.bottom - r.top,
                               0, 0, mod, 0);
+        DWM_BLURBEHIND bb = {0};
+        HRGN blur = CreateRectRgn(0,0,-1,-1);
+        bb.dwFlags = DWM_BB_ENABLE|DWM_BB_BLURREGION;
+        bb.fEnable = TRUE;
+        bb.hRgnBlur = blur; 
+        DwmEnableBlurBehindWindow(win, &bb);
+        DeleteObject(blur);
         g_win = win;
         dc = GetDC(win);
-        SetPixelFormat(dc, ChoosePixelFormat(dc, &pfd), &pfd); 
+        SetPixelFormat(dc, ChoosePixelFormat(dc, &pfd), &pfd);
         ctx = wglCreateContext(dc);
-        wglMakeCurrent(dc, ctx);        
+        wglMakeCurrent(dc, ctx);
         cvInject(CVE_GLINIT, 0, 0);
         ((int(APIENTRY*)(int))wglGetProcAddress("wglSwapIntervalEXT"))(1);
         ShowWindow(win, SW_SHOWNORMAL);
