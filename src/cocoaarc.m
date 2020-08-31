@@ -655,6 +655,9 @@ static cvkey mapkeycode(unsigned k) {
 @end
 
 @implementation Window
+- (BOOL)hasShadow {
+        return NO;
+}
 
 - (BOOL)canBecomeKeyWindow {
         return YES;
@@ -681,7 +684,7 @@ int cvrun(int argc, char ** argv) {
                 NSOpenGLPFAColorSize,
                 32,
                 NSOpenGLPFADepthSize,
-                32,
+                24,
                 NSOpenGLPFAAlphaSize,
                 8,
                 NSOpenGLPFADoubleBuffer,
@@ -770,12 +773,3 @@ int cvrun(int argc, char ** argv) {
         }
         return cvInject(CVE_TERM, 0, 0);
 }
-
-/*
-   Local variables: **
-   c-file-style: "bsd" **
-   c-basic-offset: 8 **
-   indent-tabs-mode: nil **
-   End: **
-
-*/
