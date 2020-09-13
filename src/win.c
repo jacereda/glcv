@@ -450,7 +450,7 @@ int cvrun(int argc, char ** argv) {
         SetPixelFormat(dc, ChoosePixelFormat(dc, &pfd), &pfd);
         ctx = wglCreateContext(dc);
         wglMakeCurrent(dc, ctx);
-        cvInject(CVE_GLINIT, 0, 0);
+        cvInject(CVE_GLINIT, win, mod);
         ((int(APIENTRY*)(int))wglGetProcAddress("wglSwapIntervalEXT"))(1);
         ShowWindow(win, SW_SHOWNORMAL);
         while (!g_done) {
