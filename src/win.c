@@ -431,8 +431,10 @@ int cvrun(int argc, char ** argv) {
         cvInject(CVE_INIT, 1, (intptr_t)argv);
         r.left = cvInject(CVQ_XPOS, 0, 0);
         r.top = cvInject(CVQ_YPOS, 0, 0);
-        r.right = r.left + cvInject(CVQ_WIDTH, 0, 0);
-        r.bottom = r.top + cvInject(CVQ_HEIGHT, 0, 0);
+        s_w = cvInject(CVQ_WIDTH, 0, 0);
+        r.right = r.left + s_w;
+        s_h = cvInject(CVQ_HEIGHT, 0, 0);
+        r.bottom = r.top + s_h;
         AdjustWindowRect(&r, style, FALSE);
         win = CreateWindowExW(exstyle, name, name, style, 
                               r.left, r.top,
