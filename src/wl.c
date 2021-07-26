@@ -551,7 +551,7 @@ int cvrun(int argc, char ** argv) {
         wl_registry_add_listener(wlreg, &wrl, NULL);
         wl_display_roundtrip(wldpy);
 
-        cvInject(CVE_INIT, 0, 0);
+        cvInject(CVE_INIT, argc, argv);
 
         struct wl_surface * wlsurf = wl_compositor_create_surface(g_comp);
 
