@@ -615,7 +615,7 @@ static void chooseConfig() {
 }
 
 int cvrun(int argc, char ** argv) {
-        cvInject(CVE_INIT, argc, argv);
+        cvInject(CVE_INIT, argc, (intptr_t)argv);
         g_dpy = XOpenDisplay(0);
         g_xim = XOpenIM(g_dpy, 0, 0, 0);
         chooseConfig();
