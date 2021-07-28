@@ -69,6 +69,7 @@ unsigned cvWidth();
 unsigned cvHeight();
 int cvMouseX();
 int cvMouseY();
+int cvKeyStatus(cvkey key);
 int cvPressed(cvkey key);
 int cvReleased(cvkey key);
 

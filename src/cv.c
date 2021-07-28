@@ -134,9 +134,17 @@ static void release(cvkey k) {
                 bitclear(ba, k);
 }
 
-int cvPressed(cvkey k) {
+int cvKeyStatus(cvkey k) {
         const unsigned char * ba = bitarrayFor(s_pressed, &k);
         return ba && bittest(ba, k);
+}
+
+
+int cvPressed(cvkey k) {
+        cvkey pk = k;
+        const unsigned char * ba = bitarrayFor(s_pressed, &k);
+        const unsigned char * pba = bitarrayFor(s_ppressed, &pk);
+        return ba && bittest(ba, k) && !bittest(pba, k);
 }
 
 int cvReleased(cvkey k) {
