@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 mk() {
-     gcc $* -Wall -I/usr/X11R6/include -I src src/xlib.c -L/usr/X11R6/lib -lX11 -lXcursor -lGL
+     gcc $* -Wall -I/usr/X11R6/include -I src src/xlib.c -L/usr/X11R6/lib -lX11 -lXcursor -lGL -lXrender
 }
 install -d b
 mk test/simple.c -o b/simple
