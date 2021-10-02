@@ -573,24 +573,19 @@ int cvrun(int argc, char ** argv) {
         EGLDisplay egldpy = eglGetDisplay((EGLNativeDisplayType)wldpy);
         EGLint major, minor;
         eglInitialize(egldpy, &major, &minor);
+        // clang-format off
         EGLint attrs[] = {
                 EGL_SURFACE_TYPE,
                 EGL_WINDOW_BIT,
-                EGL_RED_SIZE,
-                8,
-                EGL_GREEN_SIZE,
-                8,
-                EGL_BLUE_SIZE,
-                8,
-                EGL_ALPHA_SIZE,
-                8,
-                EGL_DEPTH_SIZE,
-                24,
-                /* EGL_RENDERABLE_TYPE, */
-                /* EGL_OPENGL_ES2_BIT, */
+                EGL_RED_SIZE, 8,
+                EGL_GREEN_SIZE, 8,
+                EGL_BLUE_SIZE, 8,
+                EGL_ALPHA_SIZE, 8,
+                EGL_DEPTH_SIZE, 24,
+                /* EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT, */
                 EGL_NONE,
         };
-
+        // clang-format on
         EGLConfig eglcfg[1];
         EGLint n = 0;
         eglChooseConfig(egldpy, attrs, eglcfg, 1, &n);
