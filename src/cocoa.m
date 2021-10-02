@@ -463,6 +463,10 @@ static cvkey mapkeycode(unsigned k) {
 
 @implementation View
 
+- (BOOL)wantsBestResolutionOpenGLSurface {
+        return NO;
+}
+
 - (NSPoint)toAbs:(NSPoint)p {
         return [[self window] convertRectToScreen:NSMakeRect(p.x, p.y, 0, 0)]
             .origin;
