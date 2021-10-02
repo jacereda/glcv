@@ -482,6 +482,8 @@ static cvkey mapkeycode(unsigned k) {
         NSSize sz = fr.size;
         [[NSOpenGLContext currentContext] update];
         cvInject(CVE_RESIZE, sz.width, sz.height);
+        cvInject(CVE_UPDATE, 0, 0);
+        [[NSOpenGLContext currentContext] flushBuffer];
 }
 
 - (BOOL)windowShouldClose:(id)s {
