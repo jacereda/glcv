@@ -585,21 +585,19 @@ static void handle(Display * dpy, Window win, XIC xic, XEvent * e) {
 }
 
 static void chooseConfig() {
-        int attr[] = { /* GLX_TRANSPARENT_TYPE, */
-                       /* GLX_TRANSPARENT_RGB, */
-                       /* GLX_X_VISUAL_TYPE, */
-                       /* GLX_DIRECT_COLOR, */
-                       /* GLX_CONFIG_CAVEAT, GLX_NONE, */
-	  GLX_X_RENDERABLE, True,
-	  GLX_DOUBLEBUFFER, True,
-	  GLX_RED_SIZE, 8,
-	  GLX_GREEN_SIZE,
-	  8, GLX_BLUE_SIZE, 8,
-	  GLX_ALPHA_SIZE, 8,
-	  GLX_DEPTH_SIZE, 16,
-	  None, None
+        // clang-format off
+        int attr[] = {
+          GLX_X_RENDERABLE, True,
+          GLX_DOUBLEBUFFER, True,
+          GLX_RED_SIZE, 8,
+          GLX_GREEN_SIZE,
+          8, GLX_BLUE_SIZE, 8,
+          GLX_ALPHA_SIZE, 8,
+          GLX_DEPTH_SIZE, 16,
+          None, None
         };
-        int n=0;
+        // clang-format on
+        int n = 0;
         int found = 0;
         GLXFBConfig * cfgs = glXChooseFBConfig(g_dpy, scr(), attr, &n);
         for (int i = 0; i < n; i++) {
