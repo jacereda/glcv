@@ -612,8 +612,8 @@ int cvrun(int argc, char ** argv) {
 
         cvInject(CVE_GLINIT, 0, 0);
         while (wl_display_dispatch(wldpy) != -1 && !g_done) {
-                eglSwapBuffers(egldpy, eglsurf);
                 cvInject(CVE_UPDATE, 0, 0);
+                eglSwapBuffers(egldpy, eglsurf);
         }
         cvInject(CVE_GLTERM, 0, 0);
 
