@@ -6,7 +6,7 @@
 #elif defined __IPHONE_OS_VERSION_MIN_REQUIRED
 #include <OpenGLES/ES2/gl.h>
 #elif defined __APPLE__
-#include <OpenGL/gl.h>
+#include <OpenGL/gl3.h>
 #else
 #include <GL/gl.h>
 #endif
