@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 mk() {
-     gcc $* -fno-objc-arc -Wall -I src src/cocoa.m -framework OpenGL -framework AppKit
+     gcc $* -fno-objc-arc -Wall -Wno-deprecated-declarations -I src src/cocoa.m -framework OpenGL -framework AppKit
 }
 install -d b
 mk test/simple.c -o b/simple
