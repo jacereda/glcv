@@ -4,6 +4,34 @@
 #include <X11/extensions/Xrender.h>
 #include <X11/keysym.h>
 #include <assert.h>
+#if defined CV_DYN
+#include <dlfcn.h>
+
+static void * (*pglXGetProcAddress)(const GLubyte * procname);
+#define glXGetProcAddress pglXGetProcAddress
+
+static GLXWindow (*pglXCreateWindow)(Display * dpy, GLXFBConfig config,
+                                     Window win, const int * attribList);
+#define glXCreateWindow pglXCreateWindow
+static XVisualInfo * (*pglXGetVisualFromFBConfig)(Display * dpy,
+                                                  GLXFBConfig config);
+#define glXGetVisualFromFBConfig pglXGetVisualFromFBConfig
+static GLXFBConfig * (*pglXChooseFBConfig)(Display * dpy, int screen,
+                                           const int * attribList,
+                                           int * nitems);
+#define glXChooseFBConfig pglXChooseFBConfig
+static GLXContext (*pglXCreateNewContext)(Display * dpy, GLXFBConfig config,
+                                          int renderType, GLXContext shareList,
+                                          Bool direct);
+#define glXCreateNewContext pglXCreateNewContext
+static Bool (*pglXMakeContextCurrent)(Display * display, GLXDrawable draw,
+                                      GLXDrawable read, GLXContext ctx);
+#define glXMakeContextCurrent pglXMakeContextCurrent
+static void (*pglXSwapBuffers)(Display * dpy, GLXDrawable drawable);
+#define glXSwapBuffers pglXSwapBuffers
+static void (*pglXDestroyContext)(Display * dpy, GLXContext ctx);
+#define glXDestroyContext pglXDestroyContext
+#endif
 
 static int g_done = 0;
 static Display * g_dpy;
@@ -615,6 +643,19 @@ static void chooseConfig() {
 }
 
 int cvrun(int argc, char ** argv) {
+#ifdef CV_DYN
+        void * gl = dlopen("libGL.so", RTLD_LAZY);
+        assert(gl);
+#define R(x) p##x = dlsym(gl, #x)
+        R(glXGetProcAddress);
+        R(glXCreateWindow);
+        R(glXGetVisualFromFBConfig);
+        R(glXChooseFBConfig);
+        R(glXCreateNewContext);
+        R(glXMakeContextCurrent);
+        R(glXSwapBuffers);
+        R(glXDestroyContext);
+#endif
         cvInject(CVE_INIT, argc, (intptr_t)argv);
         g_dpy = XOpenDisplay(0);
         g_xim = XOpenIM(g_dpy, 0, 0, 0);
