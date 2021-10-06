@@ -5,7 +5,6 @@
 #include <windowsx.h>
 #include <dwmapi.h>
 
-
 #if !defined HANDLE_WM_MOUSEWHEEL
 #define HANDLE_WM_MOUSEWHEEL(hwnd,wParam,lParam,fn) ((fn)((hwnd),(int)(short)LOWORD(lParam),(int)(short)HIWORD(lParam),(int)(short)HIWORD(wParam),(UINT)(short)LOWORD(wParam)),0L)
 #endif
@@ -341,11 +340,13 @@ static int onCHAR(HWND win, unsigned c, int repeats) {
         return 0;
 }
 
+static HRESULT (*pDwmFlush)();
+
 static int onPAINT(HWND win) {
         HDC dc;
         cvInject(CVE_UPDATE, 0, 0);
         dc = GetDC(win);
-        DwmFlush();
+        pDwmFlush();
         SwapBuffers(dc);
         ReleaseDC(win, dc);
         return 1;
@@ -440,21 +441,37 @@ int cvrun(int argc, char ** argv) {
                               r.left, r.top,
                               r.right - r.left, r.bottom - r.top,
                               0, 0, mod, 0);
-        DWM_BLURBEHIND bb = {0};
-        HRGN blur = CreateRectRgn(0,0,-1,-1);
-        bb.dwFlags = DWM_BB_ENABLE|DWM_BB_BLURREGION;
-        bb.fEnable = TRUE;
-        bb.hRgnBlur = blur; 
-        DwmEnableBlurBehindWindow(win, &bb);
-        DeleteObject(blur);
         g_win = win;
         dc = GetDC(win);
         SetPixelFormat(dc, ChoosePixelFormat(dc, &pfd), &pfd);
-#if !defined CV_NO_CONTEXT
+
+#if defined CV_DYN
+#define GRESOLV(lib, t,nm) p##nm=(t(WINAPI*)())GetProcAddress(lib, #nm)        
+#define RESOLV(lib, t,nm) t(WINAPI*nm)()=(t(WINAPI*)())GetProcAddress(lib, #nm)
+#else
+#define GRESOLV(lib, t,nm) p##nm = nm
+#define RESOLV(lib, t,nm)
+#endif
+        DWM_BLURBEHIND bb = {0};        
+        HRGN blur = CreateRectRgn(0,0,-1,-1);
+        bb.dwFlags = DWM_BB_ENABLE|DWM_BB_BLURREGION;
+        bb.fEnable = TRUE;
+        bb.hRgnBlur = blur;
+        HMODULE dwm = LoadLibraryA("dwmapi.dll");
+        RESOLV(dwm, HRESULT, DwmEnableBlurBehindWindow);
+        GRESOLV(dwm, HRESULT, DwmFlush);
+        assert(pDwmFlush);
+        DwmEnableBlurBehindWindow(win, &bb);
+        DeleteObject(blur);
+
+        HMODULE ogl = LoadLibraryA("opengl32.dll");
+        RESOLV(ogl,void*,wglGetProcAddress);
+        RESOLV(ogl,HGLRC,wglCreateContext);
+        RESOLV(ogl,BOOL,wglMakeCurrent);                       
         ctx = wglCreateContext(dc);
         wglMakeCurrent(dc, ctx);
         ((int(APIENTRY*)(int))wglGetProcAddress("wglSwapIntervalEXT"))(1);
-#endif
+
         cvInject(CVE_GLINIT, (intptr_t)win, (intptr_t)mod);
         ShowWindow(win, SW_SHOWNORMAL);
         while (!g_done) {
