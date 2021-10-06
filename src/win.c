@@ -455,7 +455,7 @@ int cvrun(int argc, char ** argv) {
         wglMakeCurrent(dc, ctx);
         ((int(APIENTRY*)(int))wglGetProcAddress("wglSwapIntervalEXT"))(1);
 #endif
-        cvInject(CVE_GLINIT, win, mod);
+        cvInject(CVE_GLINIT, (intptr_t)win, (intptr_t)mod);
         ShowWindow(win, SW_SHOWNORMAL);
         while (!g_done) {
                 MSG msg;
