@@ -31,6 +31,187 @@ static void (*pglXSwapBuffers)(Display * dpy, GLXDrawable drawable);
 #define glXSwapBuffers pglXSwapBuffers
 static void (*pglXDestroyContext)(Display * dpy, GLXContext ctx);
 #define glXDestroyContext pglXDestroyContext
+
+static Window (*pXCreateWindow)(
+    Display * /* display */, Window /* parent */, int /* x */, int /* y */,
+    unsigned int /* width */, unsigned int /* height */,
+    unsigned int /* border_width */, int /* depth */, unsigned int /* class */,
+    Visual * /* visual */, unsigned long /* valuemask */,
+    XSetWindowAttributes * /* attributes */
+);
+#define XCreateWindow pXCreateWindow
+
+static XImage * (*pXCreateImage)(Display * /* display */, Visual * /* visual */,
+                                 unsigned int /* depth */, int /* format */,
+                                 int /* offset */, char * /* data */,
+                                 unsigned int /* width */,
+                                 unsigned int /* height */,
+                                 int /* bitmap_pad */, int /* bytes_per_line */
+);
+#define XCreateImage pXCreateImage
+
+static int (*pXUndefineCursor)(Display * /* display */, Window /* w */
+);
+#define XUndefineCursor pXUndefineCursor
+
+static int (*pXFreeCursor)(Display * /* display */, Cursor /* cursor */
+);
+#define XFreeCursor pXFreeCursor
+
+static int (*pXDefineCursor)(Display * /* display */, Window /* w */,
+                             Cursor /* cursor */
+);
+#define XDefineCursor pXDefineCursor
+
+static Status (*pXGetGeometry)(Display * /* display */, Drawable /* d */,
+                               Window * /* root_return */, int * /* x_return */,
+                               int * /* y_return */,
+                               unsigned int * /* width_return */,
+                               unsigned int * /* height_return */,
+                               unsigned int * /* border_width_return */,
+                               unsigned int * /* depth_return */
+);
+#define XGetGeometry pXGetGeometry
+
+static Bool (*pXTranslateCoordinates)(Display * /* display */,
+                                      Window /* src_w */, Window /* dest_w */,
+                                      int /* src_x */, int /* src_y */,
+                                      int * /* dest_x_return */,
+                                      int * /* dest_y_return */,
+                                      Window * /* child_return */
+);
+#define XTranslateCoordinates pXTranslateCoordinates
+
+static int (*pXMapWindow)(Display * /* display */, Window /* w */
+);
+#define XMapWindow pXMapWindow
+
+static int (*pXUnmapWindow)(Display * /* display */, Window /* w */
+);
+#define XUnmapWindow pXUnmapWindow
+
+static void (*pXDestroyIC)(XIC /* ic */
+);
+#define XDestroyIC pXDestroyIC
+
+static int (*pXDefaultScreen)(Display * /* display */
+);
+#define XDefaultScreen pXDefaultScreen
+
+static Window (*pXRootWindow)(Display * /* display */, int /* screen_number */
+);
+#define XRootWindow pXRootWindow
+
+static Atom (*pXInternAtom)(Display * /* display */,
+                            _Xconst char * /* atom_name */,
+                            Bool /* only_if_exists */
+);
+#define XInternAtom pXInternAtom
+
+static Bool (*pXCheckWindowEvent)(Display * /* display */, Window /* w */,
+                                  long /* event_mask */,
+                                  XEvent * /* event_return */
+);
+#define XCheckWindowEvent pXCheckWindowEvent
+
+static Bool (*pXCheckTypedWindowEvent)(Display * /* display */, Window /* w */,
+                                       int /* event_type */,
+                                       XEvent * /* event_return */
+);
+#define XCheckTypedWindowEvent pXCheckTypedWindowEvent
+
+static Colormap (*pXCreateColormap)(Display * /* display */, Window /* w */,
+                                    Visual * /* visual */, int /* alloc */
+);
+#define XCreateColormap pXCreateColormap
+
+static int (*pXwcLookupString)(XIC /* ic */, XKeyPressedEvent * /* event */,
+                               wchar_t * /* buffer_return */,
+                               int /* wchars_buffer */,
+                               KeySym * /* keysym_return */,
+                               Status * /* status_return */
+);
+#define XwcLookupString pXwcLookupString
+
+static Display * (*pXOpenDisplay)(_Xconst char * /* display_name */
+);
+#define XOpenDisplay pXOpenDisplay
+
+static XIM (*pXOpenIM)(Display * /* dpy */,
+                       struct _XrmHashBucketRec * /* rdb */,
+                       char * /* res_name */, char * /* res_class */
+);
+#define XOpenIM pXOpenIM
+
+static int (*pXFree)(void * /* data */
+);
+#define XFree pXFree
+
+static Status (*pXCloseIM)(XIM /* im */
+);
+#define XCloseIM pXCloseIM
+
+static int (*pXCloseDisplay)(Display * /* display */
+);
+#define XCloseDisplay pXCloseDisplay
+
+static Status (*pXSetWMProtocols)(Display * /* display */, Window /* w */,
+                                  Atom * /* protocols */, int /* count */
+);
+#define XSetWMProtocols pXSetWMProtocols
+
+static int (*pXSelectInput)(Display * /* display */, Window /* w */,
+                            long /* event_mask */
+);
+#define XSelectInput pXSelectInput
+
+static XIC (*pXCreateIC)(XIM /* im */, ...);
+#define XCreateIC pXCreateIC
+
+static int (*pXStoreName)(Display * /* display */, Window /* w */,
+                          _Xconst char * /* window_name */
+);
+#define XStoreName pXStoreName
+
+static int (*pXDestroyWindow)(Display * /* display */, Window /* w */
+);
+#define XDestroyWindow pXDestroyWindow
+
+static int (*pXChangeProperty)(Display * /* display */, Window /* w */,
+                               Atom /* property */, Atom /* type */,
+                               int /* format */, int /* mode */,
+                               _Xconst unsigned char * /* data */,
+                               int /* nelements */
+);
+#define XChangeProperty pXChangeProperty
+
+static int (*pXPutBackEvent)(Display * /* display */, XEvent * /* event */
+);
+#define XPutBackEvent pXPutBackEvent
+
+static int (*pXFlush)(Display * /* display */
+);
+#define XFlush pXFlush
+
+static XRenderPictFormat * (*pXRenderFindVisualFormat)(Display * dpy,
+                                                       _Xconst Visual * visual);
+#define XRenderFindVisualFormat pXRenderFindVisualFormat
+
+static XcursorImage * (*pXcursorImageCreate)(int width, int height);
+#define XcursorImageCreate pXcursorImageCreate
+
+static void (*pXcursorImageDestroy)(XcursorImage * image);
+#define XcursorImageDestroy pXcursorImageDestroy
+
+static Cursor (*pXcursorImageLoadCursor)(Display * dpy,
+                                         const XcursorImage * image);
+#define XcursorImageLoadCursor pXcursorImageLoadCursor
+
+static void (*pXSetWMNormalHints)(Display * /* display */, Window /* w */,
+                                  XSizeHints * /* hints */
+);
+#define XSetWMNormalHints pXSetWMNormalHints
+
 #endif
 
 static int g_done = 0;
@@ -50,8 +231,12 @@ static unsigned g_nw, g_nh;
         KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask |  \
             PointerMotionMask | StructureNotifyMask
 
-static Window rootWin() { return XRootWindow(g_dpy, g_vi->screen); }
-static int scr() { return XDefaultScreen(g_dpy); }
+static Window rootWin() {
+        return XRootWindow(g_dpy, g_vi->screen);
+}
+static int scr() {
+        return XDefaultScreen(g_dpy);
+}
 
 static void borders(int show) {
         Atom hatom = XInternAtom(g_dpy, "_MOTIF_WM_HINTS", 1);
@@ -78,7 +263,7 @@ static void openwin(int x, int y, unsigned w, unsigned h, int b) {
         hints.y = y;
         hints.width = w;
         hints.height = h;
-        assert(!g_win);
+        //        assert(!g_win);
         g_win = XCreateWindow(g_dpy, root, hints.x, hints.y, hints.width,
                               hints.height, 0, g_vi->depth, InputOutput,
                               g_vi->visual, swamask, &swa);
@@ -644,9 +829,13 @@ static void chooseConfig() {
 
 int cvrun(int argc, char ** argv) {
 #ifdef CV_DYN
-        void * gl = dlopen("libGL.so", RTLD_LAZY);
-        assert(gl);
-#define R(x) p##x = dlsym(gl, #x)
+        void * h;
+
+#define R(x)                                                                   \
+        p##x = dlsym(h, #x);                                                   \
+        assert(p##x)
+
+        h = dlopen("libGL.so", RTLD_LAZY);
         R(glXGetProcAddress);
         R(glXCreateWindow);
         R(glXGetVisualFromFBConfig);
@@ -655,6 +844,48 @@ int cvrun(int argc, char ** argv) {
         R(glXMakeContextCurrent);
         R(glXSwapBuffers);
         R(glXDestroyContext);
+
+        h = dlopen("libX11.so", RTLD_LAZY);
+        R(XCreateWindow);
+        R(XCreateImage);
+        R(XUndefineCursor);
+        R(XFreeCursor);
+        R(XDefineCursor);
+        R(XGetGeometry);
+        R(XTranslateCoordinates);
+        R(XMapWindow);
+        R(XUnmapWindow);
+        R(XDestroyIC);
+        R(XDefaultScreen);
+        R(XRootWindow);
+        R(XInternAtom);
+        R(XCheckWindowEvent);
+        R(XCheckTypedWindowEvent);
+        R(XCreateColormap);
+        R(XwcLookupString);
+        R(XOpenDisplay);
+        R(XOpenIM);
+        R(XFree);
+        R(XCloseIM);
+        R(XCloseDisplay);
+        R(XSetWMProtocols);
+        R(XSelectInput);
+        R(XCreateIC);
+        R(XStoreName);
+        R(XDestroyWindow);
+        R(XChangeProperty);
+        R(XPutBackEvent);
+        R(XFlush);
+        R(XSetWMNormalHints);
+
+        h = dlopen("libXrender.so.1", RTLD_LAZY);
+        R(XRenderFindVisualFormat);
+
+        h = dlopen("libXcursor.so.1", RTLD_LAZY);
+        R(XcursorImageCreate);
+        R(XcursorImageDestroy);
+        R(XcursorImageLoadCursor);
+
 #endif
         cvInject(CVE_INIT, argc, (intptr_t)argv);
         g_dpy = XOpenDisplay(0);

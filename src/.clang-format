@@ -1,3 +1,4 @@
+AllowShortFunctionsOnASingleLine: false
 AlignTrailingComments: true
 AlignConsecutiveMacros: true
 ColumnLimit: 80
