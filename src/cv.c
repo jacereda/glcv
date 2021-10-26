@@ -274,8 +274,8 @@ static void toggleFullscreen() {
         }
 }
 
+extern intptr_t osEvent(ev *);
 intptr_t cvInject(cveventtype type, intptr_t p1, intptr_t p2) {
-        extern intptr_t osEvent(ev *);
         ev e;
         intptr_t ret;
         e.type = type;

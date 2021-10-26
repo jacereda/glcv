@@ -1,4 +1,3 @@
-#include "cv.c"
 #include <GL/glx.h>
 #include <X11/Xcursor/Xcursor.h>
 #include <X11/extensions/Xrender.h>
@@ -408,7 +407,7 @@ static cvkey mapkeycode(unsigned k) {
 }
 
 #else
-cvkey mapkeycode(unsigned k) {
+static cvkey mapkeycode(unsigned k) {
         cvkey ret;
         switch (k) {
         case 9:
@@ -803,8 +802,8 @@ static void chooseConfig() {
           GLX_X_RENDERABLE, True,
           GLX_DOUBLEBUFFER, True,
           GLX_RED_SIZE, 8,
-          GLX_GREEN_SIZE,
-          8, GLX_BLUE_SIZE, 8,
+          GLX_GREEN_SIZE, 8,
+          GLX_BLUE_SIZE, 8,
           GLX_ALPHA_SIZE, 8,
           GLX_DEPTH_SIZE, 16,
           None, None
