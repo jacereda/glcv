@@ -902,8 +902,8 @@ int cvrun(int argc, char ** argv) {
                 while (XCheckWindowEvent(g_dpy, g_win, EVMASK, &e) ||
                        XCheckTypedWindowEvent(g_dpy, g_win, ClientMessage, &e))
                         handle(g_dpy, g_win, g_xic, &e);
-                glXSwapBuffers(g_dpy, g_gwin);
                 cvInject(CVE_UPDATE, 0, 0);
+                glXSwapBuffers(g_dpy, g_gwin);
         }
         cvInject(CVE_GLTERM, 0, 0);
         closewin();
