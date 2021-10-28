@@ -835,6 +835,9 @@ int cvrun(int argc, char ** argv) {
         assert(p##x)
 
         h = dlopen("libGL.so", RTLD_LAZY);
+        if (!h)
+                h = dlopen("libGL.so.1", RTLD_LAZY);
+        assert(h);
         R(glXGetProcAddress);
         R(glXCreateWindow);
         R(glXGetVisualFromFBConfig);
@@ -845,6 +848,9 @@ int cvrun(int argc, char ** argv) {
         R(glXDestroyContext);
 
         h = dlopen("libX11.so", RTLD_LAZY);
+        if (!h)
+                h = dlopen("libX11.so.6", RTLD_LAZY);
+        assert(h);
         R(XCreateWindow);
         R(XCreateImage);
         R(XUndefineCursor);
@@ -877,10 +883,16 @@ int cvrun(int argc, char ** argv) {
         R(XFlush);
         R(XSetWMNormalHints);
 
-        h = dlopen("libXrender.so.1", RTLD_LAZY);
+        h = dlopen("libXrender.so", RTLD_LAZY);
+        if (!h)
+                h = dlopen("libXrender.so.1", RTLD_LAZY);
+        assert(h);
         R(XRenderFindVisualFormat);
 
-        h = dlopen("libXcursor.so.1", RTLD_LAZY);
+        h = dlopen("libXcursor.so", RTLD_LAZY);
+        if (!h)
+                h = dlopen("libXcursor.so.1", RTLD_LAZY);
+        assert(h);
         R(XcursorImageCreate);
         R(XcursorImageDestroy);
         R(XcursorImageLoadCursor);
