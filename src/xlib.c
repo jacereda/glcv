@@ -243,8 +243,9 @@ static void borders(int show) {
         flags[0] = 2;    // MWM_HINTS_DECORATIONS
         flags[2] = show;
         flags[1] = flags[3] = flags[4] = 0;
-        XChangeProperty(g_dpy, g_win, hatom, hatom, 32, PropModeReplace,
-                        (unsigned char *)flags, sizeof(flags) / 4);
+        if (hatom)
+                XChangeProperty(g_dpy, g_win, hatom, hatom, 32, PropModeReplace,
+                                (unsigned char *)flags, sizeof(flags) / 4);
         XFlush(g_dpy);
 }
 
@@ -900,12 +901,16 @@ int cvrun(int argc, char ** argv) {
 #endif
         cvInject(CVE_INIT, argc, (intptr_t)argv);
         g_dpy = XOpenDisplay(0);
+        assert(g_dpy);
         g_xim = XOpenIM(g_dpy, 0, 0, 0);
+        assert(g_xim);
         chooseConfig();
         g_vi = glXGetVisualFromFBConfig(g_dpy, g_cfg);
+        assert(g_vi);
         openwin(cvInject(CVQ_XPOS, 0, 0), cvInject(CVQ_YPOS, 0, 0),
                 cvInject(CVQ_WIDTH, 0, 0), cvInject(CVQ_HEIGHT, 0, 0), 1);
         g_ctx = glXCreateNewContext(g_dpy, g_cfg, GLX_RGBA_TYPE, 0, True);
+        assert(g_ctx);
         map();
         ((int (*)(int))glXGetProcAddress((GLubyte *)"glXSwapIntervalSGI"))(1);
         cvInject(CVE_GLINIT, 0, 0);
