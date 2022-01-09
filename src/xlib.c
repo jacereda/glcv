@@ -618,8 +618,8 @@ static void chooseConfig() {
           GLX_X_RENDERABLE, True,
           GLX_DOUBLEBUFFER, True,
           GLX_RED_SIZE, 8,
-          GLX_GREEN_SIZE,
-          8, GLX_BLUE_SIZE, 8,
+          GLX_GREEN_SIZE, 8,
+          GLX_BLUE_SIZE, 8,
           GLX_ALPHA_SIZE, 8,
           GLX_DEPTH_SIZE, 16,
           None, None
@@ -628,6 +628,7 @@ static void chooseConfig() {
         int n = 0;
         int found = 0;
         GLXFBConfig * cfgs = glXChooseFBConfig(g_dpy, scr(), attr, &n);
+        assert(cfgs);
         for (int i = 0; i < n; i++) {
                 XVisualInfo * vi = glXGetVisualFromFBConfig(g_dpy, cfgs[i]);
                 XRenderPictFormat * pf =
@@ -640,6 +641,7 @@ static void chooseConfig() {
                 }
         }
         g_cfg = cfgs[found];
+        XFree(cfgs);
 }
 
 int cvrun(int argc, char ** argv) {
