@@ -541,6 +541,10 @@ intptr_t osEvent(ev * e) {
         return ret;
 }
 
+static void bping(void * v, struct xdg_wm_base * xwb, unsigned s) {
+        xdg_wm_base_pong(xwb, s);
+}
+
 int cvrun(int argc, char ** argv) {
         struct wl_display * wldpy = wl_display_connect(NULL);
         struct wl_registry * wlreg = wl_display_get_registry(wldpy);
@@ -552,6 +556,11 @@ int cvrun(int argc, char ** argv) {
         wl_display_roundtrip(wldpy);
 
         cvInject(CVE_INIT, argc, (intptr_t)argv);
+
+        static const struct xdg_wm_base_listener xbl = {
+                .ping = bping,
+        };
+        xdg_wm_base_add_listener(g_xwb, &xbl, NULL);
 
         struct wl_surface * wlsurf = wl_compositor_create_surface(g_comp);
 
