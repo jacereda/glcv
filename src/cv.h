@@ -65,26 +65,26 @@ int cvRun(intptr_t (*handler)(const ev *));
 intptr_t event(const ev * e);
 #endif
 
-unsigned cvWidth();
-unsigned cvHeight();
-int cvMouseX();
-int cvMouseY();
+unsigned cvWidth(void);
+unsigned cvHeight(void);
+int cvMouseX(void);
+int cvMouseY(void);
 int cvKeyStatus(cvkey key);
 int cvPressed(cvkey key);
 int cvReleased(cvkey key);
 
 void cvSetCursor(const uint8_t * rgba, int hotx, int hoty);
-void cvHideCursor();
-void cvDefaultCursor();
-void cvShowKeyboard();
-void cvHideKeyboard();
-void cvFullscreen();
-void cvWindowed();
+void cvHideCursor(void);
+void cvDefaultCursor(void);
+void cvShowKeyboard(void);
+void cvHideKeyboard(void);
+void cvFullscreen(void);
+void cvWindowed(void);
 
 void cvReportV(const char * fmt, va_list ap);
 void cvReport(const char * fmt, ...);
 
-void cvQuit();
+void cvQuit(void);
 
 int evType(const ev *);
 const char * evName(const ev *);
